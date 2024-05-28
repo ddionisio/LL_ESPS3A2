@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Use to identify a goal in the level
 /// </summary>
-[CreateAssetMenu(fileName = "goalData", menuName = "Game/GoalData")]
+[CreateAssetMenu(fileName = "goal", menuName = "Game/GoalData")]
 public class GoalData : ScriptableObject {
     //tune data?
     //other stuff

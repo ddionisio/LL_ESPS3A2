@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 913261315}
   - component: {fileID: 913261316}
   m_Layer: 0
-  m_Name: level1Controller
+  m_Name: playController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalController : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class GoalController : MonoBehaviour {
+    public GoalData data;
+
+    public GoalState state { 
+        get { return mState; }
+        set {
+            if(mState != value) {
+                mState = value;
+
+                stateChangedCallback?.Invoke(this);
+			}
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public event System.Action<GoalController> stateChangedCallback;
+
+    private GoalState mState;
 }

@@ -6,7 +6,14 @@ using LoLExt;
 
 [CreateAssetMenu(fileName = "gameData", menuName = "Game/GameData")]
 public class GameData : M8.SingletonScriptableObject<GameData> {
-    [Header("Scenes")]
+	[Header("Signals")]
+	public M8.Signal signalPlayBegin;
+	public M8.Signal signalPlayEnd;
+
+	public M8.SignalBoolean signalPuzzleInteractable;
+	public M8.Signal signalPuzzleComplete;
+		
+	[Header("Scenes")]
     public M8.SceneAssetPath[] levelScenes;
     public M8.SceneAssetPath endScene;
 
