@@ -6,11 +6,12 @@ using UnityEngine;
 /// Set this to the root of the artifact object, contains info for all goals
 /// </summary>
 public class PuzzleController : MonoBehaviour {
+	public GameObject goalRoot;
 
 	public GoalController[] goals { get; private set; }
 
 	void Awake() {
-		goals = GetComponentsInChildren<GoalController>(true);
+		goals = goalRoot ? goalRoot.GetComponentsInChildren<GoalController>(true) : GetComponentsInChildren<GoalController>(true);
 
 		for(int i = 0; i < goals.Length; i++) {
 			var goal = goals[i];

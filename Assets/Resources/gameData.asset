@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ef431af04fa6784d980757fa2a2e076, type: 3}
   m_Name: gameData
   m_EditorClassIdentifier: 
-  levelScenes: []
+  signalPlayBegin: {fileID: 11400000, guid: 16c703f7245dd774aa9eac2fb852249c, type: 2}
+  signalPlayEnd: {fileID: 11400000, guid: f4a916327a65c7b45920f5a2f0d3c165, type: 2}
+  signalPuzzleInteractable: {fileID: 11400000, guid: 58a3e90cfec376940a1c3f3a2b0b716b, type: 2}
+  signalPuzzleComplete: {fileID: 11400000, guid: 3a53ea55d761b8e4fa3c7c47cbc2df57, type: 2}
+  levelScenes:
+  - name: level1
+    path: Assets/Scenes/level1.unity
   endScene:
     name: 
     path: 
