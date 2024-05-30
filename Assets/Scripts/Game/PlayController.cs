@@ -36,6 +36,7 @@ public class PlayController : GameModeController<PlayController> {
 		var gameDat = GameData.instance;
 
 		//intro stuff
+		yield return null;
 
 		//signal for puzzle to be playable
 		gameDat.signalPlayBegin.Invoke();
@@ -49,13 +50,17 @@ public class PlayController : GameModeController<PlayController> {
 		gameDat.signalPuzzleInteractable.Invoke(false);
 
 		//jingle and pop-off
+		yield return null;
 
 		gameDat.signalPlayEnd.Invoke();
 
 		//move to marching band
+		yield return null;
 	}
 
 	void OnSignalPuzzleComplete() {
 		isPuzzleComplete = true;
+
+		Debug.Log("Complete");
 	}
 }

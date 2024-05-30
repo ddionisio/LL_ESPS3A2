@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GoalController : MonoBehaviour {
-    public GoalData data;
-
     public GoalState state { 
         get { return mState; }
         set {

@@ -10,6 +10,12 @@ public class PuzzleController : MonoBehaviour {
 
 	public GoalController[] goals { get; private set; }
 
+	void OnDestroy() {
+		if(GameData.isInstantiated) {
+			GameData.instance.signalPlayBegin.callback -= OnPuzzleBegin;
+		}
+	}
+
 	void Awake() {
 		goals = goalRoot ? goalRoot.GetComponentsInChildren<GoalController>(true) : GetComponentsInChildren<GoalController>(true);
 
@@ -17,6 +23,16 @@ public class PuzzleController : MonoBehaviour {
 			var goal = goals[i];
 
 			goal.stateChangedCallback += OnGoalStateChanged;
+		}
+
+		GameData.instance.signalPlayBegin.callback += OnPuzzleBegin;
+	}
+
+	void OnPuzzleBegin() {
+		for(int i = 0; i < goals.Length; i++) {
+			var goal = goals[i];
+			if(goal)
+				goal.state = GoalState.Inactive;
 		}
 	}
 
