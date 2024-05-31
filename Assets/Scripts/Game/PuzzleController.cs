@@ -38,5 +38,15 @@ public class PuzzleController : MonoBehaviour {
 
 	void OnGoalStateChanged(GoalController goal) {
 		//determine if all goals are active
+		int goalActiveCount = 0;
+		for(int i = 0; i < goals.Length; i++) {
+			var _goal = goals[i];
+			if(_goal.state == GoalState.Active)
+				goalActiveCount++;
+		}
+
+		if(goalActiveCount == goals.Length) {
+			GameData.instance.signalPuzzleComplete.Invoke();
+		}
 	}
 }

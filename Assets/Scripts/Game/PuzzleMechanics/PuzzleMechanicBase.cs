@@ -14,6 +14,7 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 		set {
 			if(mLocked != value) {
 				mLocked = value;
+				RefreshInput();
 			}
 		}
 	}
