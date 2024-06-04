@@ -6,6 +6,9 @@ using LoLExt;
 
 [CreateAssetMenu(fileName = "gameData", menuName = "Game/GameData")]
 public class GameData : M8.SingletonScriptableObject<GameData> {
+	[Header("Layers")]
+	public LayerMask layerDropOff;
+
 	[Header("Signals")]
 	public M8.Signal signalPlayBegin;
 	public M8.Signal signalPlayEnd;

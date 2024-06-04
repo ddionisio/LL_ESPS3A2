@@ -19,6 +19,8 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 		}
 	}
 
+	public bool interactable { get { return !mLocked && mPuzzleInteractable; } }
+
 	private bool mLocked;
 	private bool mPuzzleInteractable;
 
@@ -53,9 +55,9 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 		GameData.instance.signalPuzzleInteractable.callback += OnSignalPuzzleInteractable;
 	}
 
-	private void RefreshInput() {
+	protected virtual void RefreshInput() {
 		if(_input)
-			_input.interactable = !mLocked && mPuzzleInteractable;
+			_input.interactable = interactable;
 	}
 
 	void OnSignalPuzzleInteractable(bool interactable) {
