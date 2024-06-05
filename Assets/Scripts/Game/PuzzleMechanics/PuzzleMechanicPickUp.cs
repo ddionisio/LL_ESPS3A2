@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-
-
 public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	public DropOffData dropOffData; //determines which drop-off this can be placed in
 
+	public PuzzleDropOff initialDropOff;
+
 	[Header("Motion")]
 	public float moveDelay = 0.15f;
+	public float rotateDelay = 0.15f; //rotation towards anchor
 
 	[Header("Events")]
 	public UnityEvent onPickUp;
@@ -18,27 +19,44 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 	public Vector2 position { get { return transform.position; } set { transform.position = value; } }
 
-	public Vector2 pointerWorldPosition {
-		get {
-			if(mPointer != null) {
-				//TODO: use main camera for now
-				var cam = Camera.main;
-				return cam.ScreenToWorldPoint(mPointer.position);
-			}
+	public float rotation { 
+		get { return transform.eulerAngles.z; } 
+		set {
+			var angles = transform.eulerAngles;
+			angles.z = value;
 
-			return position;
-		}
+			transform.eulerAngles = angles; 
+		} 
 	}
 
 	public bool isMoving { get; private set; }
 
+	public PuzzleDropOff currentDropOff { get; private set; }
+
 	private PointerEventData mPointer;
-	private PuzzleDropOff mDropOff;
+	private PuzzleDropOff mPointerDropOff;
 
-	private Vector2 mMoveDest;
 	private Vector2 mMoveVel;
+	private float mMoveAngleVel;
 
-	private Vector2 mLastPos; //position before being picked up
+	public void SwapDropOff(PuzzleMechanicPickUp other) {
+		var _dropOff = currentDropOff;
+
+		currentDropOff = other.currentDropOff;
+
+		other.currentDropOff = _dropOff;
+
+		if(currentDropOff) currentDropOff.pickUpAttached = this;
+		if(other.currentDropOff) other.currentDropOff.pickUpAttached = other;
+	}
+
+	public void ApplyDropOff(PuzzleDropOff aDropOff) {
+		if(currentDropOff) currentDropOff.pickUpAttached = null;
+
+		currentDropOff = aDropOff;
+
+		if(currentDropOff) currentDropOff.pickUpAttached = this;
+	}
 
 	void OnApplicationFocus(bool focus) {
 		if(!focus) {
@@ -48,18 +66,48 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	}
 
 	void Update() {
+		var isPosChanged = false;
+		var isRotChanged = false;
+
 		if(mPointer != null) {
 			RefreshDropOff();
 
+			var dt = Time.deltaTime;
+
 			//update move dest.
-			mMoveDest = pointerWorldPosition;
+			var cam = Camera.main;
+			var moveDest = (Vector2)cam.ScreenToWorldPoint(mPointer.position);
+
+			isPosChanged = position != moveDest;
+			if(isPosChanged)
+				position = Vector2.SmoothDamp(position, moveDest, ref mMoveVel, dt);
+
+			isRotChanged = rotation != 0f;
+			if(isRotChanged)
+				rotation = Mathf.SmoothDampAngle(rotation, 0f, ref mMoveAngleVel, dt);
+		}
+		else if(currentDropOff) {
+			var dt = Time.deltaTime;
+
+			//move local towards origin
+			isPosChanged = position != currentDropOff.anchorPosition;
+			if(isPosChanged)
+				position = Vector2.SmoothDamp(position, currentDropOff.anchorPosition, ref mMoveVel, Time.deltaTime);
+
+			isRotChanged = rotation != currentDropOff.anchorRotation;
+			if(isRotChanged)
+				rotation = Mathf.SmoothDampAngle(rotation, currentDropOff.anchorRotation, ref mMoveAngleVel, dt);
 		}
 
-		var pos = position;
-		isMoving = pos != mMoveDest;
-		if(isMoving) {
-			position = Vector2.SmoothDamp(pos, mMoveDest, ref mMoveVel, Time.deltaTime);
-		}
+		isMoving = isPosChanged || isRotChanged;
+	}
+
+	protected override void Awake() {
+		base.Awake();
+
+		currentDropOff = initialDropOff;
+		if(currentDropOff)
+			currentDropOff.pickUpAttached = this;
 	}
 
 	protected override void InputClick(PointerEventData eventData) {
@@ -95,25 +143,36 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	}
 
 	private void RefreshDropOff() {
+		if(mPointer == null)
+			return;
+
 		PuzzleDropOff newDropOff = null;
 
 		//check drop off on current point
 		var rayDat = mPointer.pointerCurrentRaycast;
 		if(rayDat.isValid) {
+			PuzzleDropOff dropOff = null;
+
 			if((GameData.instance.layerDropOff & (1 << rayDat.gameObject.layer)) != 0) {
-				var dropOff = rayDat.gameObject.GetComponent<PuzzleDropOff>();
-				if(dropOff && dropOffData == dropOff.data)
-					newDropOff = dropOff;
+				dropOff = rayDat.gameObject.GetComponent<PuzzleDropOff>();
 			}
+			else if(rayDat.gameObject != input.gameObject) {
+				var otherPickUp = rayDat.gameObject.GetComponent<PuzzleMechanicPickUp>();
+				if(otherPickUp)
+					dropOff = otherPickUp.currentDropOff;
+			}
+
+			if(dropOff && dropOffData == dropOff.data)
+				newDropOff = dropOff;
 		}
 
-		if(mDropOff != newDropOff) {
-			if(mDropOff)
-				mDropOff.onDropOffHighlight?.Invoke(false);
+		if(mPointerDropOff != newDropOff) {
+			if(mPointerDropOff)
+				mPointerDropOff.onDropOffHighlight?.Invoke(false);
 
-			mDropOff = newDropOff;
-			if(mDropOff)
-				mDropOff.onDropOffHighlight?.Invoke(true);
+			mPointerDropOff = newDropOff;
+			if(mPointerDropOff)
+				mPointerDropOff.onDropOffHighlight?.Invoke(true);
 		}
 	}
 
@@ -121,29 +180,37 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 		mPointer = eventData;
 
 		if(mPointer != null) {
-			mLastPos = position;
-			mMoveDest = pointerWorldPosition;
+			input.collision.enabled = false;
 
 			onPickUp?.Invoke();
 		}
+		else
+			input.collision.enabled = true;
 
 		mMoveVel = Vector2.zero;
+		mMoveAngleVel = 0f;
 	}
 		
 	private void DropOff() {
-		var isPicked = mPointer != null || mDropOff;
+		var isPicked = mPointer != null || mPointerDropOff;
 
 		//check drop off object
-		if(mDropOff) {
-			mDropOff.onDropOffHighlight?.Invoke(false);
-			mDropOff.onDropOff?.Invoke(this);
+		if(mPointerDropOff) {
+			mPointerDropOff.onDropOffHighlight?.Invoke(false);
+			mPointerDropOff.onDropOff?.Invoke(this);
 
-			mMoveDest = mDropOff.anchorPosition;
+			//apply to drop off
+			if(mPointerDropOff.pickUpAttached != this) {
+				if(mPointerDropOff.pickUpAttached)
+					SwapDropOff(mPointerDropOff.pickUpAttached);
+				else
+					ApplyDropOff(mPointerDropOff);
+			}
 
-			mDropOff = null;
+			mPointerDropOff.pickUpAttached = this;
+
+			mPointerDropOff = null;
 		}
-		else //revert to original position
-			mMoveDest = mLastPos;
 
 		ApplyPickUp(null);
 
