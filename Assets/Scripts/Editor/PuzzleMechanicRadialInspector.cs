@@ -35,7 +35,7 @@ public class PuzzleMechanicRadialInspector : Editor {
 				if(dat.rotatorAttachToRadius && dat.radius > 0f)
 					dat.rotatorRoot.localPosition = dir * dat.radius;
 
-				dat.rotatorRoot.up = dir;
+				dat.rotatorRoot.up = dat.rotatorRootUpInverse ? -dir : dir;
 
 				EditorUtility.SetDirty(dat.rotatorRoot);
 			}

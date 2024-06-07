@@ -17,6 +17,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 
     [Header("Rotator Display")]
     public Transform rotatorRoot;
+	public bool rotatorRootUpInverse;
 	public bool rotatorAttachToRadius; //set rotate root on radius?
     public float rotatorRotateDelay = 0.3f;
 
@@ -177,7 +178,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
             if(rotatorAttachToRadius && radius > 0f)
                 rotatorRoot.localPosition = mRotatorDir * radius;
 
-            rotatorRoot.up = mRotatorDir;
+            rotatorRoot.up = rotatorRootUpInverse ? -mRotatorDir : mRotatorDir;
 		}
     }
 

@@ -39,8 +39,11 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 		EndDragging(null);
 	}
 
+	void OnEnable() {
+		ApplyInteractable();
+	}
+
 	void Awake() {
-		mInteractable = false;
 		ApplyInteractable();
 	}
 

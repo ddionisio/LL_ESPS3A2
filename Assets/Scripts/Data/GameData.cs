@@ -9,6 +9,10 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 	[Header("Layers")]
 	public LayerMask layerDropOff;
 
+	[Header("Puzzle Mechanic General")]
+	public int mechanicPuzzlePickUpRenderOrder = 1000;
+	public float mechanicRayCastUpdateDelay = 0.3f;
+
 	[Header("Signals")]
 	public M8.Signal signalPlayBegin;
 	public M8.Signal signalPlayEnd;
