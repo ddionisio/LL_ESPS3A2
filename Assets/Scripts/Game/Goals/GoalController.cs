@@ -1,52 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GoalController : MonoBehaviour {
-    public GoalState state { 
-        get { return mState; }
-        set {
-            if(mState != value) {
-                mState = value;
+	public float powerMax = 100f;
+	public float powerPerSecond = 100f;
 
-                stateChangedCallback?.Invoke(this);
+	public UnityEvent<float> powerChanged;
+	public UnityEvent<bool> powerFullyCharged;
 
-				if(!mIsInterfacesInit)
-					InitInterfaces();
+	public float power { get; private set; }
 
-				for(int i = 0; i < mIGoalStateChanged.Length; i++)
-					mIGoalStateChanged[i].GoalStateChanged(mState);
-			}
-        }
-    }
+	public bool isPowerFull { get { return power >= powerMax; } }
+		
+	private float mToPower;
 
-    public event System.Action<GoalController> stateChangedCallback;
-
-    private bool mIsInterfacesInit;
-    private IGoalStateChanged[] mIGoalStateChanged;
-
-	private GoalState mState;
-
-    void Awake() {
-		if(!mIsInterfacesInit)
-			InitInterfaces();
+	public void AddPower(float amt) {
+		mToPower += amt;
 	}
 
-    void InitInterfaces() {
-		var comps = GetComponentsInChildren<MonoBehaviour>(true);
+	void OnEnable() {
+		powerChanged?.Invoke(power);
+	}
 
-		var iGoalStateChangedList = new List<IGoalStateChanged>();
+	void Update() {
+		if(power != mToPower) {
+			var lastPowerFull = isPowerFull;
 
-		for(int i = 0; i < comps.Length; i++) {
-			var comp = comps[i];
+			if(power < mToPower) {
+				power += powerPerSecond * Time.deltaTime;
+				if(power > mToPower)
+					power = mToPower;
+			}
+			else {
+				power -= powerPerSecond * Time.deltaTime;
+				if(power < mToPower)
+					power = mToPower;
+			}
 
-			var stateChanged = comp as IGoalStateChanged;
-			if(stateChanged != null)
-				iGoalStateChangedList.Add(stateChanged);
+			powerChanged?.Invoke(power);
+
+			if(lastPowerFull != isPowerFull)
+				powerFullyCharged?.Invoke(isPowerFull);
 		}
-
-		mIGoalStateChanged = iGoalStateChangedList.ToArray();
-
-		mIsInterfacesInit = true;
 	}
 }

@@ -81,6 +81,10 @@ public class PuzzleRayCast : MonoBehaviour {
     private PuzzleRayCastTarget mTarget;
     private float mCurUpdateTime;
 
+    private const int castCapacity = 4;
+
+    private RaycastHit2D[] mCastHits = new RaycastHit2D[castCapacity];
+
 	void OnEnable() {
 		ApplyActive();
 	}
@@ -104,29 +108,45 @@ public class PuzzleRayCast : MonoBehaviour {
 	}
 
 	private void Cast() {
-        if(castRadius > 0f)
-            castHit = Physics2D.CircleCast(position, castRadius, castDir, castLength, castLayerMask);
-        else
-            castHit = Physics2D.Raycast(position, castDir, castLength, castLayerMask);
+        int castCount;
 
-        castDistance = castHit.distance;
+		if(castRadius > 0f)
+			castCount = Physics2D.CircleCastNonAlloc(position, castRadius, castDir, mCastHits, castLength, castLayerMask);
+		else
+			castCount = Physics2D.RaycastNonAlloc(position, castDir, mCastHits, castLength, castLayerMask);
 
-        var hitColl = castHit.collider;
+		PuzzleRayCastTarget nearestTarget = null;
+		castHit = new RaycastHit2D();
 
-		if(hitColl) {
-            if(!(target && target.coll == hitColl)) {
-                var newTarget = hitColl.GetComponent<PuzzleRayCastTarget>();
-                if(newTarget.castData == castData)
-                    target = newTarget;
-            }
+		if(castCount > 0) {
+			for(int i = 0; i < castCount; i++) {
+                var hit = mCastHits[i];
 
-            castPoint = castHit.point;
+                var hitColl = hit.collider;
+                if(!hitColl)
+                    continue;
+
+                //ensure hit is not in our hierarchy
+                if(hitColl.gameObject == gameObject || M8.Util.IsParentOf(transform, hitColl.transform) || M8.Util.IsParentOf(hitColl.transform, transform))
+                    continue;
+
+				var newTarget = hitColl.GetComponent<PuzzleRayCastTarget>();
+                if(newTarget.castData != castData)
+                    continue;
+
+                if(!nearestTarget || hit.distance < castHit.distance) {
+                    nearestTarget = newTarget;
+					castHit = hit;
+                }
+			}
 		}
-        else {
-            target = null;
 
+        target = nearestTarget;
+
+        if(target)
+            castPoint = castHit.point;
+        else
 			castPoint = position + castDir * castLength;
-        }
     }
 
     private void ApplyActive() {

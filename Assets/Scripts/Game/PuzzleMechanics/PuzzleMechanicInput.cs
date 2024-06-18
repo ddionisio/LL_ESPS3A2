@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Collider2D))]
 public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	
 	public bool interactable {
@@ -10,17 +11,23 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 		set {
 			if(mInteractable != value) {
 				mInteractable = value;
-				ApplyInteractable();
+
+				//reset input
+				EndDragging(null);
 			}
 		}
 	}
 
-	public Collider2D collision {
+	public bool colliderEnabled {
 		get {
-			if(!mColl)
-				mColl = GetComponent<Collider2D>();
+			if(!mColl) ColliderInit();
 
-			return mColl;
+			return mColl.enabled; 
+		}
+		set {
+			if(!mColl) ColliderInit();
+
+			mColl.enabled = value;
 		}
 	}
 
@@ -39,30 +46,34 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 		EndDragging(null);
 	}
 
-	void OnEnable() {
-		ApplyInteractable();
-	}
-
 	void Awake() {
-		ApplyInteractable();
+		ColliderInit();
 	}
 
 	void IPointerClickHandler.OnPointerClick(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		clickCallback?.Invoke(eventData);
 	}
 
 	void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		isDragging = true;
 
 		dragBeginCallback?.Invoke(eventData);
 	}
 
 	void IDragHandler.OnDrag(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		if(isDragging)
 			dragCallback?.Invoke(eventData);
 	}
 
 	void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		EndDragging(eventData);
 	}
 
@@ -74,10 +85,7 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 		}
 	}
 
-	private void ApplyInteractable() {
-		collision.enabled = mInteractable;
-
-		//reset input
-		EndDragging(null);
+	private void ColliderInit() {
+		mColl = GetComponent<Collider2D>();
 	}
 }

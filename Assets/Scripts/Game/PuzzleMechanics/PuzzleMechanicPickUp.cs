@@ -126,14 +126,15 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 			currentDropOff.pickUpAttached = this;
 	}
 
-	protected override void InputClick(PointerEventData eventData) {
+	/*protected override void InputClick(PointerEventData eventData) {
 		if(mPointer != null) {
+			RefreshDropOff();
 			DropOff();
 		}
 		else {
 			ApplyPickUp(eventData);
 		}
-	}
+	}*/
 
 	protected override void InputDragBegin(PointerEventData eventData) {
 		ApplyPickUp(eventData);
@@ -197,12 +198,12 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 			if(renderGroupSortOrder)
 				renderGroupSortOrder.ApplyOffset(GameData.instance.mechanicPuzzlePickUpRenderOrder);
 
-			input.collision.enabled = false;
+			input.colliderEnabled = false;
 
 			onPickUp?.Invoke();
 		}
 		else
-			input.collision.enabled = true;
+			input.colliderEnabled = true;
 
 		mMoveVel = Vector2.zero;
 		mMoveAngleVel = 0f;
