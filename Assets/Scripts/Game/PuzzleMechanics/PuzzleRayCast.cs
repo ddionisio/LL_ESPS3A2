@@ -9,11 +9,12 @@ public class PuzzleRayCast : MonoBehaviour {
 
 	public GameObject castActiveGO;
     public Transform castDirRoot;
-    public Transform castPointRoot;
+    public Transform castPointEndRoot;
         
     public float castRadius; //set to <= 0 as line
     public float castLength;
-    public LayerMask castLayerMask;
+    public LayerMask castTargetLayerMask;
+    public LayerMask castEndLayerMask;
 
     public bool castActive {
         get { return mCastActive; }
@@ -42,48 +43,57 @@ public class PuzzleRayCast : MonoBehaviour {
 		}
     }
 
-    public float castDistance { get; private set; }
-	public RaycastHit2D castHit { get; private set; }
+    public float castDistance { 
+        get { return mCastDistance; }
+        private set {
+            if(mCastDistance != value) {
+                mCastDistance = value;
 
-    public Vector2 castPoint {
-        get { return castPointRoot ? castPointRoot.position : position; }
+				castPointEnd = position + castDir * mCastDistance;
+			}
+        }
+    }
+
+    public Vector2 castPointEnd {
+        get { return castPointEndRoot ? castPointEndRoot.position : position; }
 
         private set {
-            if(castPointRoot) {
-                Vector2 pos = castPointRoot.position;
+            if(castPointEndRoot) {
+                Vector2 pos = castPointEndRoot.position;
                 if(pos != value)                    
-                    castPointRoot.position = new Vector3(value.x, value.y, castPointRoot.position.z);
+                    castPointEndRoot.position = new Vector3(value.x, value.y, castPointEndRoot.position.z);
             }
         }
     }
 
 	public Vector2 position { get { return transform.position; } }
 
-    public PuzzleRayCastTarget target {
-        get { return mTarget; }
+    public M8.CacheList<PuzzleRayCastTarget> targets { get { return mTargets; } }
 
-        private set {
-            if(mTarget != value) {
-                if(mTarget)
-                    mTarget.ApplyCast(null);
-
-				mTarget = value;
-
-                if(mTarget)
-					mTarget.ApplyCast(this);
-
-                mCurUpdateTime = 0f;
-			}
-        }
-    }
+	public RaycastHit2D[] castHits { get { return mCastHits; } }
+    public int castHitCount { get; private set; }
 
     private bool mCastActive;
-    private PuzzleRayCastTarget mTarget;
     private float mCurUpdateTime;
 
-    private const int castCapacity = 4;
+    private float mCastDistance;
 
-    private RaycastHit2D[] mCastHits = new RaycastHit2D[castCapacity];
+    private const int castCapacity = 6;
+
+    private M8.CacheList<PuzzleRayCastTarget> mTargets = new M8.CacheList<PuzzleRayCastTarget>(castCapacity);
+	private M8.CacheList<PuzzleRayCastTarget> mPrevTargets = new M8.CacheList<PuzzleRayCastTarget>(castCapacity);
+
+	private RaycastHit2D[] mCastHits = new RaycastHit2D[castCapacity];
+
+    public void ClearTargets() {
+        for(int i = 0; i < mTargets.Count; i++) {
+            var tgt = mTargets[i];
+            if(tgt)
+				tgt.ApplyCast(null);
+		}
+
+        mTargets.Clear();
+	}
 
 	void OnEnable() {
 		ApplyActive();
@@ -101,58 +111,92 @@ public class PuzzleRayCast : MonoBehaviour {
 
                 Cast();
 
-                if(mTarget)
-                    mTarget.UpdateCast(this);
+                for(int i = 0; i < mTargets.Count; i++) {
+                    var tgt = mTargets[i];
+                    if(tgt)
+                        tgt.UpdateCast(this);
+				}
 			}
         }
 	}
 
 	private void Cast() {
-        int castCount;
+		//set distance
+		RaycastHit2D endHit;
+        if(castRadius > 0f)
+            endHit = Physics2D.CircleCast(position, castRadius, castDir, castLength, castEndLayerMask);
+        else
+			endHit = Physics2D.Raycast(position, castDir, castLength, castEndLayerMask);
+
+        if(endHit.collider)
+            castDistance = endHit.distance;
+        else
+            castDistance = castLength;
+
+        //grab targets
+		var contactTargetFilter = new ContactFilter2D() { useLayerMask = true, layerMask = castTargetLayerMask };
 
 		if(castRadius > 0f)
-			castCount = Physics2D.CircleCastNonAlloc(position, castRadius, castDir, mCastHits, castLength, castLayerMask);
+			castHitCount = Physics2D.CircleCast(position, castRadius, castDir, contactTargetFilter, mCastHits, castLength);
 		else
-			castCount = Physics2D.RaycastNonAlloc(position, castDir, mCastHits, castLength, castLayerMask);
+			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castLength);
 
-		PuzzleRayCastTarget nearestTarget = null;
-		castHit = new RaycastHit2D();
+        if(castHitCount > 0) {
+            //copy targets to previous
+			mPrevTargets.Clear();
+            for(int i = 0; i < mTargets.Count; i++)
+                mPrevTargets.Add(mTargets[i]);
 
-		if(castCount > 0) {
-			for(int i = 0; i < castCount; i++) {
+			//grab new targets
+			mTargets.Clear();
+			
+			for(int i = 0; i < castHitCount; i++) {
                 var hit = mCastHits[i];
 
-                var hitColl = hit.collider;
-                if(!hitColl)
-                    continue;
+				var hitColl = hit.collider;
+				if(!hitColl)
+					continue;
 
-                //ensure hit is not in our hierarchy
-                if(hitColl.gameObject == gameObject || M8.Util.IsParentOf(transform, hitColl.transform) || M8.Util.IsParentOf(hitColl.transform, transform))
-                    continue;
+				//ensure hit is not in our hierarchy
+				if(hitColl.gameObject == gameObject || M8.Util.IsParentOf(transform, hitColl.transform) || M8.Util.IsParentOf(hitColl.transform, transform))
+					continue;
 
 				var newTarget = hitColl.GetComponent<PuzzleRayCastTarget>();
-                if(newTarget.castData != castData)
-                    continue;
+				if(!newTarget || newTarget.castData != castData)
+					continue;
 
-                if(!nearestTarget || hit.distance < castHit.distance) {
-                    nearestTarget = newTarget;
-					castHit = hit;
-                }
+				mTargets.Add(newTarget);
 			}
+
+            //check each new target if they are already from previous
+            for(int i = 0; i < mTargets.Count; i++) {
+                var tgt = mTargets[i];
+
+                int prevInd = mPrevTargets.IndexOf(tgt);
+                if(prevInd == -1)
+                    tgt.ApplyCast(this); //new target
+                else
+                    mPrevTargets.RemoveAt(prevInd);
+            }
+
+            //update previous targets that are no longer in contact
+            for(int i = 0; i < mPrevTargets.Count; i++) {
+                var tgt = mPrevTargets[i];
+                if(tgt)
+                    tgt.ApplyCast(null);
+            }
+
+            mPrevTargets.Clear();
 		}
-
-        target = nearestTarget;
-
-        if(target)
-            castPoint = castHit.point;
         else
-			castPoint = position + castDir * castLength;
+            ClearTargets();
     }
 
     private void ApplyActive() {
         if(castActiveGO) castActiveGO.SetActive(mCastActive);
 
-		target = null;
+        if(!mCastActive)
+            ClearTargets();
 	}
 
 	void OnDrawGizmos() {
@@ -166,7 +210,7 @@ public class PuzzleRayCast : MonoBehaviour {
 
 		Gizmos.DrawWireSphere(position, castRadius);
 
-		if(castPointRoot)
-            Gizmos.DrawSphere(castPointRoot.position, 0.1f);
+		if(castPointEndRoot)
+            Gizmos.DrawSphere(castPointEndRoot.position, 0.1f);
 	}
 }
