@@ -2,18 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalOnValueActive : MonoBehaviour {
+public class GoalOnValuePower : MonoBehaviour {
 	public GoalController target;
 
+	public float power;
+
 	public M8.RangeFloat valueRange;
+
+	private bool mIsPower;
 
 	public void OnValue(float val) {
 		if(!target) return;
 
-		if(valueRange.InRange(val))
-			target.state = GoalState.Active;
-		else
-			target.state = GoalState.Inactive;
+		var isPower = valueRange.InRange(val);
+		if(mIsPower != isPower) {
+			mIsPower = isPower;
+			target.AddPower(mIsPower ? power : -power);
+		}
 	}
 
 	public void OnValue(int val) {

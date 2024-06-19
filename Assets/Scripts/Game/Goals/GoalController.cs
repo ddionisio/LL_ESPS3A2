@@ -8,9 +8,12 @@ public class GoalController : MonoBehaviour {
 	public float powerPerSecond = 100f;
 
 	public UnityEvent<float> powerChanged;
+	public UnityEvent<float> powerChangedNormal;
 	public UnityEvent<bool> powerFullyCharged;
 
 	public float power { get; private set; }
+
+	public float powerNormal { get { return Mathf.Clamp01(power / powerMax); } }
 
 	public bool isPowerFull { get { return power >= powerMax; } }
 		
@@ -22,6 +25,7 @@ public class GoalController : MonoBehaviour {
 
 	void OnEnable() {
 		powerChanged?.Invoke(power);
+		powerChangedNormal?.Invoke(powerNormal);
 	}
 
 	void Update() {
@@ -40,6 +44,7 @@ public class GoalController : MonoBehaviour {
 			}
 
 			powerChanged?.Invoke(power);
+			powerChangedNormal?.Invoke(powerNormal);
 
 			if(lastPowerFull != isPowerFull)
 				powerFullyCharged?.Invoke(isPowerFull);

@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 338339166}
   - component: {fileID: 338339168}
-  - component: {fileID: 338339167}
+  - component: {fileID: 338339169}
   m_Layer: 0
   m_Name: blank
   m_TagString: Untagged
@@ -155,23 +155,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1706031423}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &338339167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338339165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4be478ceb22389f49964270db5fecb41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 338339168}
-  inactiveColor: {r: 1, g: 0, b: 0, a: 1}
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
-  delay: 0.3
-  ease: 3
 --- !u!212 &338339168
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -224,6 +207,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &338339169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338339165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef91384b15c0a4a46a5d69659d5708a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 338339168}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 0.9921569, g: 0.38823533, b: 0.3803922, a: 1}
+    key1: {r: 0.98823535, g: 0.6901961, b: 0.47450984, a: 1}
+    key2: {r: 0.5803922, g: 0.7411765, b: 0.4666667, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 32768
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  initialScale: 0
 --- !u!1 &344250292
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,6 +451,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerMax: 100
+  powerPerSecond: 100
+  powerChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  powerChangedNormal:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1734694942}
+        m_TargetAssemblyTypeName: M8.SpriteColorGradient, Assembly-CSharp
+        m_MethodName: set_scale
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  powerFullyCharged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &463744770
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +529,7 @@ MonoBehaviour:
     max: 360
   angleCount: 10
   rotatorRoot: {fileID: 699360501}
+  rotatorRootUpInverse: 0
   rotatorAttachToRadius: 0
   rotatorRotateDelay: 0.3
   minValue: 0
@@ -524,6 +575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1706031424}
+  power: 100
   valueRange:
     min: 5
     max: 5
@@ -1038,6 +1090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 437645546}
+  power: 100
   valueRange:
     min: 5
     max: 5
@@ -1077,6 +1130,7 @@ MonoBehaviour:
     max: 360
   angleCount: 12
   rotatorRoot: {fileID: 1410516778}
+  rotatorRootUpInverse: 0
   rotatorAttachToRadius: 0
   rotatorRotateDelay: 0.3
   minValue: 0
@@ -2011,6 +2065,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerMax: 100
+  powerPerSecond: 100
+  powerChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  powerChangedNormal:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 338339169}
+        m_TargetAssemblyTypeName: M8.SpriteColorGradient, Assembly-CSharp
+        m_MethodName: set_scale
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  powerFullyCharged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1734694938
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,7 +2098,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1734694939}
   - component: {fileID: 1734694941}
-  - component: {fileID: 1734694940}
+  - component: {fileID: 1734694942}
   m_Layer: 0
   m_Name: blank
   m_TagString: Untagged
@@ -2044,23 +2121,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 437645545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1734694940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734694938}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4be478ceb22389f49964270db5fecb41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 1734694941}
-  inactiveColor: {r: 1, g: 0, b: 0, a: 1}
-  activeColor: {r: 0, g: 1, b: 0, a: 1}
-  delay: 0.3
-  ease: 3
 --- !u!212 &1734694941
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2113,6 +2173,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1734694942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734694938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef91384b15c0a4a46a5d69659d5708a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1734694941}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 0.9921569, g: 0.38823533, b: 0.3803922, a: 1}
+    key1: {r: 0.98823535, g: 0.6901961, b: 0.47450984, a: 1}
+    key2: {r: 0.5803922, g: 0.7411765, b: 0.4666667, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 32768
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  initialScale: 0
 --- !u!1 &2125463287
 GameObject:
   m_ObjectHideFlags: 0

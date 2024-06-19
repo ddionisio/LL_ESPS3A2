@@ -14,6 +14,14 @@ public class PuzzleController : MonoBehaviour {
 		if(GameData.isInstantiated) {
 			GameData.instance.signalPlayBegin.callback -= OnPuzzleBegin;
 		}
+
+		if(goals != null) {
+			for(int i = 0; i < goals.Length; i++) {
+				var goal = goals[i];
+				if(goal)
+					goal.powerFullyCharged.RemoveListener(OnGoalFullyCharged);
+			}
+		}
 	}
 
 	void Awake() {
@@ -22,26 +30,22 @@ public class PuzzleController : MonoBehaviour {
 		for(int i = 0; i < goals.Length; i++) {
 			var goal = goals[i];
 
-			goal.stateChangedCallback += OnGoalStateChanged;
+			goal.powerFullyCharged.AddListener(OnGoalFullyCharged);
 		}
 
 		GameData.instance.signalPlayBegin.callback += OnPuzzleBegin;
 	}
 
 	void OnPuzzleBegin() {
-		for(int i = 0; i < goals.Length; i++) {
-			var goal = goals[i];
-			if(goal)
-				goal.state = GoalState.Inactive;
-		}
+		
 	}
 
-	void OnGoalStateChanged(GoalController goal) {
+	void OnGoalFullyCharged(bool isFull) {
 		//determine if all goals are active
 		int goalActiveCount = 0;
 		for(int i = 0; i < goals.Length; i++) {
 			var _goal = goals[i];
-			if(_goal.state == GoalState.Active)
+			if(_goal.isPowerFull)
 				goalActiveCount++;
 		}
 
