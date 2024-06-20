@@ -84,10 +84,8 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 		}
 	}
 
-	protected override void Awake() {
-		base.Awake();
-
-		mInitDir = M8.MathUtil.RotateAngle(Vector2.up, angleStart);
+	protected override void OnEnable() {
+		base.OnEnable();
 
 		UpdateCurDirFromValue();
 
@@ -96,6 +94,12 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 		mRotatorAngleVel = 0f;
 
 		ApplyRotatorTransform();
+	}
+
+	protected override void Awake() {
+		base.Awake();
+
+		mInitDir = M8.MathUtil.RotateAngle(Vector2.up, angleStart);
 	}
 
 	void Update() {

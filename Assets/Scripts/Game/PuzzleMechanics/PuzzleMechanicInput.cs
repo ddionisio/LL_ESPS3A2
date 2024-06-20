@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Collider2D))]
-public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class PuzzleMechanicInput : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	
 	public bool interactable {
 		get { return mInteractable; }
@@ -14,6 +14,8 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 
 				//reset input
 				EndDragging(null);
+
+				isDown = false;
 			}
 		}
 	}
@@ -33,6 +35,23 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 
 	public bool isDragging { get; private set; }
 
+	public bool isDown {
+		get { return mIsDown; }
+		private set {
+			if(mIsDown != value) {
+				mIsDown = value;
+
+				if(mIsDown)
+					downCallback?.Invoke();
+				else
+					upCallback?.Invoke();
+			}
+		}
+	}
+
+	public event System.Action downCallback;
+	public event System.Action upCallback;
+
 	public event System.Action<PointerEventData> clickCallback;
 
 	public event System.Action<PointerEventData> dragBeginCallback;
@@ -40,18 +59,31 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerClickHandler, IBeginDr
 	public event System.Action<PointerEventData> dragEndCallback;
 
 	private bool mInteractable;
+	private bool mIsDown;
     private Collider2D mColl;
 
 	void OnApplicationFocus(bool focus) {
 		EndDragging(null);
+
+		isDown = false;
 	}
 
 	void Awake() {
 		ColliderInit();
 	}
 
+	void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
+		isDown = true;
+	}
+
+	void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
+		isDown = false;
+	}
+
 	void IPointerClickHandler.OnPointerClick(PointerEventData eventData) {
 		if(!mInteractable) return;
+
+		isDown = false;
 
 		clickCallback?.Invoke(eventData);
 	}

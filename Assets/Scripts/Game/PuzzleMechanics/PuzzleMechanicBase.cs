@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public abstract class PuzzleMechanicBase : MonoBehaviour {
     [SerializeField]
     PuzzleMechanicInput _input;
+
+	public UnityEvent<bool> onInputInteractable;
+	public UnityEvent onInputUp;
+	public UnityEvent onInputDown;
 
     public PuzzleMechanicInput input { get { return _input; } }
 
@@ -24,6 +29,9 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 	private bool mLocked;
 	private bool mPuzzleInteractable;
 
+	protected virtual void InputDown() { }
+	protected virtual void InputUp() { }
+
 	protected virtual void InputClick(PointerEventData eventData) { }
 
 	protected virtual void InputDragBegin(PointerEventData eventData) { }
@@ -32,6 +40,12 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 
 	protected virtual void OnDestroy() {
 		if(_input) {
+			_input.downCallback -= InputDown;
+			_input.downCallback -= onInputDown.Invoke;
+
+			_input.upCallback -= InputUp;
+			_input.upCallback -= onInputUp.Invoke;
+
 			_input.clickCallback -= InputClick;
 			_input.dragBeginCallback -= InputDragBegin;
 			_input.dragCallback -= InputDrag;
@@ -42,22 +56,37 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 			GameData.instance.signalPuzzleInteractable.callback -= OnSignalPuzzleInteractable;
 	}
 
+	protected virtual void OnEnable() {
+		RefreshInput();
+	}
+
+	protected virtual void OnDisable() {
+
+	}
+
 	protected virtual void Awake() {
-		if(_input) {
+		if(_input) {			
+			_input.downCallback += InputDown;
+			_input.downCallback += onInputDown.Invoke;
+
+			_input.upCallback += InputUp;
+			_input.upCallback += onInputUp.Invoke;
+
 			_input.clickCallback += InputClick;
 			_input.dragBeginCallback += InputDragBegin;
 			_input.dragCallback += InputDrag;
 			_input.dragEndCallback += InputDragEnd;
 		}
-
-		RefreshInput();
-
+				
 		GameData.instance.signalPuzzleInteractable.callback += OnSignalPuzzleInteractable;
 	}
 
 	protected virtual void RefreshInput() {
-		if(_input)
+		if(_input) {
 			_input.interactable = interactable;
+
+			onInputInteractable?.Invoke(interactable);
+		}
 	}
 
 	void OnSignalPuzzleInteractable(bool interactable) {

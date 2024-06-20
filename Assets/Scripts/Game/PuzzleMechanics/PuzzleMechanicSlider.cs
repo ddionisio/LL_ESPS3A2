@@ -11,6 +11,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	[Tooltip("Set to <= 0 for no limit.")]
 	public int stepCount;
 
+	public bool isReversed;
+
 	[Header("Slider Display")]
 	public Transform handleRoot;
 	public float handleMoveDelay = 0.3f;
@@ -30,7 +32,7 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 			if(_value != v) {
 				_value = v;
 
-				UpdateHandleLocalXFromValue();
+				mHandleLocalX = GetHandleLocalX();
 
 				onValueChanged.Invoke(_value);
 			}
@@ -52,6 +54,17 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	private float mHandleLocalXCur;
 	private float mHandleLocalXVel;
 
+	public float GetHandleLocalX() {
+		var hLen = length * 0.5f;
+
+		var t = isReversed ? 1.0f - valueScalar : valueScalar;
+
+		if(stepCount > 0)
+			t = Mathf.Round(stepCount * t) / stepCount;
+
+		return Mathf.Lerp(-hLen, hLen, t);
+	}
+
 	protected override void InputDrag(PointerEventData eventData) {
 		var pos = GetWorldPos(eventData);
 		UpdateValueFromPosition(pos);
@@ -64,10 +77,10 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 		}
 	}
 
-	void OnEnable() {
-		UpdateHandleLocalXFromValue();
+	protected override void OnEnable() {
+		base.OnEnable();
 
-		mHandleLocalXCur = mHandleLocalX;
+		mHandleLocalXCur = mHandleLocalX = GetHandleLocalX();
 		mHandleLocalXVel = 0f;
 
 		ApplyHandleTransform();
@@ -95,18 +108,9 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 
 		var lpos = transform.InverseTransformPoint(pos);
 
-		valueScalar = (lpos.x + hLen) / length;
-	}
+		var t = (lpos.x + hLen) / length;
 
-	private void UpdateHandleLocalXFromValue() {
-		var hLen = length * 0.5f;
-
-		var t = valueScalar;
-
-		if(stepCount > 0)
-			t = Mathf.Round(stepCount * t) / stepCount;
-
-		mHandleLocalX = Mathf.Lerp(-hLen, hLen, t);
+		valueScalar = isReversed ? 1.0f - t : t;
 	}
 
 	private void ApplyHandleTransform() {
@@ -132,10 +136,10 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 			M8.Gizmo.DrawStepLineY(transform, Vector3.Lerp(sPos, ePos, t), 0.4f);
 		}
 
-		Gizmos.color = Color.green;
+		Gizmos.color = isReversed ? Color.red : Color.green;
 		M8.Gizmo.DrawStepLineY(transform, sPos, 0.5f);
 
-		Gizmos.color = Color.red;
+		Gizmos.color = isReversed ? Color.green : Color.red;
 		M8.Gizmo.DrawStepLineY(transform, ePos, 0.5f);
 	}
 }

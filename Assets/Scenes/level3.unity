@@ -345,13 +345,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 1676828973}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   length: 5
   stepCount: 4
+  isReversed: 1
   handleRoot: {fileID: 1676828971}
   handleMoveDelay: 0.3
   minValue: 0
   maxValue: 100
-  _value: 0
+  _value: 25
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -444,8 +454,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676828970}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.25, y: -0.000000022351742, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
