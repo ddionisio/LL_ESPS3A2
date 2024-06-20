@@ -535,7 +535,7 @@ MonoBehaviour:
   minValue: 0
   maxValue: 10
   _value: 8
-  _onValueChanged:
+  onValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 463744774}
@@ -551,7 +551,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 463744773}
-        m_TargetAssemblyTypeName: GoalOnValueActive, Assembly-CSharp
+        m_TargetAssemblyTypeName: GoalOnValuePower, Assembly-CSharp
         m_MethodName: OnValue
         m_Mode: 0
         m_Arguments:
@@ -1136,7 +1136,7 @@ MonoBehaviour:
   minValue: 0
   maxValue: 10
   _value: 1.6666667
-  _onValueChanged:
+  onValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 850731747}
@@ -1152,7 +1152,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 850731746}
-        m_TargetAssemblyTypeName: GoalOnValueActive, Assembly-CSharp
+        m_TargetAssemblyTypeName: GoalOnValuePower, Assembly-CSharp
         m_MethodName: OnValue
         m_Mode: 0
         m_Arguments:

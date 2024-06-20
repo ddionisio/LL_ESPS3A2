@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class PuzzleMechanicRadial : PuzzleMechanicBase {
     [Header("Radial Config")]
@@ -26,8 +26,8 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	public float maxValue = 100f;
 	[SerializeField]
 	float _value = 0f;
-	[SerializeField]
-	Slider.SliderEvent _onValueChanged;
+
+	public UnityEvent<float> onValueChanged;
 
 	public float value {
 		get { return _value; }
@@ -38,7 +38,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 				UpdateCurDirFromValue();
 				UpdateRotator();
 
-				_onValueChanged.Invoke(_value);
+				onValueChanged.Invoke(_value);
 			}
 		}
 	}
@@ -60,8 +60,6 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	/// Angle in [0, 360] within angleRange, relative to angleStart
 	/// </summary>
 	public float angle { get { return AngleAbs(angleRange.Lerp(valueScalar)); } }
-
-	public Slider.SliderEvent onValueChanged { get { return _onValueChanged; } }
 
 	private Vector2 mInitDir;
 
