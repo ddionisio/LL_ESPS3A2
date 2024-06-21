@@ -5,23 +5,17 @@ using UnityEngine;
 public class GoalApplyPower : MonoBehaviour {
 	public GoalController target;
 
-	public float power;
+	public float powerRate;
 
-	private bool mIsApplied;
-
-	public void Apply(bool isApply) {
-		if(mIsApplied != isApply) {
-			mIsApplied = isApply;
-
-			if(mIsApplied)
-				target.AddPower(power);
-			else
-				target.AddPower(-power);
-		}
-	}
+	public bool isApply { get; set; }
 
 	void Awake() {
 		if(!target)
 			target = GetComponent<GoalController>();
+	}
+
+	void Update() {
+		if(isApply)
+			target.power += powerRate * Time.deltaTime;
 	}
 }

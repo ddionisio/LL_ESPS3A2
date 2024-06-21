@@ -570,7 +570,7 @@ MonoBehaviour:
   castLength: 10
   castTargetLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 640
   castEndLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -727,7 +727,7 @@ MonoBehaviour:
   castLength: 10
   castTargetLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 640
   castEndLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1171,7 +1171,7 @@ MonoBehaviour:
   castLength: 10
   castTargetLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 640
   castEndLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -1253,6 +1253,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 444225208}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   radius: 1.5
   angleStart: 63.4
   angleRange:
@@ -1266,7 +1275,7 @@ MonoBehaviour:
   minValue: 0
   maxValue: 10
   _value: 1.6666667
-  _onValueChanged:
+  onValueChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &1221234976
@@ -1503,7 +1512,7 @@ GameObject:
   - component: {fileID: 1381730175}
   - component: {fileID: 1381730174}
   - component: {fileID: 1381730173}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: pickup (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1624,6 +1633,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 1381730175}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   dropOffData: {fileID: 11400000, guid: 83afc2a858c086c4cb557b1a58a0a177, type: 2}
   initialDropOff: {fileID: 1594770511}
   renderGroupSortOrder: {fileID: 2083670713}
@@ -1967,8 +1985,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerMax: 100
-  powerPerSecond: 100
+  powerCapacity: 100
+  isDecay: 1
+  decayWaitDelay: 0
+  decayRate: 100
   powerChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2043,7 +2063,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1706031427}
         m_TargetAssemblyTypeName: GoalApplyPower, Assembly-CSharp
-        m_MethodName: Apply
+        m_MethodName: set_isApply
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2075,7 +2095,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1706031424}
-  power: 100
+  powerRate: 100
 --- !u!1 &1725118864
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,7 +2478,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1861672420}
         m_TargetAssemblyTypeName: GoalApplyPower, Assembly-CSharp
-        m_MethodName: Apply
+        m_MethodName: set_isApply
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2490,7 +2510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1861672421}
-  power: 100
+  powerRate: 100
 --- !u!114 &1861672421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2503,8 +2523,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerMax: 100
-  powerPerSecond: 100
+  powerCapacity: 100
+  isDecay: 1
+  decayWaitDelay: 0
+  decayRate: 100
   powerChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3063,7 +3085,7 @@ GameObject:
   - component: {fileID: 2062929193}
   - component: {fileID: 2062929195}
   - component: {fileID: 2062929192}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: pickup (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3147,6 +3169,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 2062929193}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   dropOffData: {fileID: 11400000, guid: 83afc2a858c086c4cb557b1a58a0a177, type: 2}
   initialDropOff: {fileID: 1098440160}
   renderGroupSortOrder: {fileID: 1738716699}

@@ -4,50 +4,85 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class GoalController : MonoBehaviour {
-	public float powerMax = 100f;
-	public float powerPerSecond = 100f;
+	public float powerCapacity = 100f;
+
+	[Header("Decay Settings")]
+	[SerializeField]
+	bool isDecay;
+	public float decayWaitDelay;
+	public float decayRate;
 
 	public UnityEvent<float> powerChanged;
 	public UnityEvent<float> powerChangedNormal;
 	public UnityEvent<bool> powerFullyCharged;
 
-	public float power { get; private set; }
+	public float power { 
+		get { return mPower; }
+		set {
+			var val = Mathf.Clamp(value, 0f, powerCapacity);
+			if(mPower != val) {
+				var lastPowerFull = isPowerFull;
 
-	public float powerNormal { get { return Mathf.Clamp01(power / powerMax); } }
+				//reset decay if increasing
+				if(val > mPower) {
+					mIsDecayWait = true;
+					mDecayCurTime = 0f;
+				}
 
-	public bool isPowerFull { get { return power >= powerMax; } }
-		
-	private float mToPower;
+				mPower = val;
 
-	public void AddPower(float amt) {
-		mToPower += amt;
+				powerChanged?.Invoke(mPower);
+				powerChangedNormal?.Invoke(powerNormal);
+
+				if(lastPowerFull != isPowerFull)
+					powerFullyCharged?.Invoke(isPowerFull);
+			}
+		}
 	}
 
+	public float powerNormal { get { return Mathf.Clamp01(mPower / powerCapacity); } }
+
+	public bool isPowerFull { get { return mPower >= powerCapacity; } }
+		
+	private float mPower;
+
+	private bool mIsDecayWait;
+	private float mDecayCurTime;
+
 	void OnEnable() {
-		powerChanged?.Invoke(power);
+		mIsDecayWait = mPower > 0f;
+		mDecayCurTime = 0f;
+
+		powerChanged?.Invoke(mPower);
 		powerChangedNormal?.Invoke(powerNormal);
+		powerFullyCharged?.Invoke(isPowerFull);
+	}
+
+	void OnDestroy() {
+		if(GameData.isInstantiated)
+			GameData.instance.signalPuzzleComplete.callback -= OnPuzzleComplete;
+	}
+
+	void Awake() {
+		GameData.instance.signalPuzzleComplete.callback += OnPuzzleComplete;
 	}
 
 	void Update() {
-		if(power != mToPower) {
-			var lastPowerFull = isPowerFull;
-
-			if(power < mToPower) {
-				power += powerPerSecond * Time.deltaTime;
-				if(power > mToPower)
-					power = mToPower;
+		if(isDecay && mPower > 0f) {
+			if(mIsDecayWait) {
+				mDecayCurTime += Time.deltaTime;
+				if(mDecayCurTime >= decayWaitDelay) {
+					mIsDecayWait = false;
+					mDecayCurTime = 0f;
+				}
 			}
 			else {
-				power -= powerPerSecond * Time.deltaTime;
-				if(power < mToPower)
-					power = mToPower;
+				power -= decayRate * Time.deltaTime;
 			}
-
-			powerChanged?.Invoke(power);
-			powerChangedNormal?.Invoke(powerNormal);
-
-			if(lastPowerFull != isPowerFull)
-				powerFullyCharged?.Invoke(isPowerFull);
 		}
+	}
+
+	void OnPuzzleComplete() {
+		isDecay = false;
 	}
 }

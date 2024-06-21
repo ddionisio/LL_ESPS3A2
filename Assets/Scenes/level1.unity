@@ -451,8 +451,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerMax: 100
-  powerPerSecond: 100
+  powerCapacity: 100
+  isDecay: 0
+  decayWaitDelay: 0
+  decayRate: 0
   powerChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -522,6 +524,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 1216638747}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   radius: 2
   angleStart: 180
   angleRange:
@@ -575,7 +586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1706031424}
-  power: 100
+  powerRate: 100
   valueRange:
     min: 5
     max: 5
@@ -1090,7 +1101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 437645546}
-  power: 100
+  powerRate: 100
   valueRange:
     min: 5
     max: 5
@@ -1123,6 +1134,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 740970480}
+  onInputInteractable:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputDown:
+    m_PersistentCalls:
+      m_Calls: []
   radius: 2.7
   angleStart: 180
   angleRange:
@@ -2065,8 +2085,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42496b3e5b0cdd040a17b46b38aad45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerMax: 100
-  powerPerSecond: 100
+  powerCapacity: 100
+  isDecay: 0
+  decayWaitDelay: 0
+  decayRate: 0
   powerChanged:
     m_PersistentCalls:
       m_Calls: []
