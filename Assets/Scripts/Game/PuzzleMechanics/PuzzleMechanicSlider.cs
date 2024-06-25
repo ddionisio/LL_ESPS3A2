@@ -50,6 +50,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 		}
 	}
 
+	public bool isHandleMoving { get; private set; }
+
 	private float mHandleLocalX;
 	private float mHandleLocalXCur;
 	private float mHandleLocalXVel;
@@ -87,7 +89,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	}
 
 	void Update() {
-		if(mHandleLocalXCur != mHandleLocalX) {
+		isHandleMoving = mHandleLocalXCur != mHandleLocalX;
+		if(isHandleMoving) {
 			mHandleLocalXCur = Mathf.SmoothDamp(mHandleLocalXCur, mHandleLocalX, ref mHandleLocalXVel, handleMoveDelay);
 			ApplyHandleTransform();
 		}

@@ -40,7 +40,9 @@ public class PuzzleEntity : MonoBehaviour {
 		}
     }
 
-    public bool stateIsComplete { get; private set; } = false;
+    public bool stateIsComplete { get { return mStateIsComplete && mToState == null; } }
+
+	public Vector2 position { get { return transform.position; } set { transform.position = value; } }
 
 	public event System.Action<PuzzleEntityState> onStateChanged;
 	public event System.Action<PuzzleEntityState> onStateBegin;
@@ -48,6 +50,8 @@ public class PuzzleEntity : MonoBehaviour {
 
 	private PuzzleEntityState? mToState;
 	private PuzzleEntityState mState;
+
+	private bool mStateIsComplete = false;
 
     private IPuzzleEntityStateBegin[] mIStateBegins;
 	private IPuzzleEntityStateUpdate[] mIStateUpdates;
@@ -93,7 +97,7 @@ public class PuzzleEntity : MonoBehaviour {
 			//end previous state if it is not complete
 			if(!stateIsComplete) {
 				StateEnd();
-				stateIsComplete = false;
+				mStateIsComplete = false;
 			}
 
 			mState = mToState.Value;
@@ -113,7 +117,7 @@ public class PuzzleEntity : MonoBehaviour {
             }
 
             if(updateCompleteCount == mIStateUpdates.Length) {
-                stateIsComplete = true;
+				mStateIsComplete = true;
                 StateEnd();
 			}
 		}

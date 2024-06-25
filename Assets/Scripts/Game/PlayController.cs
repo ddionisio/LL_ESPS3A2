@@ -49,9 +49,6 @@ public class PlayController : GameModeController<PlayController> {
 
 		gameDat.signalPuzzleInteractable.Invoke(false);
 
-		//jingle and pop-off
-		yield return null;
-
 		gameDat.signalPlayEnd.Invoke();
 
 		//move to marching band

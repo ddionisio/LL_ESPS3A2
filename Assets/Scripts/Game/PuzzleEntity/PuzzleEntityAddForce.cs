@@ -13,9 +13,12 @@ public class PuzzleEntityAddForce : MonoBehaviour, IPuzzleEntityStateBegin, IPuz
 
 	public float dirAngle;
 
-	public float impulse;
-	public float force;
-	public float duration;	
+	[SerializeField]
+	float _impulse;
+	[SerializeField]
+	float _force;
+	[SerializeField]
+	float _duration;
 
 	public PuzzleEntityState state;
 
@@ -25,11 +28,19 @@ public class PuzzleEntityAddForce : MonoBehaviour, IPuzzleEntityStateBegin, IPuz
 
 	private Vector2 mDir;
 
+	public void SetImpulse(float impulse) {
+		_impulse = impulse;
+	}
+
+	public void SetForce(float force) {
+		_force = force;
+	}
+
 	void IPuzzleEntityStateBegin.OnStateBegin(PuzzleEntityState state) {
 		if(state == this.state) {
-			if(impulse != 0f)
+			if(_impulse != 0f)
 				mForceState = State.Impulse;
-			else if(force != 0f)
+			else if(_force != 0f)
 				mForceState = State.Force;
 
 			mForceCurTime = 0f;
@@ -45,17 +56,17 @@ public class PuzzleEntityAddForce : MonoBehaviour, IPuzzleEntityStateBegin, IPuz
 
 		switch(mForceState) {
 			case State.Impulse:
-				body.AddForce(mDir * impulse, ForceMode2D.Impulse);
+				body.AddForce(mDir * _impulse, ForceMode2D.Impulse);
 
-				if(force != 0f)
+				if(_force != 0f)
 					mForceState = State.Force;
 				break;
 
 			case State.Force:
-				body.AddForce(mDir * force, ForceMode2D.Force);
+				body.AddForce(mDir * _force, ForceMode2D.Force);
 
 				mForceCurTime += Time.deltaTime;
-				ret = mForceCurTime >= duration;
+				ret = mForceCurTime >= _duration;
 				break;
 
 			default:
