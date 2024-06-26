@@ -50,6 +50,16 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 		}
 	}
 
+	public float valueFromHandlePosition {
+		get {
+			var hLen = length * 0.5f;
+
+			var t = (mHandleLocalXCur + hLen) / length;
+
+			return Mathf.Lerp(minValue, maxValue, isReversed ? 1.0f - t : t);
+		}
+	}
+
 	public bool isHandleMoving { get; private set; }
 
 	private float mHandleLocalX;

@@ -40,20 +40,25 @@ public class PuzzleGameplayPlunger : MonoBehaviour {
     }
 
 	IEnumerator DoPlunge() {
-		var val = slider.value;
+		var val = slider.valueFromHandlePosition;
 
 		slider.handleMoveDelay = sliderResetMoveDelay;
 		slider.locked = true;
 
 		slider.valueScalar = 0f;
 
-		while(slider.isHandleMoving)
+		var curTime = 0f;
+		while(curTime < sliderResetMoveDelay) {
 			yield return null;
+			curTime += Time.deltaTime;
+		}
 
 		slider.handleMoveDelay = sliderPullMoveDelay;
 		slider.locked = false;
 
 		mRout = null;
+
+		//Debug.Log("Plunge value: " + val);
 
 		onAction?.Invoke(val);
 	}

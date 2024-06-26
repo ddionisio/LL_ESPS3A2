@@ -23,6 +23,7 @@ public class PuzzleEntityPlayBeginSpawn : MonoBehaviour {
 
 	IEnumerator DoSpawn() {
 		target.position = spawnPointRoot.position;
+		target.rotation = 0f;
 
 		target.state = PuzzleEntityState.Spawn;
 

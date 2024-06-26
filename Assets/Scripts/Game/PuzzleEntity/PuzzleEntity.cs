@@ -44,6 +44,8 @@ public class PuzzleEntity : MonoBehaviour {
 
 	public Vector2 position { get { return transform.position; } set { transform.position = value; } }
 
+	public float rotation { get { return Vector2.SignedAngle(Vector2.up, transform.up); } set { transform.up = M8.MathUtil.Rotate(Vector2.up, value); } }
+
 	public event System.Action<PuzzleEntityState> onStateChanged;
 	public event System.Action<PuzzleEntityState> onStateBegin;
 	public event System.Action<PuzzleEntityState> onStateEnd;
@@ -94,24 +96,27 @@ public class PuzzleEntity : MonoBehaviour {
 
 	void Update() {
         if(mToState.HasValue) {
-			//end previous state if it is not complete
-			if(!stateIsComplete) {
-				StateEnd();
-				mStateIsComplete = false;
-			}
-
-			mState = mToState.Value;
+			var toState = mToState.Value;
 			mToState = null;
 
-			StateBegin();
+			if(mState != toState) {
+				//end previous state if it is not complete
+				if(!stateIsComplete)
+					StateEnd();
 
-			onStateChanged?.Invoke(mState);
+				mState = toState;
+				mStateIsComplete = false;
+
+				StateBegin();
+
+				onStateChanged?.Invoke(mState);
+			}
 		}
 
 		if(!stateIsComplete) {
             var updateCompleteCount = 0;
 
-            for(int i = 0; i < mIStateBegins.Length; i++) {
+            for(int i = 0; i < mIStateUpdates.Length; i++) {
                 if(mIStateUpdates[i].OnStateUpdate(mState))
                     updateCompleteCount++;
             }

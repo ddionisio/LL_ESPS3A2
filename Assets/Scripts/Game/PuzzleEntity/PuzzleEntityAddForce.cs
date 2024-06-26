@@ -60,6 +60,8 @@ public class PuzzleEntityAddForce : MonoBehaviour, IPuzzleEntityStateBegin, IPuz
 
 				if(_force != 0f)
 					mForceState = State.Force;
+				else
+					ret = true;
 				break;
 
 			case State.Force:
@@ -81,6 +83,6 @@ public class PuzzleEntityAddForce : MonoBehaviour, IPuzzleEntityStateBegin, IPuz
 		Gizmos.color = Color.yellow;
 
 		var dir = M8.MathUtil.RotateAngle(Vector2.up, dirAngle);
-		M8.Gizmo.Arrow(transform.position, dir);
+		M8.Gizmo.Arrow2D(transform.position, dir);
 	}
 }
