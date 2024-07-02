@@ -38,6 +38,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 384926729
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Entity_Back
+    uniqueID: 994210401
+    locked: 0
+  - name: Entity_Front
+    uniqueID: 3804932691
+    locked: 0
+  - name: Drag
+    uniqueID: 1131331609
     locked: 0
