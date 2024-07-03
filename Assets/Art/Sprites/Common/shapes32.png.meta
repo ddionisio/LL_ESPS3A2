@@ -134,6 +134,102 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: hexagon
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.46875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -9, y: 14}
+        - {x: -16, y: -1}
+        - {x: -8, y: -15}
+        - {x: 9, y: -15}
+        - {x: 16, y: -1}
+        - {x: 9, y: 14}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ea6f51089edecc41a35f8ae21800169
+      internalID: -1709712580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gear
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -2, y: 16}
+        - {x: -4, y: 12}
+        - {x: 3, y: 12}
+        - {x: 1, y: 16}
+      - - {x: -16, y: -1}
+        - {x: -16, y: 2}
+        - {x: -12, y: 4}
+        - {x: -12, y: -3}
+      - - {x: -2, y: -16}
+        - {x: -4, y: -12}
+        - {x: 3, y: -12}
+        - {x: 1, y: -16}
+      - - {x: 12, y: -3}
+        - {x: 12, y: 4}
+        - {x: 16, y: 2}
+        - {x: 16, y: -1}
+      - - {x: -12, y: 4}
+        - {x: -11, y: 7}
+        - {x: -7, y: 11}
+        - {x: -4, y: 12}
+        - {x: 3, y: 12}
+        - {x: 7, y: 11}
+        - {x: 11, y: 7}
+        - {x: 12, y: 4}
+        - {x: 12, y: -3}
+        - {x: 11, y: -6}
+        - {x: 7, y: -10}
+        - {x: 3, y: -12}
+        - {x: -4, y: -12}
+        - {x: -7, y: -10}
+        - {x: -11, y: -6}
+        - {x: -12, y: -3}
+      - - {x: -11, y: 7}
+        - {x: -13, y: 11}
+        - {x: -11, y: 13}
+        - {x: -7, y: 11}
+      - - {x: 7, y: 11}
+        - {x: 11, y: 13}
+        - {x: 13, y: 11}
+        - {x: 11, y: 7}
+      - - {x: -13, y: -10}
+        - {x: -11, y: -6}
+        - {x: -7, y: -10}
+        - {x: -11, y: -12}
+      - - {x: 11, y: -12}
+        - {x: 7, y: -10}
+        - {x: 11, y: -6}
+        - {x: 13, y: -10}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c77864ff8807ae48b3112b3d56bd171
+      internalID: -199819567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline:
     - - {x: 0, y: 16}
       - {x: 1, y: -3}
@@ -152,6 +248,8 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       diamond: 1598350006
+      gear: -199819567
+      hexagon: -1709712580
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
