@@ -102,6 +102,12 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 		isHandleMoving = mHandleLocalXCur != mHandleLocalX;
 		if(isHandleMoving) {
 			mHandleLocalXCur = Mathf.SmoothDamp(mHandleLocalXCur, mHandleLocalX, ref mHandleLocalXVel, handleMoveDelay);
+
+			if(Mathf.Abs(mHandleLocalXCur - mHandleLocalX) <= 0.001f) {
+				mHandleLocalXCur = 0f;
+				mHandleLocalXVel = 0f;
+			}
+
 			ApplyHandleTransform();
 		}
 	}

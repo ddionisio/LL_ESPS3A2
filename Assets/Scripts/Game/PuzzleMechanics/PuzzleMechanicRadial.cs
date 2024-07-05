@@ -28,6 +28,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	float _value = 0f;
 
 	public UnityEvent<float> onValueChanged;
+	public UnityEvent<float> onRotatorMoveDir;
 
 	public float value {
 		get { return _value; }
@@ -39,6 +40,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 				UpdateRotator();
 
 				onValueChanged.Invoke(_value);
+				onRotatorMoveDir.Invoke(Mathf.Sign(mRotatorAngle));
 			}
 		}
 	}
@@ -105,6 +107,13 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	void Update() {
 		if(mRotatorAngle != 0f) {
 			mRotatorAngle = Mathf.SmoothDampAngle(mRotatorAngle, 0f, ref mRotatorAngleVel, rotatorRotateDelay);
+
+			if(Mathf.Abs(mRotatorAngle) <= 0.001f) {
+				mRotatorAngle = 0f;
+				mRotatorAngleVel = 0f;
+
+				onRotatorMoveDir.Invoke(0f);
+			}
 
 			mRotatorDir = M8.MathUtil.RotateAngle(dir, mRotatorAngle);
 
