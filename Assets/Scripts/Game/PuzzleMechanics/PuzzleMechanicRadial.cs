@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class PuzzleMechanicRadial : PuzzleMechanicBase {
+public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
     [Header("Radial Config")]
 	public float radius;
 
@@ -21,47 +21,19 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	public bool rotatorAttachToRadius; //set rotate root on radius?
     public float rotatorRotateDelay = 0.3f;
 
-	[Header("Value")]
-	public float minValue = 0f;
-	public float maxValue = 100f;
-	[SerializeField]
-	float _value = 0f;
-
-	public UnityEvent<float> onValueChanged;
-	public UnityEvent<float> onRotatorMoveDir;
-
-	public float value {
-		get { return _value; }
-		set {
-			var v = Mathf.Clamp(value, minValue, maxValue);
-			if(_value != v) {
-				_value = v;
-				UpdateCurDirFromValue();
-				UpdateRotator();
-
-				onValueChanged.Invoke(_value);
-				onRotatorMoveDir.Invoke(Mathf.Sign(mRotatorAngle));
-			}
-		}
-	}
-
-	public float valueScalar {
-		get {
-			var delta = maxValue - minValue;
-			return delta > 0f ? Mathf.Clamp01((value - minValue) / delta) : 0f;
-		}
-
-		set {
-			this.value = Mathf.Lerp(minValue, maxValue, Mathf.Clamp01(value));
-		}
-	}
-
 	public Vector2 dir { get; private set; }
 
 	/// <summary>
 	/// Angle in [0, 360] within angleRange, relative to angleStart
 	/// </summary>
 	public float angle { get { return AngleAbs(angleRange.Lerp(valueScalar)); } }
+
+	/// <summary>
+	/// Current rotation display movement when value changes. This will eventually equal 0.
+	/// </summary>
+	public float rotatorAngle { get { return mRotatorAngle; } }
+
+	public override float motionDir { get { return mRotatorAngle != 0f ? Mathf.Sign(mRotatorAngle) : 0f; } }
 
 	private Vector2 mInitDir;
 
@@ -71,8 +43,13 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	private float mRotatorAngle;
 	private float mRotatorAngleVel;
 
+	protected override void ValueRefresh() {
+		UpdateCurDirFromValue();
+		UpdateRotator();
+	}
+
 	//protected override void InputDragBegin(PointerEventData eventData) { 
-    //}
+	//}
 
 	protected override void InputDrag(PointerEventData eventData) {
 		var pos = GetWorldPos(eventData);
@@ -87,8 +64,6 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 	}
 
 	protected override void OnEnable() {
-		base.OnEnable();
-
 		UpdateCurDirFromValue();
 
 		mRotatorDir = dir;
@@ -96,6 +71,8 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 		mRotatorAngleVel = 0f;
 
 		ApplyRotatorTransform();
+
+		base.OnEnable();
 	}
 
 	protected override void Awake() {
@@ -111,8 +88,6 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
 			if(Mathf.Abs(mRotatorAngle) <= 0.001f) {
 				mRotatorAngle = 0f;
 				mRotatorAngleVel = 0f;
-
-				onRotatorMoveDir.Invoke(0f);
 			}
 
 			mRotatorDir = M8.MathUtil.RotateAngle(dir, mRotatorAngle);
@@ -190,6 +165,11 @@ public class PuzzleMechanicRadial : PuzzleMechanicBase {
                 rotatorRoot.localPosition = mRotatorDir * radius;
 
             rotatorRoot.up = rotatorRootUpInverse ? -mRotatorDir : mRotatorDir;
+
+			//TODO: hack!
+			var angles = rotatorRoot.eulerAngles;
+			angles.x = angles.y = 0f;
+			rotatorRoot.eulerAngles = angles;
 		}
     }
 

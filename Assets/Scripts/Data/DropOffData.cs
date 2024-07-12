@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Use this to identify which drop offs pick-ups can be placed in.
 /// </summary>
-[CreateAssetMenu(fileName = "dropOff", menuName = "Game/DropOffData")]
+[CreateAssetMenu(fileName = "dropOff", menuName = "Game/Data/DropOff")]
 public class DropOffData : ScriptableObject {
     //TODO
 }

@@ -177,6 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 862035235931419449}
+  - component: {fileID: 188958410752380111}
   m_Layer: 0
   m_Name: circleLargeOutline
   m_TagString: Untagged
@@ -203,6 +204,34 @@ Transform:
   - {fileID: 1478670495456408730}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &188958410752380111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6561496733721770511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f80c6b534e9252246946ba78b1930151, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteRenders:
+  - {fileID: 916020089695373536}
+  - {fileID: 2600733209300696591}
+  - {fileID: 1199229721537851182}
+  - {fileID: 6560854982881497220}
+  _spriteRendersAutoFill: 0
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _colorApply: 1
+  _flipX: 0
+  _flipXApply: 0
+  _flipY: 0
+  _flipYApply: 0
+  _sortLayerID: 0
+  _sortLayerIDApply: 1
+  _sortOrder: 0
+  _sortOrderApply: 1
 --- !u!1 &7128190586609052308
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class PuzzleMechanicSlider : PuzzleMechanicBase {
+public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 	[Header("Slider Config")]
 	public float length;
 
@@ -17,39 +17,6 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	public Transform handleRoot;
 	public float handleMoveDelay = 0.3f;
 
-	[Header("Value")]
-	public float minValue = 0f;
-	public float maxValue = 100f;
-	[SerializeField]
-	float _value = 0f;
-
-	public UnityEvent<float> onValueChanged;
-
-	public float value {
-		get { return _value; }
-		set {
-			var v = Mathf.Clamp(value, minValue, maxValue);
-			if(_value != v) {
-				_value = v;
-
-				mHandleLocalX = GetHandleLocalX();
-
-				onValueChanged.Invoke(_value);
-			}
-		}
-	}
-
-	public float valueScalar {
-		get {
-			var delta = maxValue - minValue;
-			return delta > 0f ? Mathf.Clamp01((value - minValue) / delta) : 0f;
-		}
-
-		set {
-			this.value = Mathf.Lerp(minValue, maxValue, Mathf.Clamp01(value));
-		}
-	}
-
 	public float valueFromHandlePosition {
 		get {
 			var hLen = length * 0.5f;
@@ -61,6 +28,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	}
 
 	public bool isHandleMoving { get; private set; }
+
+	public override float motionDir { get { return mHandleLocalX != mHandleLocalXCur ? Mathf.Sign(mHandleLocalX - mHandleLocalXCur) : 0f; } }
 
 	private float mHandleLocalX;
 	private float mHandleLocalXCur;
@@ -77,6 +46,10 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 		return Mathf.Lerp(-hLen, hLen, t);
 	}
 
+	protected override void ValueRefresh() {
+		mHandleLocalX = GetHandleLocalX();
+	}
+
 	protected override void InputDrag(PointerEventData eventData) {
 		var pos = GetWorldPos(eventData);
 		UpdateValueFromPosition(pos);
@@ -90,12 +63,12 @@ public class PuzzleMechanicSlider : PuzzleMechanicBase {
 	}
 
 	protected override void OnEnable() {
-		base.OnEnable();
-
 		mHandleLocalXCur = mHandleLocalX = GetHandleLocalX();
 		mHandleLocalXVel = 0f;
 
 		ApplyHandleTransform();
+
+		base.OnEnable();
 	}
 
 	void Update() {

@@ -2,16 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalApplyPowerOnValue : GoalApplyPower {
-	
+public class PuzzleMechanicOnValueLock : MonoBehaviour {
+	[SerializeField]
+	PuzzleMechanicBase _target;
+
 	public M8.RangeFloat valueRange;
 
 	public SignalMechanic signalListenMechanicValueChanged;
 
+	public PuzzleMechanicBase target {
+		get {
+			if(!_target)
+				_target = GetComponent<PuzzleMechanicBase>();
+
+			return _target;
+		}
+	}
+
 	public void OnValue(float val) {
 		if(!target) return;
 
-		isApply = valueRange.InRange(val);
+		if(valueRange.InRange(val))
+			target.locked = true;
+		else
+			target.locked = false;
 	}
 
 	public void OnValue(int val) {

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Use this to match PuzzleRayCast to PuzzleRayCastTarget
 /// </summary>
-[CreateAssetMenu(fileName = "castData", menuName = "Game/CastData")]
+[CreateAssetMenu(fileName = "castData", menuName = "Game/Data/Cast")]
 public class CastData : ScriptableObject {
     
 }

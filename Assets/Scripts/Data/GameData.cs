@@ -4,7 +4,7 @@ using UnityEngine;
 
 using LoLExt;
 
-[CreateAssetMenu(fileName = "gameData", menuName = "Game/GameData")]
+[CreateAssetMenu(fileName = "gameData", menuName = "Game/Data/Main")]
 public class GameData : M8.SingletonScriptableObject<GameData> {
 	[Header("Layers")]
 	public LayerMask layerDropOff;
