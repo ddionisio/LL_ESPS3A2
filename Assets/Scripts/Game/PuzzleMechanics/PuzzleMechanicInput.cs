@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Collider2D))]
-public class PuzzleMechanicInput : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class PuzzleMechanicInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	
 	public bool interactable {
 		get { return mInteractable; }
@@ -16,6 +16,7 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerDownHandler, IPointerU
 				EndDragging(null);
 
 				isDown = false;
+				isEnter = false;
 			}
 		}
 	}
@@ -41,17 +42,26 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerDownHandler, IPointerU
 			if(mIsDown != value) {
 				mIsDown = value;
 
-				if(mIsDown)
-					downCallback?.Invoke();
-				else
-					upCallback?.Invoke();
+				downCallback?.Invoke(mIsDown);
 			}
 		}
 	}
 
-	public event System.Action downCallback;
-	public event System.Action upCallback;
+	public bool isEnter {
+		get { return mIsEnter; }
+		private set {
+			if(mIsEnter != value) {
+				mIsEnter = value;
 
+				enterCallback?.Invoke(mIsEnter);
+			}
+		}
+	}
+
+	public event System.Action<bool> enterCallback;
+
+	public event System.Action<bool> downCallback;
+	
 	public event System.Action<PointerEventData> clickCallback;
 
 	public event System.Action<PointerEventData> dragBeginCallback;
@@ -60,23 +70,41 @@ public class PuzzleMechanicInput : MonoBehaviour, IPointerDownHandler, IPointerU
 
 	private bool mInteractable;
 	private bool mIsDown;
+	private bool mIsEnter;
     private Collider2D mColl;
 
 	void OnApplicationFocus(bool focus) {
 		EndDragging(null);
 
 		isDown = false;
+		isEnter = false;
 	}
 
 	void Awake() {
 		ColliderInit();
 	}
 
+	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
+		if(!mInteractable) return;
+
+		isEnter = true;
+	}
+
+	void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
+		if(!mInteractable) return;
+
+		isEnter = false;
+	}
+
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		isDown = true;
 	}
 
 	void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
+		if(!mInteractable) return;
+
 		isDown = false;
 	}
 

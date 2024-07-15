@@ -22,21 +22,23 @@ public class PuzzleGameplayPlunger : MonoBehaviour {
 
 	void OnDestroy() {
 		if(slider) {
-			slider.onInputUp.RemoveListener(OnSliderInputUp);
+			slider.onInputDown.RemoveListener(OnSliderInputDown);
 		}
 	}
 
 	void Awake() {
         slider.handleMoveDelay = sliderPullMoveDelay;
 
-		slider.onInputUp.AddListener(OnSliderInputUp);
+		slider.onInputDown.AddListener(OnSliderInputDown);
 	}
 
-    void OnSliderInputUp() {
-		if(mRout != null)
-			StopCoroutine(mRout);
+    void OnSliderInputDown(bool isDown) {
+		if(!isDown) {
+			if(mRout != null)
+				StopCoroutine(mRout);
 
-		mRout = StartCoroutine(DoPlunge());
+			mRout = StartCoroutine(DoPlunge());
+		}
     }
 
 	IEnumerator DoPlunge() {

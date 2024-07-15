@@ -9,10 +9,10 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
     PuzzleMechanicInput _input;
 
 	public UnityEvent<bool> onInputInteractable;
-	public UnityEvent onInputUp;
-	public UnityEvent onInputDown;
+	public UnityEvent<bool> onInputDown;
+	public UnityEvent<bool> onInputEnter;
 
-    public PuzzleMechanicInput input { get { return _input; } }
+	public PuzzleMechanicInput input { get { return _input; } }
 
 	public bool locked {
 		get { return mLocked; }
@@ -29,8 +29,9 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 	private bool mLocked;
 	private bool mPuzzleInteractable;
 
-	protected virtual void InputDown() { }
-	protected virtual void InputUp() { }
+	protected virtual void InputEnter(bool isEnter) { }
+
+	protected virtual void InputDown(bool isDown) { }
 
 	protected virtual void InputClick(PointerEventData eventData) { }
 
@@ -40,11 +41,11 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 
 	protected virtual void OnDestroy() {
 		if(_input) {
+			_input.enterCallback -= InputEnter;
+			_input.enterCallback -= onInputEnter.Invoke;
+
 			_input.downCallback -= InputDown;
 			_input.downCallback -= onInputDown.Invoke;
-
-			_input.upCallback -= InputUp;
-			_input.upCallback -= onInputUp.Invoke;
 
 			_input.clickCallback -= InputClick;
 			_input.dragBeginCallback -= InputDragBegin;
@@ -65,12 +66,12 @@ public abstract class PuzzleMechanicBase : MonoBehaviour {
 	}
 
 	protected virtual void Awake() {
-		if(_input) {			
+		if(_input) {
+			_input.enterCallback += InputEnter;
+			_input.enterCallback += onInputEnter.Invoke;
+
 			_input.downCallback += InputDown;
 			_input.downCallback += onInputDown.Invoke;
-
-			_input.upCallback += InputUp;
-			_input.upCallback += onInputUp.Invoke;
 
 			_input.clickCallback += InputClick;
 			_input.dragBeginCallback += InputDragBegin;

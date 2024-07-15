@@ -18,8 +18,8 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 
 	private Coroutine mHoldRout;
 
-	protected override void InputDown() {
-		if(mHoldRout == null)
+	protected override void InputDown(bool isDown) {
+		if(isDown && mHoldRout == null)
 			mHoldRout = StartCoroutine(DoHold());
 	}
 
