@@ -71,7 +71,9 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 		if(currentDropOff) currentDropOff.pickUpAttached = this;
 	}
 
-	void OnApplicationFocus(bool focus) {
+	protected override void OnApplicationFocus(bool focus) {
+		base.OnApplicationFocus(focus);
+
 		if(!focus) {
 			if(mPointer != null)
 				DropOff();
@@ -171,7 +173,7 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 			if((GameData.instance.layerDropOff & (1 << rayDat.gameObject.layer)) != 0) {
 				dropOff = rayDat.gameObject.GetComponent<PuzzleDropOff>();
 			}
-			else if(rayDat.gameObject != input.gameObject) {
+			else if(rayDat.gameObject != gameObject) {
 				var otherPickUp = rayDat.gameObject.GetComponent<PuzzleMechanicPickUp>();
 				if(otherPickUp)
 					dropOff = otherPickUp.currentDropOff;
@@ -198,12 +200,12 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 			if(renderGroupSortOrder)
 				renderGroupSortOrder.ApplyOffset(GameData.instance.mechanicPuzzlePickUpRenderOrder);
 
-			input.colliderEnabled = false;
+			colliderEnabled = false;
 
 			onPickUp?.Invoke();
 		}
 		else
-			input.colliderEnabled = true;
+			colliderEnabled = true;
 
 		mMoveVel = Vector2.zero;
 		mMoveAngleVel = 0f;

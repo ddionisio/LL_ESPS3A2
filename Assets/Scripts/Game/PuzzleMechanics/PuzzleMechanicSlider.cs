@@ -8,9 +8,6 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 	[Header("Slider Config")]
 	public float length;
 
-	[Tooltip("Set to <= 0 for no limit.")]
-	public int stepCount;
-
 	public bool isReversed;
 
 	[Header("Slider Display")]

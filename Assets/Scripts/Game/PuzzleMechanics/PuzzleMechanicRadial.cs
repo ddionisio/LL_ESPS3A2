@@ -12,9 +12,6 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 
     public M8.RangeFloat angleRange = new M8.RangeFloat(0f, 360f);
 
-    [Tooltip("Set to <= 0 for no limit.")]
-    public int angleCount;
-
     [Header("Rotator Display")]
     public Transform rotatorRoot;
 	public bool rotatorRootUpInverse;
@@ -126,9 +123,9 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 		float angleLen = Mathf.Abs(endAngleAbs - startAngleAbs);
 		if(angleLen > 0f) {
 			//round up angle
-			if(angleCount > 0) {
+			if(stepCount > 0) {
 				var t = Mathf.Clamp01(curAngle / angleLen);
-				curAngle = (Mathf.Round(angleCount * t) / angleCount) * angleLen;
+				curAngle = (Mathf.Round(stepCount * t) / stepCount) * angleLen;
 			}
 
 			valueScalar = curAngle / angleLen;
@@ -186,16 +183,16 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 			var endDir = M8.MathUtil.RotateAngle(dir, angleRange.max);
 
 			//draw angle counts
-            if(angleCount > 0) {
+            if(stepCount > 0) {
 				Gizmos.color = Color.yellow * 0.3f;
 
 				var startAngleAbs = AngleAbs(angleRange.min);
 				var endAngleAbs = AngleAbs(angleRange.max);
 				float angleLen = Mathf.Abs(endAngleAbs - startAngleAbs);
 
-				var angleDelta = angleLen / angleCount;
+				var angleDelta = angleLen / stepCount;
 
-                for(int i = 0; i < angleCount; i++) {
+                for(int i = 0; i < stepCount; i++) {
 					var _dir = M8.MathUtil.RotateAngle(startDir, angleDelta * i);
 
 					Gizmos.DrawLine(pos, pos + _dir * radius);

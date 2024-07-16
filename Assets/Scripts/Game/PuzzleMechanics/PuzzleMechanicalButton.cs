@@ -55,7 +55,7 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 		while(!isDone) {
 			yield return null;
 
-			if(input.isDown) {
+			if(isDown) {
 				curTime += Time.deltaTime;
 				isDone = curTime >= holdDelay;
 			}
@@ -72,7 +72,7 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 		onHoldProgress?.Invoke(0f);
 		onHold?.Invoke(false);
 
-		if(input.isDown)
+		if(isDown)
 			onClick?.Invoke();
 	}
 }
