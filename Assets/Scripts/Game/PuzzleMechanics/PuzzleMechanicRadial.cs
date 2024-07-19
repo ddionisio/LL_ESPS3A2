@@ -23,7 +23,7 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 	/// <summary>
 	/// Angle in [0, 360] within angleRange, relative to angleStart
 	/// </summary>
-	public float angle { get { return AngleAbs(angleRange.Lerp(valueScalar)); } }
+	public float angle { get { return M8.MathUtil.AngleAbs(angleRange.Lerp(valueScalar)); } }
 
 	/// <summary>
 	/// Current rotation display movement when value changes. This will eventually equal 0.
@@ -107,11 +107,11 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 		var delta = pos - (Vector2)transform.position;
 		var norm = delta.normalized;
 
-		var startAngleAbs = AngleAbs(angleRange.min);
-		var endAngleAbs = AngleAbs(angleRange.max);
+		var startAngleAbs = M8.MathUtil.AngleAbs(angleRange.min);
+		var endAngleAbs = M8.MathUtil.AngleAbs(angleRange.max);
 
 		var angleOfs = Vector2.SignedAngle(norm, mInitDir);
-		angleOfs = AngleAbs(angleOfs);
+		angleOfs = M8.MathUtil.AngleAbs(angleOfs);
 
 		float curAngle;
 		if(startAngleAbs < endAngleAbs)
@@ -130,15 +130,6 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 
 			valueScalar = curAngle / angleLen;
 		}
-	}
-
-	private float AngleAbs(float a) {
-		if(a == 360f) return a;
-
-		float _a = a % 360f;
-		if(_a < 0f)
-			_a = 360f + _a;
-		return _a;
 	}
 
 	private void UpdateCurDirFromValue() {
@@ -186,8 +177,8 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
             if(stepCount > 0) {
 				Gizmos.color = Color.yellow * 0.3f;
 
-				var startAngleAbs = AngleAbs(angleRange.min);
-				var endAngleAbs = AngleAbs(angleRange.max);
+				var startAngleAbs = M8.MathUtil.AngleAbs(angleRange.min);
+				var endAngleAbs = M8.MathUtil.AngleAbs(angleRange.max);
 				float angleLen = Mathf.Abs(endAngleAbs - startAngleAbs);
 
 				var angleDelta = angleLen / stepCount;
