@@ -16,7 +16,7 @@ TagManager:
   - Solid
   - PickUp
   - EntityTrigger
-  - 
+  - Spirit
   - 
   - 
   - 
@@ -55,4 +55,10 @@ TagManager:
     locked: 0
   - name: Drag
     uniqueID: 1131331609
+    locked: 0
+  - name: UI
+    uniqueID: 3519459483
+    locked: 0
+  - name: FX
+    uniqueID: 1400885165
     locked: 0
