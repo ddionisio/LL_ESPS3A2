@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spriteWaveXYAdditive
-  m_Shader: {fileID: 4800000, guid: d05ea0d3df914ee438e591db8dd8c6a1, type: 3}
+  m_Name: waveUVAdditive
+  m_Shader: {fileID: 4800000, guid: 7e3cc968a7ec6de4c8d21ca9ad600f62, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -85,13 +85,10 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _amplitude: 0.12
-    - _range: 4
-    - _speed: 3
-    - amplitudeX: 1
-    - amplitudeY: 1
-    - rangeX: 0.1
-    - rangeY: 0.1
+    - amplitudeX: 0.017453292
+    - amplitudeY: 0.017453292
+    - rangeX: 0.017453292
+    - rangeY: 0.017453292
     - speedX: 1
     - speedY: 1
     m_Colors:
@@ -99,4 +96,5 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - scrollParams: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
