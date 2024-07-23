@@ -3,7 +3,7 @@ guid: e72fc80efe2d0c6439689bdeb0d0102c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -45,9 +45,9 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  spritePivot: {x: 0.5294118, y: 0.6037736}
   spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 0
@@ -123,14 +123,18 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline:
-    - - {x: -3, y: 0}
-      - {x: 0, y: -6}
-      - {x: 3, y: 0}
-      - {x: 0, y: 6}
+    - - {x: 3, y: 26.5}
+      - {x: -2, y: 26.5}
+      - {x: -17, y: 9.5}
+      - {x: -17, y: -0.5}
+      - {x: -1, y: -26.5}
+      - {x: 3, y: -26.5}
+      - {x: 17, y: -0.5}
+      - {x: 17, y: 9.5}
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
