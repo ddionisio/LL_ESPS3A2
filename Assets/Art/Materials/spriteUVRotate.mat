@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: hatch45
+  m_Name: spriteUVRotate
   m_Shader: {fileID: 4800000, guid: 8b46117e3125d7e49a50ba4975730ec6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
