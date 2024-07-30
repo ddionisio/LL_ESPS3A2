@@ -6,6 +6,14 @@ using LoLExt;
 
 [CreateAssetMenu(fileName = "gameData", menuName = "Game/Data/Main")]
 public class GameData : M8.SingletonScriptableObject<GameData> {
+	public const string levelIndKey = "lvlInd";
+
+	[System.Serializable]
+	public struct LevelData {
+		public M8.SceneAssetPath scene;
+		public int progressMax;
+	}
+
 	[Header("Layers")]
 	public LayerMask layerDropOff;
 
@@ -21,10 +29,47 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 	public M8.Signal signalPuzzleComplete;
 		
 	[Header("Scenes")]
-    public M8.SceneAssetPath[] levelScenes;
+    public LevelData[] levels;
     public M8.SceneAssetPath endScene;
 
 	public bool isProceed { get; private set; }
+
+	public int progressMax {
+		get {
+			int max = 0;
+
+			for(int i = 0; i < levels.Length; i++)
+				max += levels[i].progressMax;
+
+			return max;
+		}
+	}
+
+	public int currentLevelIndex {
+		get {
+			var curScene = M8.SceneManager.instance.curScene;
+
+			var lvlInd = -1;
+
+			for(int i = 0; i < levels.Length; i++) {
+				if(levels[i].scene == curScene) {
+					lvlInd = i;
+					break;
+				}
+			}
+
+			return lvlInd;
+		}
+	}
+
+	public int GetProgressMax(int levelIndex) {
+		int max = 0;
+
+		for(int i = 0; i <= levelIndex; i++)
+			max += levels[i].progressMax;
+
+		return max;
+	}
 
 	public void ProgressReset() {
 		//LoLManager.instance.userData.Delete();
@@ -37,42 +82,45 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 	public void ProgressContinue() {
 		isProceed = true;
 
-		var curProgress = LoLManager.instance.curProgress;
+		int lvlInd = LoLManager.instance.userData.GetInt(levelIndKey);
 
-		levelScenes[curProgress].Load();
+		levels[lvlInd].scene.Load();
 	}
 
 	public void ProgressNext() {
-		int curProgress;
+		int lvlInd;
 
 		if(!isProceed) { //generate proper progress (when testing)
 			var curScene = M8.SceneManager.instance.curScene;
 
 			if(curScene == endScene)
-				curProgress = levelScenes.Length - 1;
+				lvlInd = levels.Length - 1;
 			else {
-				int levelInd = -1;
-				for(int i = 0; i < levelScenes.Length; i++) {
-					if(levelScenes[i] == curScene) {
-						levelInd = i;
+				lvlInd = 0;
+				for(int i = 1; i < levels.Length; i++) {
+					if(levels[i].scene == curScene) {
+						lvlInd = i;
 						break;
 					}
 				}
-
-				curProgress = levelInd == -1 ? 0 : levelInd;
 			}
 
 			isProceed = true;
 		}
 		else
-			curProgress = LoLManager.instance.curProgress;
+			lvlInd = LoLManager.instance.userData.GetInt(levelIndKey);
 
-		var nextProgress = curProgress + 1;
+		var lvlIndNext = lvlInd + 1;
 
-		LoLManager.instance.ApplyProgress(nextProgress);
+		LoLManager.instance.userData.SetInt(levelIndKey, lvlIndNext);
 
-		if(nextProgress < levelScenes.Length)
-			levelScenes[nextProgress].Load();
+		//ensure progress is correct
+		int progressCurMax = GetProgressMax(lvlInd);
+
+		LoLManager.instance.ApplyProgress(progressCurMax);
+
+		if(lvlIndNext < levels.Length)
+			levels[lvlIndNext].scene.Load();
 		else
 			endScene.Load();
 	}
@@ -82,6 +130,6 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 
 		//compute max progress
 		if(LoLManager.isInstantiated)
-			LoLManager.instance.progressMax = levelScenes.Length;
+			LoLManager.instance.progressMax = progressMax;
 	}
 }
