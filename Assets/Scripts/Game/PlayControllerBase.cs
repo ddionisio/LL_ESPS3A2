@@ -7,9 +7,17 @@ using LoLExt;
 /// <summary>
 /// General level game controller, use this as a basis for other levels with dialogs and learning stuff
 /// </summary>
-public class PlayController : GameModeController<PlayController> {
+public abstract class PlayControllerBase : GameModeController<PlayControllerBase> {
 
-	public bool isPuzzleComplete { get; private set; }
+	public bool isPuzzleComplete { get; protected set; }
+
+	protected virtual IEnumerator Intro() { yield return null; }
+
+	protected virtual IEnumerator GameBegin() { yield return null; }
+
+	protected virtual void GameUpdate() { }
+
+	protected virtual IEnumerator GameEnd() { yield return null; }
 
 	protected override void OnInstanceDeinit() {
 		if(GameData.isInstantiated) {
@@ -36,28 +44,36 @@ public class PlayController : GameModeController<PlayController> {
 		var gameDat = GameData.instance;
 
 		//intro stuff
-		yield return null;
+		yield return Intro();
 
 		//signal for puzzle to be playable
 		gameDat.signalPlayBegin.Invoke();
 
 		gameDat.signalPuzzleInteractable.Invoke(true);
 
+		//game start
+		yield return GameBegin();
+
 		//wait for all goals to be finished
-		while(!isPuzzleComplete)
+		while(!isPuzzleComplete) {
+			GameUpdate();
 			yield return null;
+		}
 
 		gameDat.signalPuzzleInteractable.Invoke(false);
 
 		gameDat.signalPlayEnd.Invoke();
 
-		//move to marching band
-		yield return null;
+		//end
+		yield return GameEnd();
+
+		//enter next level
+		gameDat.ProgressNext();
 	}
 
 	void OnSignalPuzzleComplete() {
 		isPuzzleComplete = true;
 
-		Debug.Log("Complete");
+		//Debug.Log("Complete");
 	}
 }
