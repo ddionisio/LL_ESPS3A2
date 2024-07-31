@@ -25,6 +25,25 @@ public class GameCameraTransition : M8.SingletonBehaviour<GameCameraTransition> 
 	private Coroutine mRout;
 
 	private Transform mCurrentRoot;
+
+	public void SetCurrentRoot(Transform root) {
+		//currently transitioning?
+		if(mRout != null) {
+			Transition(root);
+			return;
+		}
+
+		if(mCurrentRoot)
+			mCurrentRoot.gameObject.SetActive(false);
+
+		mCurrentRoot = root;
+
+		if(mCurrentRoot) {
+			position = mCurrentRoot.position;
+
+			mCurrentRoot.gameObject.SetActive(true);
+		}
+	}
 	
 	public void Transition(Transform toRoot) {
 		if(mRout != null)

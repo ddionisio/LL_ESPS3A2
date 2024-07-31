@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class SheepController : MonoBehaviour {
 	public const float boundExt = 0.9375f;
@@ -10,6 +11,7 @@ public class SheepController : MonoBehaviour {
 		None = -1,
 
 		Sleep,
+		Wake,
 		Idle,
 		Victory
 	}
@@ -32,6 +34,8 @@ public class SheepController : MonoBehaviour {
 
 	[SerializeField]
 	M8.RangeFloat _sleepStartDelay;
+	[SerializeField]
+	M8.RangeFloat _wakeStartDelay;
 	[SerializeField]
 	M8.RangeFloat _idleStartDelay;
 
@@ -83,7 +87,9 @@ public class SheepController : MonoBehaviour {
 			var cam2D = M8.Camera2D.main;
 			var screenExt = cam2D.screenExtent;
 
-			return boundSize < screenExt.min.x || boundSize > screenExt.max.x || boundSize < screenExt.min.y || boundSize > screenExt.max.y;
+			var pos = position;
+
+			return pos.x + boundSize < screenExt.min.x || pos.x - boundSize > screenExt.max.x || pos.y + boundSize < screenExt.min.y || pos.y - boundSize > screenExt.max.y;
 		}
 	}
 
@@ -112,6 +118,10 @@ public class SheepController : MonoBehaviour {
 
 			case Action.Sleep:
 				mRout = StartCoroutine(DoAnimatorDelayedTrigger(_animatorTriggerSleep, _sleepStartDelay.random));
+				break;
+
+			case Action.Wake:
+				mRout = StartCoroutine(DoAnimatorDelayedTrigger(_animatorTriggerWake, _wakeStartDelay.random));
 				break;
 
 			case Action.Victory:
@@ -164,33 +174,36 @@ public class SheepController : MonoBehaviour {
 		var cam2D = M8.Camera2D.main;
 		var screenExt = cam2D.screenExtent;
 
-		float moveScale;
-
-		if(screenSide == Side.Right) {
-			side = Side.Right;
-
-			moveScale = 1f;
-		}
-		else {
-			side = Side.Left;
-
-			moveScale = -1f;
-		}
+		var pos = position;
 
 		if(mAnim)
 			_animatorTriggerMove.Set(mAnim);
 
-		//assume grounded, so just update x
-		while(!isOffscreen) {
-			yield return null;
+		if(screenSide == Side.Right) {
+			side = Side.Right;
 
-			var pos = position;
+			//assume grounded, so just update x
+			while(pos.x - boundSize < screenExt.max.x) {
+				yield return null;
 
-			pos.x += _moveSpeed * Time.deltaTime * moveScale;
+				pos.x += _moveSpeed * Time.deltaTime;
 
-			position = pos;
+				position = pos;
+			}
 		}
+		else {
+			side = Side.Left;
 
+			//assume grounded, so just update x
+			while(pos.x + boundSize > screenExt.min.x) {
+				yield return null;
+
+				pos.x -= _moveSpeed * Time.deltaTime;
+
+				position = pos;
+			}
+		}
+		
 		mRout = null;
 	}
 
@@ -214,7 +227,7 @@ public class SheepController : MonoBehaviour {
 
 		if(hit.collider) {
 			pos.x = hit.point.x;
-			pos.y = hit.point.y;
+			pos.y = hit.point.y + boundExt;
 		}
 		else
 			pos.x = x;
