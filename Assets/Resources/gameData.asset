@@ -25,7 +25,7 @@ MonoBehaviour:
   - scene:
       name: level1
       path: Assets/Scenes/level1.unity
-    progressMax: 2
+    progressMax: 3
   - scene:
       name: level2
       path: Assets/Scenes/level2.unity

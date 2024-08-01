@@ -13,6 +13,7 @@ public class PuzzleRayCast : MonoBehaviour {
         
     public float castRadius; //set to <= 0 as line
     public float castLength;
+    public float castEndOfs; //slight offset from collision point for display
     public LayerMask castTargetLayerMask;
     public LayerMask castEndLayerMask;
 
@@ -49,7 +50,7 @@ public class PuzzleRayCast : MonoBehaviour {
             if(mCastDistance != value) {
                 mCastDistance = value;
 
-				castPointEnd = position + castDir * mCastDistance;
+				castPointEnd = position + castDir * (mCastDistance + castEndOfs);
 			}
         }
     }
