@@ -25,8 +25,10 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	[Header("Complete")]
 	public SheepController sheepAries;
 
-	public M8.AnimatorTargetParamTrigger landLightOn;
+	public M8.AnimatorTargetParamTrigger sheepAriesTransform;
 
+	public M8.AnimatorTargetParamTrigger landLightOn;
+		
 	[Header("Dialogs")]
 	public ModalDialogFlowIncremental dlgIntro;
 	public ModalDialogFlowIncremental dlgPlayIntro;
@@ -101,7 +103,11 @@ public class PlayControllerLevel01 : PlayControllerBase {
 
 		sheepAries.PerformAction(SheepController.Action.Wake);
 
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(2f);
+
+		sheepAriesTransform.Set();
+
+		yield return new WaitForSeconds(2f);
 
 		yield return dlgVictory.Play();
 

@@ -63,13 +63,7 @@ public class GameCameraTransition : M8.SingletonBehaviour<GameCameraTransition> 
 	private IEnumerator DoTransition(Transform toRoot) {
 		animatorFadeOutTrigger.Set();
 
-		while(true) {
-			yield return null;
-
-			var state = animatorFadeOutTrigger.target.GetCurrentAnimatorStateInfo(0);
-			if(state.normalizedTime >= 1f)
-				break;
-		}
+		yield return M8.AnimatorUtil.WaitNextState(animatorFadeOutTrigger.target);
 
 		if(mCurrentRoot)
 			mCurrentRoot.gameObject.SetActive(false);
@@ -80,13 +74,7 @@ public class GameCameraTransition : M8.SingletonBehaviour<GameCameraTransition> 
 
 		animatorFadeInTrigger.Set();
 
-		while(true) {
-			yield return null;
-
-			var state = animatorFadeInTrigger.target.GetCurrentAnimatorStateInfo(0);
-			if(state.normalizedTime >= 1f)
-				break;
-		}
+		yield return M8.AnimatorUtil.WaitNextState(animatorFadeInTrigger.target);
 
 		mRout = null;
 	}

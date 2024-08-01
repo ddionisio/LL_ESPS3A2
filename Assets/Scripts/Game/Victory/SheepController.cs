@@ -182,6 +182,8 @@ public class SheepController : MonoBehaviour {
 		if(screenSide == Side.Right) {
 			side = Side.Right;
 
+			yield return M8.AnimatorUtil.WaitNextState(mAnim);
+
 			//assume grounded, so just update x
 			while(pos.x - boundSize < screenExt.max.x) {
 				yield return null;
@@ -193,6 +195,8 @@ public class SheepController : MonoBehaviour {
 		}
 		else {
 			side = Side.Left;
+
+			yield return M8.AnimatorUtil.WaitNextState(mAnim);
 
 			//assume grounded, so just update x
 			while(pos.x + boundSize > screenExt.min.x) {
@@ -218,7 +222,7 @@ public class SheepController : MonoBehaviour {
 		var cam2D = M8.Camera2D.main;
 		var screenExt = cam2D.screenExtent;
 
-		var checkPoint = new Vector2(position.x, screenExt.max.y);
+		var checkPoint = new Vector2(x, screenExt.max.y);
 		var checkDir = Vector2.down;
 
 		var hit = Physics2D.Raycast(checkPoint, checkDir, screenExt.size.y, _groundCheckLayer);

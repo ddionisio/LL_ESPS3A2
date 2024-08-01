@@ -67,7 +67,7 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 
 	private bool mLocked;
 	private bool mInteractable;
-	private bool mCollEnabled;
+	private bool mCollEnabled = true; //assume collider is enabled by default...
 	private bool mIsDown;
 	private bool mIsEnter;
 
@@ -103,9 +103,6 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 
 	protected virtual void Awake() {
 		GameData.instance.signalPuzzleInteractable.callback += OnSignalPuzzleInteractable;
-
-		if(_collider)
-			mCollEnabled = _collider.enabled;
 	}
 
 	protected virtual void RefreshInput() {
