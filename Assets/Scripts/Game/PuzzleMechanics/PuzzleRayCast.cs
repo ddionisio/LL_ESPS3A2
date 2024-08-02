@@ -98,6 +98,7 @@ public class PuzzleRayCast : MonoBehaviour {
 
 	void OnEnable() {
 		ApplyActive();
+		UpdateCast();
 	}
 
 	void Awake() {
@@ -110,15 +111,19 @@ public class PuzzleRayCast : MonoBehaviour {
             if(mCurUpdateTime >= GameData.instance.mechanicRayCastUpdateDelay) {
                 mCurUpdateTime = 0f;
 
-                Cast();
-
-                for(int i = 0; i < mTargets.Count; i++) {
-                    var tgt = mTargets[i];
-                    if(tgt)
-                        tgt.UpdateCast(this);
-				}
+                UpdateCast();
 			}
         }
+	}
+
+    private void UpdateCast() {
+		Cast();
+
+		for(int i = 0; i < mTargets.Count; i++) {
+			var tgt = mTargets[i];
+			if(tgt)
+				tgt.UpdateCast(this);
+		}
 	}
 
 	private void Cast() {

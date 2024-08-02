@@ -9,9 +9,6 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 	public PuzzleDropOff initialDropOff;
 
-	[Header("Displays")]
-	public M8.RendererGroupSortingOrderOffset renderGroupSortOrder;
-
 	[Header("Motion")]
 	public float moveDelay = 0.15f;
 	public float rotateDelay = 0.15f; //rotation towards anchor
@@ -120,9 +117,6 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	protected override void Awake() {
 		base.Awake();
 
-		if(!renderGroupSortOrder)
-			renderGroupSortOrder = GetComponent<M8.RendererGroupSortingOrderOffset>();
-
 		currentDropOff = initialDropOff;
 		if(currentDropOff)
 			currentDropOff.pickUpAttached = this;
@@ -197,9 +191,6 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 		mPointer = eventData;
 
 		if(mPointer != null) {
-			if(renderGroupSortOrder)
-				renderGroupSortOrder.ApplyOffset(GameData.instance.mechanicPuzzlePickUpRenderOrder);
-
 			colliderEnabled = false;
 
 			onPickUp?.Invoke();
@@ -235,9 +226,6 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 		ApplyPickUp(null);
 
 		if(isPicked) {
-			if(renderGroupSortOrder)
-				renderGroupSortOrder.Revert();
-
 			onDropOff?.Invoke();
 		}
 	}
