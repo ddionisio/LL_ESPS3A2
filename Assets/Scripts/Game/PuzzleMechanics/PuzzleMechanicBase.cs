@@ -5,7 +5,12 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
-    [SerializeField]
+	[SerializeField]
+	bool _interactable;
+	[SerializeField]
+	bool _colliderEnabled = true; //assume collider is enabled by default...
+
+	[SerializeField]
     Collider2D _collider;
 
 	public UnityEvent<bool> onInputInteractable;
@@ -19,23 +24,23 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 				mLocked = value;
 				RefreshInput();
 
-				if(_collider) _collider.enabled = !mLocked && mCollEnabled;
+				if(_collider) _collider.enabled = !mLocked && _colliderEnabled;
 			}
 		}
 	}
 
 	public bool colliderEnabled {
-		get { return mCollEnabled; }
+		get { return _colliderEnabled; }
 		set {
-			if(mCollEnabled != value) {
-				mCollEnabled = value;
+			if(_colliderEnabled != value) {
+				_colliderEnabled = value;
 
-				if(_collider) _collider.enabled = !mLocked && mCollEnabled;
+				if(_collider) _collider.enabled = !mLocked && _colliderEnabled;
 			}
 		}
 	}
 
-	public bool interactable { get { return !mLocked && mInteractable; } }
+	public bool interactable { get { return !mLocked && _interactable; } }
 
 	public bool isDragging { get; private set; }
 
@@ -65,9 +70,7 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 		}
 	}
 
-	private bool mLocked;
-	private bool mInteractable;
-	private bool mCollEnabled = true; //assume collider is enabled by default...
+	private bool mLocked;	
 	private bool mIsDown;
 	private bool mIsEnter;
 
@@ -103,6 +106,8 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 
 	protected virtual void Awake() {
 		GameData.instance.signalPuzzleInteractable.callback += OnSignalPuzzleInteractable;
+
+		if(_collider) _collider.enabled = !mLocked && _colliderEnabled;
 	}
 
 	protected virtual void RefreshInput() {
@@ -118,31 +123,31 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 	}
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isEnter = true;
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isEnter = false;
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isDown = true;
 	}
 
 	void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isDown = false;
 	}
 
 	void IPointerClickHandler.OnPointerClick(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isDown = false;
 
@@ -150,7 +155,7 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 	}
 
 	void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		isDragging = true;
 
@@ -158,14 +163,14 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 	}
 
 	void IDragHandler.OnDrag(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		if(isDragging)
 			InputDrag(eventData);
 	}
 
 	void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
-		if(!mInteractable) return;
+		if(!_interactable) return;
 
 		EndDragging(eventData);
 	}
@@ -179,7 +184,7 @@ public abstract class PuzzleMechanicBase : MonoBehaviour, IPointerEnterHandler, 
 	}
 
 	void OnSignalPuzzleInteractable(bool interactable) {
-		mInteractable = interactable;
+		_interactable = interactable;
 
 		RefreshInput();
 	}
