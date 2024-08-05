@@ -98,7 +98,9 @@ public class PuzzleRayCast : MonoBehaviour {
 
 	void OnEnable() {
 		ApplyActive();
-		UpdateCast();
+
+        if(mCastActive)
+		    UpdateCast();
 	}
 
 	void Awake() {
@@ -143,9 +145,9 @@ public class PuzzleRayCast : MonoBehaviour {
 		var contactTargetFilter = new ContactFilter2D() { useLayerMask = true, layerMask = castTargetLayerMask };
 
 		if(castRadius > 0f)
-			castHitCount = Physics2D.CircleCast(position, castRadius, castDir, contactTargetFilter, mCastHits, castLength);
+			castHitCount = Physics2D.CircleCast(position, castRadius, castDir, contactTargetFilter, mCastHits, castDistance);
 		else
-			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castLength);
+			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castDistance);
 
         if(castHitCount > 0) {
             //copy targets to previous
