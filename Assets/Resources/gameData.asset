@@ -15,7 +15,6 @@ MonoBehaviour:
   layerDropOff:
     serializedVersion: 2
     m_Bits: 64
-  mechanicPuzzlePickUpRenderOrder: 1000
   mechanicRayCastUpdateDelay: 0.3
   signalPlayBegin: {fileID: 11400000, guid: 16c703f7245dd774aa9eac2fb852249c, type: 2}
   signalPlayEnd: {fileID: 11400000, guid: f4a916327a65c7b45920f5a2f0d3c165, type: 2}
@@ -29,7 +28,7 @@ MonoBehaviour:
   - scene:
       name: level2
       path: Assets/Scenes/level2.unity
-    progressMax: 2
+    progressMax: 3
   endScene:
     name: 
     path: 
