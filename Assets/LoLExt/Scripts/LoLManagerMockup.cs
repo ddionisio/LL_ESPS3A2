@@ -7,9 +7,14 @@ using MiniJSON;
 namespace LoLExt {
     public class LoLManagerMockup : LoLManager {
         [Header("Mockup")]
-        public TextAsset localizeText;
+        [SerializeField]
+        TextAsset _localizeText;
+		[SerializeField]
+		M8.UserData _localUserData;
 
-        public override bool isAutoSpeechEnabled { get { return false; } }
+		public override M8.UserData userData { get { return _localUserData; } }
+
+		public override bool isAutoSpeechEnabled { get { return false; } }
 
         protected override void _SpeakText(string key) {
 
@@ -32,8 +37,8 @@ namespace LoLExt {
 
             ApplySettings();
 
-            if(localizeText) {
-                string json = localizeText.text;
+            if(_localizeText) {
+                string json = _localizeText.text;
 
                 var langDefs = Json.Deserialize(json) as Dictionary<string, object>;
                 ParseLanguage(Json.Serialize(langDefs[mLangCode]));

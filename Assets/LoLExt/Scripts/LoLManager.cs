@@ -119,7 +119,8 @@ namespace LoLExt {
             }
         }
 
-        public LoLSaveData userData { get { return _userData; } }
+        public virtual M8.UserData userData { get { return _userData; } }
+
         public M8.UserData settingsData { get { return _settingsData; } }
 
         public virtual bool isAutoSpeechEnabled { get { return true; } }

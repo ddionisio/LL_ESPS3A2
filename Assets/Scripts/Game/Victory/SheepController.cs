@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class SheepController : MonoBehaviour {
 	public const float boundExt = 0.9375f;

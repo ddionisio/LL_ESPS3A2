@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayControllerLevel02 : PlayControllerBase {
+	[Header("Scene")]
+	public Transform landRoot;
+	public Transform skyRoot;
 
 	protected override IEnumerator Intro() {
 		yield return null;
