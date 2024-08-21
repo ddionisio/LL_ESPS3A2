@@ -181,7 +181,7 @@ public class SheepController : MonoBehaviour {
 		if(screenSide == Side.Right) {
 			side = Side.Right;
 
-			yield return M8.AnimatorUtil.WaitNextState(mAnim);
+			//yield return M8.AnimatorUtil.WaitNextState(mAnim);
 
 			//assume grounded, so just update x
 			while(pos.x - boundSize < screenExt.max.x) {
@@ -195,7 +195,7 @@ public class SheepController : MonoBehaviour {
 		else {
 			side = Side.Left;
 
-			yield return M8.AnimatorUtil.WaitNextState(mAnim);
+			//yield return M8.AnimatorUtil.WaitNextState(mAnim);
 
 			//assume grounded, so just update x
 			while(pos.x + boundSize > screenExt.min.x) {

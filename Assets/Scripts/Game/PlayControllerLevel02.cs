@@ -10,10 +10,10 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	[Header("Complete")]
 	public SheepController sheepAries;
 
+	public SheepController[] sheepOthers;
+
 	protected override IEnumerator Intro() {
 		yield return null;
-
-		sheepAries.MoveOffscreen(SheepController.Side.Right);
 	}
 
 	protected override IEnumerator GameBegin() {
