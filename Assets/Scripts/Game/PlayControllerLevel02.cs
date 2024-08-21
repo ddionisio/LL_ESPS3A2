@@ -7,8 +7,13 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	public Transform landRoot;
 	public Transform skyRoot;
 
+	[Header("Complete")]
+	public SheepController sheepAries;
+
 	protected override IEnumerator Intro() {
 		yield return null;
+
+		sheepAries.MoveOffscreen(SheepController.Side.Right);
 	}
 
 	protected override IEnumerator GameBegin() {

@@ -19,6 +19,8 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 
 	[Header("Puzzle Mechanic General")]
 	public float mechanicRayCastUpdateDelay = 0.3f;
+	[M8.TagSelector]
+	public string sheepMainTag;
 
 	[Header("Signals")]
 	public M8.Signal signalPlayBegin;
