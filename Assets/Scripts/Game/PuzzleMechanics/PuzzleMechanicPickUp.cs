@@ -207,9 +207,6 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 		//check drop off object
 		if(mPointerDropOff) {
-			mPointerDropOff.onDropOffHighlight?.Invoke(false);
-			mPointerDropOff.onDropOff?.Invoke(this);
-
 			//apply to drop off
 			if(mPointerDropOff.pickUpAttached != this) {
 				if(mPointerDropOff.pickUpAttached)
@@ -219,6 +216,9 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 			}
 
 			mPointerDropOff.pickUpAttached = this;
+
+			mPointerDropOff.onDropOffHighlight?.Invoke(false);
+			mPointerDropOff.onDropOff?.Invoke(this);
 
 			mPointerDropOff = null;
 		}
