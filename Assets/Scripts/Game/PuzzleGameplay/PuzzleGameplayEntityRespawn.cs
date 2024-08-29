@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class PuzzleGameplayEntityRespawn : MonoBehaviour {
-    public PuzzleEntity target;
+    public PuzzleEntitySolid target;
 
     public Transform spawnPointRoot;
 

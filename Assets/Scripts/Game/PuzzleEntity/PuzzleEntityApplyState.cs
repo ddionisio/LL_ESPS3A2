@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleEntityApplyState : MonoBehaviour {
-	public PuzzleEntity target;
+	public PuzzleEntitySolid target;
 
 	public PuzzleEntityState state;
 

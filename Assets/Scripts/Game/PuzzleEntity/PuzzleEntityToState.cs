@@ -12,7 +12,7 @@ public class PuzzleEntityToState : MonoBehaviour {
 		public PuzzleEntityState toState;
 	}
 
-    public PuzzleEntity target;
+    public PuzzleEntitySolid target;
 	public Data[] changeStates;
 
 	void OnDestroy() {
@@ -22,7 +22,7 @@ public class PuzzleEntityToState : MonoBehaviour {
 
 	void Awake() {
 		if(!target)
-			target = GetComponent<PuzzleEntity>();
+			target = GetComponent<PuzzleEntitySolid>();
 
 		if(target)
 			target.onStateEnd += OnStateEnd;

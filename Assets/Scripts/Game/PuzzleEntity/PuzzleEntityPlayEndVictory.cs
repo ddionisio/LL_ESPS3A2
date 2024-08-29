@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleEntityPlayEndVictory : MonoBehaviour {
-	public PuzzleEntity target;
+	public PuzzleEntitySolid target;
 
 	void OnDestroy() {
 		if(GameData.isInstantiated)

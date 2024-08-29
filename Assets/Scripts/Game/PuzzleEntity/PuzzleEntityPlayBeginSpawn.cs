@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleEntityPlayBeginSpawn : MonoBehaviour {
-	public PuzzleEntity target;
+	public PuzzleEntitySolid target;
 	public PuzzleEntityState toState = PuzzleEntityState.Idle;
 
 	public Transform spawnPointRoot;

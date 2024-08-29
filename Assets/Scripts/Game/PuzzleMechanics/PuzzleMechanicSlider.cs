@@ -74,7 +74,7 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 			mHandleLocalXCur = Mathf.SmoothDamp(mHandleLocalXCur, mHandleLocalX, ref mHandleLocalXVel, handleMoveDelay);
 
 			if(Mathf.Abs(mHandleLocalXCur - mHandleLocalX) <= 0.001f) {
-				mHandleLocalXCur = 0f;
+				mHandleLocalXCur = mHandleLocalX;
 				mHandleLocalXVel = 0f;
 			}
 
