@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class PuzzleMechanicalButton : PuzzleMechanicBase {
+public class PuzzleMechanicButton : PuzzleMechanicBase {
 	[Header("Button Config")]
 	public bool isHold;
 	public float holdDelay;
@@ -18,6 +18,10 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 
 	private Coroutine mHoldRout;
 
+	protected virtual void Click() {
+		onClick?.Invoke();
+	}
+
 	protected override void InputDown(bool isDown) {
 		if(isDown && mHoldRout == null)
 			mHoldRout = StartCoroutine(DoHold());
@@ -25,7 +29,7 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 
 	protected override void InputClick(PointerEventData eventData) {
 		if(!isHold)
-			onClick?.Invoke();
+			Click();
 	}
 
 	protected override void OnDisable() {
@@ -73,6 +77,6 @@ public class PuzzleMechanicalButton : PuzzleMechanicBase {
 		onHold?.Invoke(false);
 
 		if(isDown)
-			onClick?.Invoke();
+			Click();
 	}
 }

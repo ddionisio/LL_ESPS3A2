@@ -194,7 +194,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 913261314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e6055919ae5f4f4ab9bae1d1e178725, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a7089a31fe8af14ebdd338ef9cb84fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mode: {fileID: 0}
@@ -237,16 +237,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926921417}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 699351112}
   - {fileID: 1489521383}
   - {fileID: 1221234977}
   - {fileID: 2142702262}
-  - {fileID: 699351112}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1728141825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1221234976
 GameObject:
@@ -309,6 +309,38 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 926921419}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1728141824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1728141825}
+  m_Layer: 0
+  m_Name: sky
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1728141825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728141824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 926921419}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2142702261
 GameObject:
@@ -390,6 +422,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7699412858348458425, guid: 2ff0a28eb3721194ea92557c32dd8000, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.36078432
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699412858348458425, guid: 2ff0a28eb3721194ea92557c32dd8000, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.25882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699412858348458425, guid: 2ff0a28eb3721194ea92557c32dd8000, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.20392159
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699412858348458425, guid: 2ff0a28eb3721194ea92557c32dd8000, type: 3}
       propertyPath: m_projectionMatrixMode
       value: 1
       objectReference: {fileID: 0}
@@ -408,4 +452,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 913261315}
   - {fileID: 1479517331655651797}
-  - {fileID: 926921419}
+  - {fileID: 1728141825}
