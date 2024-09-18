@@ -30,7 +30,7 @@ public class PuzzleMechanicSwitchInspector : Editor {
 
 		var dat = target as PuzzleMechanicSwitch;
 
-		if(dat.switches.Length > 0) {
+		if(dat.switches != null && dat.switches.Length > 0) {
 			var _index = EditorGUILayout.IntSlider("Index", indexProp.intValue, 0, dat.switches.Length - 1); 
 			if(indexProp.intValue != _index) {
 				indexProp.intValue = _index;
@@ -40,10 +40,10 @@ public class PuzzleMechanicSwitchInspector : Editor {
 		else {
 			EditorGUILayout.LabelField("Need at least one switch for index.");
 		}
+				
+		serializedObject.ApplyModifiedProperties();
 
 		if(isValuePropsChanged)
 			dat.ApplyCurrentIndex();
-
-		serializedObject.ApplyModifiedProperties();
 	}
 }

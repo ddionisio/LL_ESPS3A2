@@ -5,9 +5,11 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class PuzzleMechanicSwitch : PuzzleMechanicBase {
+    [System.Serializable]
     public struct SwitchInfo {
-        public string label;
         public Transform dirRoot; //use up vector for dir
+
+        public string label { get { return dirRoot ? dirRoot.name : ""; } }
 
         public Vector2 up { get { return dirRoot ? dirRoot.up : Vector2.up; } }
     }
