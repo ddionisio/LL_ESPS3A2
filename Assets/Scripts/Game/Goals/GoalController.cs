@@ -24,10 +24,8 @@ public class GoalController : MonoBehaviour {
 				var lastPowerFull = isPowerFull;
 
 				//reset decay if increasing
-				if(val > mPower) {
-					mIsDecayWait = true;
-					mDecayCurTime = 0f;
-				}
+				if(val > mPower)
+					DecayReset();
 
 				mPower = val;
 
@@ -48,6 +46,11 @@ public class GoalController : MonoBehaviour {
 
 	private bool mIsDecayWait;
 	private float mDecayCurTime;
+
+	public void DecayReset() {
+		mIsDecayWait = true; 
+		mDecayCurTime = 0f;
+	}
 
 	void OnEnable() {
 		mIsDecayWait = mPower > 0f;

@@ -11,19 +11,7 @@ public class PuzzleGameplaySectorRefresh : MonoBehaviour {
 
 	private PuzzleGameplaySector[] mSectors; //use for clearing fills
 
-	void OnDestroy() {
-		if(signalListenSwitch)
-			signalListenSwitch.callback -= OnSignalSwitch;
-	}
-
-	void Awake() {
-		if(signalListenSwitch)
-			signalListenSwitch.callback += OnSignalSwitch;
-
-		mSectors = GetComponentsInChildren<PuzzleGameplaySector>(true);
-	}
-
-	void OnSignalSwitch() {
+	public void Refresh() {
 		for(int i = 0; i < mSectors.Length; i++) {
 			if(mSectors[i])
 				mSectors[i].StopFilling();
@@ -31,5 +19,17 @@ public class PuzzleGameplaySectorRefresh : MonoBehaviour {
 
 		if(rootFillSector)
 			rootFillSector.ApplyFill(true, 1);
+	}
+
+	void OnDestroy() {
+		if(signalListenSwitch)
+			signalListenSwitch.callback -= Refresh;
+	}
+
+	void Awake() {
+		if(signalListenSwitch)
+			signalListenSwitch.callback += Refresh;
+
+		mSectors = GetComponentsInChildren<PuzzleGameplaySector>(true);
 	}
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PuzzleGameplaySector : MonoBehaviour {
 	[System.Serializable]
@@ -19,6 +20,9 @@ public class PuzzleGameplaySector : MonoBehaviour {
 	[Header("Animations")]
 	public float fillDelay = 0.3f;
 	public M8.AnimatorParamBool fillAnimParam;
+
+	[Header("Events")]
+	public UnityEvent<bool> fillChanged;
 
 	public bool isFilled { get; private set; }
 
@@ -92,6 +96,9 @@ public class PuzzleGameplaySector : MonoBehaviour {
 	}
 
 	void OnEnable() {
+		if(fillDisplayGO)
+			fillDisplayGO.SetActive(isFilled);
+
 		if(mAnim)
 			fillAnimParam.Set(mAnim, isFilled);
 	}
@@ -122,6 +129,8 @@ public class PuzzleGameplaySector : MonoBehaviour {
 			if(fillDisplayGO)
 				fillDisplayGO.SetActive(false);
 		}
+
+		fillChanged.Invoke(isFilled);
 
 		mFillRout = null;
 	}

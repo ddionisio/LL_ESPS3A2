@@ -20,7 +20,9 @@ public class GoalApplyPower : MonoBehaviour {
 	public bool isApply { get; set; }
 
 	void Update() {
-		if(isApply)
+		if(isApply) {
 			target.power += powerRate * Time.deltaTime;
+			target.DecayReset();
+		}
 	}
 }
