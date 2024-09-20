@@ -38,6 +38,10 @@ MonoBehaviour:
       name: level4
       path: Assets/Scenes/level4.unity
     progressMax: 3
+  - scene:
+      name: level5
+      path: Assets/Scenes/level5.unity
+    progressMax: 3
   endScene:
     name: 
     path: 

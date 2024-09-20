@@ -22,6 +22,7 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public M8.RangeFloat actionMoveForceRange; //when called to move with given 't'
 	public M8.RangeFloat actionMoveImpulseRange; //when called to move with given 't'
 	public float actionMoveForceDuration = 0.5f;
+	public bool actionEndEnabled = true;
 	public float actionEndDelay = 2f;
 	public float actionEndSpeedThreshold = 0.5f;	
 
@@ -32,11 +33,13 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public M8.AnimatorParamTrigger animAction;
 	public M8.AnimatorParamTrigger animVictory;
 
+	public bool active { get { return gameObject.activeSelf; } set { gameObject.SetActive(value); } }
+
 	public PuzzleEntityState state {
         get { return mState; }
         private set {
 			if(mState != value) {
-				mState = value; //allow one update cycle before changing
+				mState = value;
 				ApplyState();
 			}
 		}
@@ -49,6 +52,8 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public Animator animator { get { return mAnim; } }
 
 	public bool isBusy { get { return mRout != null; } }
+
+	public System.Action<PuzzleEntitySolid> onSpawnComplete;
 
 	private Animator mAnim;
 	private Rigidbody2D mBody;
@@ -187,6 +192,8 @@ public class PuzzleEntitySolid : MonoBehaviour {
 		state = PuzzleEntityState.Idle;
 
 		mRout = null;
+
+		onSpawnComplete?.Invoke(this);
 	}
 
 	IEnumerator DoAction(float actionT) {
@@ -212,20 +219,24 @@ public class PuzzleEntitySolid : MonoBehaviour {
 			}
 		}
 
-		//wait for velocity to lower and we are touching ground
-		var spdThresholdSqr = actionEndSpeedThreshold * actionEndSpeedThreshold;
+		if(actionEndEnabled) {
+			//wait for velocity to lower and we are touching ground
+			var spdThresholdSqr = actionEndSpeedThreshold * actionEndSpeedThreshold;
 
-		curTime = 0f;
-		while(curTime < actionEndDelay) {
-			yield return null;
+			curTime = 0f;
+			while(curTime < actionEndDelay) {
+				yield return null;
 
-			if(mBody.velocity.sqrMagnitude <= spdThresholdSqr && mBody.IsTouchingLayers())
-				curTime += Time.deltaTime;
-			else
-				curTime = 0f;
+				if(mBody.velocity.sqrMagnitude <= spdThresholdSqr && mBody.IsTouchingLayers())
+					curTime += Time.deltaTime;
+				else
+					curTime = 0f;
+			}
+
+			mRout = StartCoroutine(DoSpawn());
 		}
-
-		mRout = StartCoroutine(DoSpawn());
+		else
+			mRout = null;
 	}
 
 	void OnPlayEnd() {
