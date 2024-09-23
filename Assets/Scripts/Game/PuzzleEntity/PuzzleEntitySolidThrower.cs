@@ -6,23 +6,34 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 	
 	public GameObject solidRootGO;
 
+	[Header("Animation")]
+	public M8.AnimatorParamTrigger animEnterTrigger;
+	public M8.AnimatorParamTrigger animActionTrigger;
+
 	public bool isBusy { get { return mRout != null; } }
 
 	private M8.CacheList<PuzzleEntitySolid> mSolidActives;
 	private M8.CacheList<PuzzleEntitySolid> mSolidIdles;
 
+	private Animator mAnim;
+
 	private Coroutine mRout;
 
 	public void Enter() {
-		
-	}
+		StopRout();
 
-	public void Exit() {
-
+		mRout = StartCoroutine(DoEnter());
 	}
 
 	public void Action() {
+		if(isBusy)
+			return;
 
+		mRout = StartCoroutine(DoAction());
+	}
+
+	void OnDisable() {
+		StopRout();
 	}
 
 	void OnDestroy() {
@@ -43,6 +54,8 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 
 			mSolidIdles.Add(solid);
 		}
+
+		mAnim = GetComponent<Animator>();
 	}
 
 	void OnSolidSpawned(PuzzleEntitySolid solid) {
@@ -58,29 +71,50 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 
 	IEnumerator DoEnter() {
 		//animation enter
+		if(mAnim) {
+			animEnterTrigger.Set(mAnim);
 
-		//show each solid one by one
+			yield return M8.AnimatorUtil.WaitNextState(mAnim);
+		}
+		else
+			yield return null;
 
-		//done
-		yield return null;
-
-		mRout = null;
-	}
-
-	IEnumerator DoExit() {
-		//respawn all solids
-
-		//animation exit
-
-		//done
-		yield return null;
+		//show solids
+		for(int i = 0; i < mSolidIdles.Count; i++) {
+			var solid = mSolidIdles[i];
+			if(solid)
+				solid.active = true;
+		}
 
 		mRout = null;
 	}
 
 	IEnumerator DoAction() {
-		yield return null;
+		//animation act
+		if(mAnim) {
+			animActionTrigger.Set(mAnim);
+
+			yield return M8.AnimatorUtil.WaitNextState(mAnim);
+		}
+		else
+			yield return null;
+
+		//launch an idle solid
+		if(mSolidIdles.Count > 0) {
+			var solid = mSolidIdles.Remove();
+
+			solid.Action(1f);
+
+			mSolidActives.Add(solid);
+		}
 
 		mRout = null;
+	}
+
+	private void StopRout() {
+		if(mRout != null) {
+			StopCoroutine(mRout);
+			mRout = null;
+		}
 	}
 }
