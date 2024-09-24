@@ -10,8 +10,6 @@ public enum PuzzleEntityState {
 
 	Idle,
 	Action,
-
-	Victory,
 }
 
 public class PuzzleEntitySolid : MonoBehaviour {
@@ -31,7 +29,6 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public M8.AnimatorParamTrigger animDespawn;
 	public M8.AnimatorParamTrigger animIdle;
 	public M8.AnimatorParamTrigger animAction;
-	public M8.AnimatorParamTrigger animVictory;
 
 	public bool active { get { return gameObject.activeSelf; } set { gameObject.SetActive(value); } }
 
@@ -93,14 +90,7 @@ public class PuzzleEntitySolid : MonoBehaviour {
 		ApplyState();
 	}
 
-	void OnDestroy() {
-		if(GameData.isInstantiated)
-			GameData.instance.signalPlayEnd.callback -= OnPlayEnd;
-	}
-
 	void Awake() {
-		GameData.instance.signalPlayEnd.callback += OnPlayEnd;
-
 		mAnim = GetComponent<Animator>();
 		mBody = GetComponent<Rigidbody2D>();
 		mColl = GetComponentInChildren<Collider2D>();
@@ -137,10 +127,6 @@ public class PuzzleEntitySolid : MonoBehaviour {
 
 				case PuzzleEntityState.Idle:
 					animIdle.Set(mAnim);
-					break;
-
-				case PuzzleEntityState.Victory:
-					animVictory.Set(mAnim);
 					break;
 			}
 		}
@@ -237,11 +223,5 @@ public class PuzzleEntitySolid : MonoBehaviour {
 		}
 		else
 			mRout = null;
-	}
-
-	void OnPlayEnd() {
-		ClearRout();
-
-		state = PuzzleEntityState.Victory;
 	}
 }

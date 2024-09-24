@@ -49,6 +49,33 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	private Vector2 mMoveVel;
 	private float mMoveAngleVel;
 
+	public void DropOff() {
+		var isPicked = mPointer != null || mPointerDropOff;
+
+		//check drop off object
+		if(mPointerDropOff) {
+			//apply to drop off
+			if(mPointerDropOff.pickUpAttached != this) {
+				if(mPointerDropOff.pickUpAttached)
+					SwapDropOff(mPointerDropOff.pickUpAttached);
+				else
+					ApplyDropOff(mPointerDropOff);
+			}
+
+			mPointerDropOff.pickUpAttached = this;
+
+			mPointerDropOff.onDropOffHighlight?.Invoke(false);
+
+			mPointerDropOff = null;
+		}
+
+		ApplyPickUp(null);
+
+		if(isPicked) {
+			onDropOff?.Invoke();
+		}
+	}
+
 	public void SwapDropOff(PuzzleMechanicPickUp other) {
 		var _dropOff = currentDropOff;
 
@@ -200,33 +227,5 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 		mMoveVel = Vector2.zero;
 		mMoveAngleVel = 0f;
-	}
-		
-	private void DropOff() {
-		var isPicked = mPointer != null || mPointerDropOff;
-
-		//check drop off object
-		if(mPointerDropOff) {
-			//apply to drop off
-			if(mPointerDropOff.pickUpAttached != this) {
-				if(mPointerDropOff.pickUpAttached)
-					SwapDropOff(mPointerDropOff.pickUpAttached);
-				else
-					ApplyDropOff(mPointerDropOff);
-			}
-
-			mPointerDropOff.pickUpAttached = this;
-
-			mPointerDropOff.onDropOffHighlight?.Invoke(false);
-			mPointerDropOff.onDropOff?.Invoke(this);
-
-			mPointerDropOff = null;
-		}
-
-		ApplyPickUp(null);
-
-		if(isPicked) {
-			onDropOff?.Invoke();
-		}
 	}
 }

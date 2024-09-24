@@ -49,6 +49,7 @@ public class PuzzleDropOff : MonoBehaviour {
 		set {
 			mPickUpAttached = value;
 
+			onDropOff?.Invoke(mPickUpAttached);
 			onDropOffPickupAttach?.Invoke(mPickUpAttached != null);
 		}
 	}
