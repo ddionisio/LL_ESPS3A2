@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 //Add this component on pickup
-public class PuzzleGameplayPowerOutput : MonoBehaviour {
+public class PuzzleGameplayPowerConnect : MonoBehaviour {
     public GameObject[] activeGOs;
 
 	[Header("Events")]

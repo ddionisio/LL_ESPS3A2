@@ -149,8 +149,8 @@ public class PlayControllerLevel02 : PlayControllerBase {
 		for(int i = 0; i < puzzleDropOffs.Length; i++)
 			puzzleDropOffs[i].active = false;
 
-		puzzleDropOffs[0].onDropOff.AddListener(OnFirstSlotDropOff);
-		puzzleDropOffs[1].onDropOff.AddListener(OnSecondSlotDropOff);
+		puzzleDropOffs[0].onDropOffPickupChanged.AddListener(OnFirstSlotDropOff);
+		puzzleDropOffs[1].onDropOffPickupChanged.AddListener(OnSecondSlotDropOff);
 
 		puzzleGoals[0].powerFullyCharged.AddListener(OnGoalOneFullyCharged);
 
@@ -163,7 +163,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	void OnFirstSlotDropOff(PuzzleMechanicPickUp pickup) {
 		//pickup.locked = true;
 
-		puzzleDropOffs[0].onDropOff.RemoveListener(OnFirstSlotDropOff);
+		puzzleDropOffs[0].onDropOffPickupChanged.RemoveListener(OnFirstSlotDropOff);
 		//puzzleDropOffs[0].active = false;
 
 		puzzleDragInstructGO.SetActive(false);
@@ -178,7 +178,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 	void OnSecondSlotDropOff(PuzzleMechanicPickUp pickup) {
 
-		puzzleDropOffs[1].onDropOff.RemoveListener(OnSecondSlotDropOff);
+		puzzleDropOffs[1].onDropOffPickupChanged.RemoveListener(OnSecondSlotDropOff);
 
 		puzzleDragInstructSecondGO.SetActive(false);
 

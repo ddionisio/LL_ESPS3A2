@@ -14,26 +14,10 @@ public class PuzzleGameplayPowerInput : MonoBehaviour {
 
 	private bool mIsPowerActive;
 
-	private PuzzleGameplayPowerInput mPowerInput;
+	private PuzzleDropOff mDropOff;
 
-	/// <summary>
-	/// Attach to PuzzleDropOff.onDropOff
-	/// </summary>
-	public void DropOff(PuzzleMechanicPickUp pickup) {
-		PuzzleGameplayPowerInput powerInput = pickup ? pickup.GetComponent<PuzzleGameplayPowerInput>() : null;
-
-		if(mPowerInput != powerInput) {
-			ClearPowerInput();
-
-			mPowerInput = powerInput;
-
-			if(mPowerInput)
-				mPowerInput.powerActiveEvent.AddListener(OnPowerInputActive);
-		}
-
-		RefreshPowerInput();
-	}
-
+	private PuzzleGameplayPowerConnect mPowerConnect;
+		
 	void OnEnable() {
 		RefreshPowerDisplay();
 	}
@@ -44,19 +28,47 @@ public class PuzzleGameplayPowerInput : MonoBehaviour {
 		mIsPowerActive = false;
 	}
 
-	void OnPowerInputActive(bool active) {
-		RefreshPowerInput();
-	}
-
-	private void ClearPowerInput() {
-		if(mPowerInput) {
-			mPowerInput.powerActiveEvent.RemoveListener(OnPowerInputActive);
-			mPowerInput = null;
+	void OnDestroy() {
+		if(mDropOff) {
+			mDropOff.onDropOffPickupChanged.RemoveListener(DropOff);
+			mDropOff = null;
 		}
 	}
 
-	private void RefreshPowerInput() {
-		var inputPowerActive = mPowerInput ? mPowerInput.isPowerActive : false;
+	void Awake() {
+		mDropOff = GetComponent<PuzzleDropOff>();
+		if(mDropOff)
+			mDropOff.onDropOffPickupChanged.AddListener(DropOff);
+	}
+
+	void OnPowerConnectActive(bool active) {
+		RefreshPower();
+	}
+
+	private void DropOff(PuzzleMechanicPickUp pickup) {
+		var powerOutput = pickup ? pickup.GetComponent<PuzzleGameplayPowerConnect>() : null;
+
+		if(mPowerConnect != powerOutput) {
+			ClearPowerInput();
+
+			mPowerConnect = powerOutput;
+
+			if(mPowerConnect)
+				mPowerConnect.powerActiveEvent.AddListener(OnPowerConnectActive);
+		}
+
+		RefreshPower();
+	}
+
+	private void ClearPowerInput() {
+		if(mPowerConnect) {
+			mPowerConnect.powerActiveEvent.RemoveListener(OnPowerConnectActive);
+			mPowerConnect = null;
+		}
+	}
+
+	private void RefreshPower() {
+		var inputPowerActive = mPowerConnect ? mPowerConnect.isPowerActive : false;
 
 		if(mIsPowerActive != inputPowerActive) {
 			mIsPowerActive = inputPowerActive;

@@ -68,6 +68,8 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 			mPointerDropOff = null;
 		}
+		else if(currentDropOff)
+			currentDropOff.pickUpAttached = this;
 
 		ApplyPickUp(null);
 
@@ -219,6 +221,9 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 		if(mPointer != null) {
 			colliderEnabled = false;
+
+			if(currentDropOff)
+				currentDropOff.pickUpAttached = null;
 
 			onPickUp?.Invoke();
 		}

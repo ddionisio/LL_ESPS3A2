@@ -16,7 +16,7 @@ public class PuzzleDropOff : MonoBehaviour {
 
 	[Header("Events")]
 	public UnityEvent<bool> onDropOffHighlight;
-	public UnityEvent<PuzzleMechanicPickUp> onDropOff;
+	public UnityEvent<PuzzleMechanicPickUp> onDropOffPickupChanged;
 	public UnityEvent<bool> onDropOffPickupAttach;
 
 	public bool active {
@@ -47,10 +47,11 @@ public class PuzzleDropOff : MonoBehaviour {
 		get { return mPickUpAttached; }
 
 		set {
-			mPickUpAttached = value;
-
-			onDropOff?.Invoke(mPickUpAttached);
-			onDropOffPickupAttach?.Invoke(mPickUpAttached != null);
+			if(mPickUpAttached != value) {
+				mPickUpAttached = value;
+				onDropOffPickupChanged?.Invoke(mPickUpAttached);
+				onDropOffPickupAttach?.Invoke(mPickUpAttached != null);
+			}
 		}
 	}
 		
