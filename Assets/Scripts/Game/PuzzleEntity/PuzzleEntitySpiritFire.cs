@@ -6,7 +6,10 @@ using UnityEngine.Events;
 public class PuzzleEntitySpiritFire : MonoBehaviour {
 
 	[Header("Power")]
-	public float powerCapacity;
+	public float powerCapacity = 100f;
+	public float powerFuelMinimum = 25f; //if there is fuel to burn
+	public float powerDelay = 0.3f;
+
 
 	[Header("Fuel")]
 	public float fuelAmount; //per solids
@@ -14,16 +17,16 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 
 	[Header("Wind Source")]
 	public float windCapacity;
-	public float windRate; //when accumulating wind
-	public float windDecayWaitDelay;
-	public float windDecayRate;
+	public float windDelay = 2f;
+	public float windDecayWaitDelay = 8f;
+	public float windDecayDelay = 5f;
 
 	[Header("Display")]
 	public GameObject[] powerDisplayGOs;
 
 	[Header("Animation")]
-	public M8.AnimatorParamTrigger animEnterTrigger;
-	public M8.AnimatorParamTrigger animWindTrigger;
+	public M8.AnimatorParamTrigger animEnter;
+	public M8.AnimatorParamBool animWind;
 
 	[Header("Events")]
 	public UnityEvent<float> powerChangedScale;
@@ -33,14 +36,17 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 	public float powerScale { get { return power / powerCapacity; } }
 
 	public float wind { 
-		get { return mWind; }
+		get { return mWindAccum; }
+
 		set {
 			var val = Mathf.Clamp(value, 0f, windCapacity);
-			if(mWind != val) {
-				mWind = val;
+			if(mWindAccum != val)
+				mWindAccum = val;
+						
+			mWindIsAccum = true;
 
-				RefreshPower();
-			}
+			if(mAnim)
+				animWind.Set(mAnim, mWindIsAccum);
 		}
 	}
 
@@ -48,16 +54,8 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		get { return mWind / windCapacity; }
 	}
 
-	public float fuel { 
+	public float fuel {
 		get { return mFuel; }
-		set {
-			var val = Mathf.Clamp(value, 0f, fuelAmount);
-			if(mFuel != val) {
-				mFuel = val;
-
-				RefreshPower();
-			}
-		}
 	}
 
 	private const int solidFuelCapacity = 8;
@@ -65,26 +63,34 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 
 	private Animator mAnim;
 
+	private float mPowerAccum; //power target value
+	private float mPowerVel;
+
+	private bool mWindIsAccum;
+
 	private float mWind;
+	private float mWindAccum;
+	private float mWindVel;
+
+	private float mWindLastTime;
+
 	private float mFuel;
 
-	private Coroutine mWindRout;
-	private Coroutine mFuelRout;
-		
-	public void WindBlow() {
-		if(mWindRout != null)
-			StopCoroutine(mWindRout);
-
-		mWindRout = StartCoroutine(DoWind());
+	public void WindAccumulate(float amt) {
+		wind += amt;
 	}
 
 	void OnTriggerEnter2D(Collider2D collision) {
 		var solid = collision.GetComponent<PuzzleEntitySolid>();
 		if(solid) {
-			mSolidFuels.Add(solid);
+			if(mSolidFuels.IsFull)
+				solid.Respawn(); //fail-safe, don't add any more fuel if full
+			else {				
+				mSolidFuels.Add(solid);
 
-			if(mFuelRout == null)
-				mFuelRout = StartCoroutine(DoFuel());
+				if(mSolidFuels.Count == 1)
+					mFuel = fuelAmount;
+			}
 		}
 	}
 
@@ -92,23 +98,15 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		mWind = 0f;
 		mFuel = 0f;
 
+		mPowerVel = 0f;
+
 		RefreshPower();
 
 		if(mAnim)
-			animEnterTrigger.Set(mAnim);
+			animEnter.Set(mAnim);
 	}
 
 	void OnDisable() {
-		if(mWindRout != null) {
-			StopCoroutine(mWindRout);
-			mWindRout = null;
-		}
-
-		if(mFuelRout != null) {
-			StopCoroutine(mFuelRout);
-			mFuelRout = null;
-		}
-
 		//clear out solid fuels
 		for(int i = 0; i < mSolidFuels.Count; i++) {
 			var solid = mSolidFuels[i];
@@ -123,60 +121,66 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		mAnim = GetComponent<Animator>();
 	}
 
-	IEnumerator DoWind() {
-		if(mAnim)
-			animWindTrigger.Set(mAnim);
+	private const float checkApprox = 0.001f;
 
-		while(wind < windCapacity) {
-			yield return null;
+	void Update() {
+		if(mWindIsAccum) {
+			mWind = Mathf.SmoothDamp(mWind, mWindAccum, ref mWindVel, windDelay);
 
-			wind += windRate * Time.deltaTime;
+			if(M8.MathUtil.Approx(mWind, mWindAccum, checkApprox)) {
+				mWind = mWindAccum;
+				mWindLastTime = Time.time;
+				mWindVel = 0f;
+				mWindIsAccum = false;
+
+				if(mAnim)
+					animWind.Set(mAnim, mWindIsAccum);
+			}
+		}
+		else if(Time.time - mWindLastTime >= windDecayWaitDelay) {
+			if(!M8.MathUtil.Approx(mWind, 0f, checkApprox)) {
+				mWindAccum = mWind = Mathf.SmoothDamp(mWind, 0f, ref mWindVel, windDelay);
+
+				if(M8.MathUtil.Approx(mWind, 0f, checkApprox))
+					mWindAccum = mWind = 0f;
+			}
 		}
 
-		//wait a bit
-		var curTime = 0f;
-		while(curTime < windDecayWaitDelay) {
-			yield return null;
-			curTime += Time.deltaTime;
-		}
+		if(mFuel > 0f) {
+			mFuel -= fuelBurnRateRange.Lerp(windScale) * Time.deltaTime;
 
-		//decay
-		while(wind > 0f) {
-			yield return null;
+			if(mFuel <= 0f && mSolidFuels.Count > 0) {
+				var solid = mSolidFuels[0];
+				solid.Respawn();
+				mSolidFuels.RemoveAt(0);
 
-			wind -= windDecayRate * Time.deltaTime;
-		}
-
-		mWindRout = null;
-	}
-
-	IEnumerator DoFuel() {
-		while(mSolidFuels.Count > 0) {
-			fuel = fuelAmount;
-
-			while(fuel > 0f) {
-				yield return null;
-
-				fuel -= fuelBurnRateRange.Lerp(windScale) * Time.deltaTime;
-
-				//TODO: change to the solid?
+				if(mSolidFuels.Count > 0)
+					mFuel = fuelAmount;
 			}
 
-			var solid = mSolidFuels[0];
+			mPowerAccum = powerFuelMinimum;
 
-			solid.Respawn();
-
-			mSolidFuels.RemoveAt(0);
+			if(mWind > 0f)
+				mPowerAccum += (powerCapacity - powerFuelMinimum) * windScale;
 		}
+		else
+			mPowerAccum = 0f;
 
-		mFuelRout = null;
+		if(!M8.MathUtil.Approx(power, mPowerAccum, checkApprox)) {
+			power = Mathf.SmoothDamp(power, mPowerAccum, ref mPowerVel, powerDelay);
+
+			if(M8.MathUtil.Approx(power, mPowerAccum, checkApprox)) {
+				power = mPowerAccum;
+				mPowerVel = 0f;
+			}	
+
+			RefreshPower();
+		}
 	}
 
 	private void RefreshPower() {
-		power = fuel > 0f ? powerCapacity * windScale : 0f; //update power
-
 		//update visual
-		var ind = Mathf.FloorToInt(powerDisplayGOs.Length * powerScale);
+		var ind = Mathf.RoundToInt(powerDisplayGOs.Length * powerScale);
 
 		for(int i = 0; i < powerDisplayGOs.Length; i++) {
 			var go = powerDisplayGOs[i];

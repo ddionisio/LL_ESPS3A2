@@ -4,47 +4,40 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class PuzzleEntitySpiritAirBlower : MonoBehaviour {
+	[Header("Data")]
+	public float actionValue;
+	public float actionDelay = 0.5f;
+
 	[Header("Animation")]
-	public M8.AnimatorParamTrigger animEnterTrigger;
-	public M8.AnimatorParamTrigger animActionTrigger;
+	public M8.AnimatorParamTrigger animEnter;
+	public M8.AnimatorParamTrigger animAction;
 
-	public UnityEvent action;
+	[Header("Events")]
+	public UnityEvent<float> actionEvent;
 
-	public bool isBusy { get { return mRout != null; } }
-
-	private Coroutine mRout;
-
+	private float mActionLastTime;
 	private Animator mAnim;
 
 	public void Action() {
-		if(isBusy)
-			return;
+		if(Time.time - mActionLastTime > actionDelay) {
+			if(mAnim != null)
+				animAction.Set(mAnim);
 
-		mRout = StartCoroutine(DoAction());
+			actionEvent.Invoke(actionValue);
+
+			mActionLastTime = Time.time;
+		}
 	}
 
-	void OnDisable() {
-		if(mRout != null) {
-			StopCoroutine(mRout);
-			mRout = null;
+	void OnEnable() {
+		if(mAnim) {
+			animEnter.Set(mAnim);
 		}
+
+		mActionLastTime = 0f;
 	}
 
 	void Awake() {
 		mAnim = GetComponent<Animator>();
-	}
-
-	IEnumerator DoAction() {
-		action.Invoke();
-
-		if(mAnim) {
-			animActionTrigger.Set(mAnim);
-
-			yield return M8.AnimatorUtil.WaitNextState(mAnim);
-		}
-		else
-			yield return null;
-
-		mRout = null;
 	}
 }

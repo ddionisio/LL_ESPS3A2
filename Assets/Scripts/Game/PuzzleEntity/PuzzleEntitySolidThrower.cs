@@ -32,6 +32,10 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 		mRout = StartCoroutine(DoAction());
 	}
 
+	void OnEnable() {
+		Enter();
+	}
+
 	void OnDisable() {
 		StopRout();
 	}

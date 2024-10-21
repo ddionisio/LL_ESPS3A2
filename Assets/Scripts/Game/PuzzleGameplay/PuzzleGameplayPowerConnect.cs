@@ -25,7 +25,11 @@ public class PuzzleGameplayPowerConnect : MonoBehaviour {
 
     private bool mIsPowerActive;
 
-    private void ApplyPowerActive() {
+	void OnEnable() {
+		ApplyPowerActive();
+	}
+
+	private void ApplyPowerActive() {
         for(int i = 0; i < activeGOs.Length; i++) {
             var go = activeGOs[i];
             if(go)

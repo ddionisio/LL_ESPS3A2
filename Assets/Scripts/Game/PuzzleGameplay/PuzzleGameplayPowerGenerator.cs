@@ -9,11 +9,13 @@ public class PuzzleGameplayPowerGenerator : MonoBehaviour {
 		public M8.RangeFloat rotateRateRange;
 
         public void Update(float rangeT, float deltaTime) {
-            var rot = root.localEulerAngles;
+            if(root) {
+                var rot = root.localEulerAngles;
 
-            rot.z += rotateRateRange.Lerp(rangeT) * deltaTime;
+                rot.z += rotateRateRange.Lerp(rangeT) * deltaTime;
 
-            root.localEulerAngles = rot;
+                root.localEulerAngles = rot;
+            }
         }
 	}
 
@@ -26,10 +28,12 @@ public class PuzzleGameplayPowerGenerator : MonoBehaviour {
             if(connector)
 				connector.isPowerActive = active;
 
-            for(int i = 0; i < activeGOs.Length; i++) {
-                var go = activeGOs[i];
-                if(go)
-                    go.SetActive(active);
+            if(activeGOs != null) {
+                for(int i = 0; i < activeGOs.Length; i++) {
+                    var go = activeGOs[i];
+                    if(go)
+                        go.SetActive(active);
+                }
             }
 		}
 	}
@@ -38,7 +42,7 @@ public class PuzzleGameplayPowerGenerator : MonoBehaviour {
 
     public RotateData[] rotators;
 
-    public float powerScale { get; private set; }
+    public float powerScale { get; private set; } = 0f;
 
     //[0, 1]
     public void ApplyPowerScale(float t) {

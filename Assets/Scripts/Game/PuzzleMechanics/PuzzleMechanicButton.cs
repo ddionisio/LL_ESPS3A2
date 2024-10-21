@@ -23,7 +23,7 @@ public class PuzzleMechanicButton : PuzzleMechanicBase {
 	}
 
 	protected override void InputDown(bool isDown) {
-		if(isDown && mHoldRout == null)
+		if(isHold && isDown && mHoldRout == null)
 			mHoldRout = StartCoroutine(DoHold());
 	}
 
