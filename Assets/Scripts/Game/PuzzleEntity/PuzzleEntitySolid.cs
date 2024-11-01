@@ -27,7 +27,6 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	[Header("Animation")]
 	public M8.AnimatorParamTrigger animSpawn;
 	public M8.AnimatorParamTrigger animDespawn;
-	public M8.AnimatorParamTrigger animIdle;
 	public M8.AnimatorParamTrigger animAction;
 
 	public bool active { get { return gameObject.activeSelf; } set { gameObject.SetActive(value); } }
@@ -126,7 +125,6 @@ public class PuzzleEntitySolid : MonoBehaviour {
 					break;
 
 				case PuzzleEntityState.Idle:
-					animIdle.Set(mAnim);
 					break;
 			}
 		}
@@ -159,7 +157,7 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	}
 
 	IEnumerator DoSpawn() {
-		if(state != PuzzleEntityState.None || state != PuzzleEntityState.Despawn) {
+		if(state != PuzzleEntityState.None && state != PuzzleEntityState.Despawn) {
 			state = PuzzleEntityState.Despawn;
 
 			yield return null;

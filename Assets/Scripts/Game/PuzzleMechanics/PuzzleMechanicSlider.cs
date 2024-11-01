@@ -14,6 +14,9 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 	public Transform handleRoot;
 	public float handleMoveDelay = 0.3f;
 
+	[Header("Events")]
+	public UnityEvent<float> onHandlePositionValueChanged;
+
 	public float valueFromHandlePosition {
 		get {
 			var hLen = length * 0.5f;
@@ -79,6 +82,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 			}
 
 			ApplyHandleTransform();
+
+			onHandlePositionValueChanged.Invoke(valueFromHandlePosition);
 		}
 	}
 
