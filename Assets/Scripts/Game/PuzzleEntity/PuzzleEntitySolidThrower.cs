@@ -8,7 +8,9 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 
 	[Header("Animation")]
 	public M8.AnimatorParamTrigger animEnterTrigger;
+	public float animEnterDelay;
 	public M8.AnimatorParamTrigger animActionTrigger;
+	public float animActionDelay;
 
 	public bool isBusy { get { return mRout != null; } }
 
@@ -75,13 +77,10 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 
 	IEnumerator DoEnter() {
 		//animation enter
-		if(mAnim) {
+		if(mAnim)
 			animEnterTrigger.Set(mAnim);
 
-			yield return M8.AnimatorUtil.WaitNextState(mAnim);
-		}
-		else
-			yield return null;
+		yield return new WaitForSeconds(animEnterDelay);
 
 		//show solids
 		for(int i = 0; i < mSolidIdles.Count; i++) {
@@ -95,13 +94,10 @@ public class PuzzleEntitySolidThrower : MonoBehaviour {
 
 	IEnumerator DoAction() {
 		//animation act
-		if(mAnim) {
+		if(mAnim)
 			animActionTrigger.Set(mAnim);
 
-			yield return M8.AnimatorUtil.WaitNextState(mAnim);
-		}
-		else
-			yield return null;
+		yield return new WaitForSeconds(animActionDelay);
 
 		//launch an idle solid
 		if(mSolidIdles.Count > 0) {

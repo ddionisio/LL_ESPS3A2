@@ -5,6 +5,17 @@ using UnityEngine.Events;
 
 public class PuzzleEntitySpiritFire : MonoBehaviour {
 
+	[System.Serializable]
+	public struct PowerDisplayData {
+		public GameObject gameObject;
+		public bool exclusive;
+
+		public void SetActive(bool active) {
+			if(gameObject)
+				gameObject.SetActive(active);
+		}
+	}
+
 	[Header("Power")]
 	public float powerCapacity = 100f;
 	public float powerFuelMinimum = 25f; //if there is fuel to burn
@@ -22,11 +33,10 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 	public float windDecayDelay = 5f;
 
 	[Header("Display")]
-	public GameObject[] powerDisplayGOs;
+	public PowerDisplayData[] powerDisplays;
 
-	[Header("Animation")]
-	public M8.AnimatorParamTrigger animEnter;
-	public M8.AnimatorParamBool animWind;
+	public ParticleSystem windFX;
+	public M8.RangeFloat windFXEmissionRange;
 
 	[Header("Events")]
 	public UnityEvent<float> powerChangedScale;
@@ -45,8 +55,7 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 						
 			mWindIsAccum = true;
 
-			if(mAnim)
-				animWind.Set(mAnim, mWindIsAccum);
+			ApplyWindDisplay();
 		}
 	}
 
@@ -85,7 +94,9 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		if(solid) {
 			if(mSolidFuels.IsFull)
 				solid.Respawn(); //fail-safe, don't add any more fuel if full
-			else {				
+			else {
+				solid.SetSpecialActive(true);
+
 				mSolidFuels.Add(solid);
 
 				if(mSolidFuels.Count == 1)
@@ -101,9 +112,6 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		mPowerVel = 0f;
 
 		RefreshPower();
-
-		if(mAnim)
-			animEnter.Set(mAnim);
 	}
 
 	void OnDisable() {
@@ -127,22 +135,26 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		if(mWindIsAccum) {
 			mWind = Mathf.SmoothDamp(mWind, mWindAccum, ref mWindVel, windDelay);
 
+			ApplyWindEmissionDisplay();
+
 			if(M8.MathUtil.Approx(mWind, mWindAccum, checkApprox)) {
 				mWind = mWindAccum;
 				mWindLastTime = Time.time;
 				mWindVel = 0f;
 				mWindIsAccum = false;
-
-				if(mAnim)
-					animWind.Set(mAnim, mWindIsAccum);
 			}
 		}
 		else if(Time.time - mWindLastTime >= windDecayWaitDelay) {
 			if(!M8.MathUtil.Approx(mWind, 0f, checkApprox)) {
 				mWindAccum = mWind = Mathf.SmoothDamp(mWind, 0f, ref mWindVel, windDelay);
 
-				if(M8.MathUtil.Approx(mWind, 0f, checkApprox))
+				ApplyWindEmissionDisplay();
+
+				if(M8.MathUtil.Approx(mWind, 0f, checkApprox)) {
 					mWindAccum = mWind = 0f;
+
+					ApplyWindDisplay();
+				}
 			}
 		}
 
@@ -180,15 +192,44 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 
 	private void RefreshPower() {
 		//update visual
-		var ind = Mathf.RoundToInt(powerDisplayGOs.Length * powerScale);
+		var ind = Mathf.RoundToInt(powerDisplays.Length * powerScale);
 
-		for(int i = 0; i < powerDisplayGOs.Length; i++) {
-			var go = powerDisplayGOs[i];
-			if(go)
-				go.SetActive(i <= ind);
+		for(int i = 0; i < powerDisplays.Length; i++) {
+			var display = powerDisplays[i];
+			if(i == ind) {
+				display.SetActive(true);
+			}
+			else
+				display.SetActive(!display.exclusive && i < ind);
 		}
 
 		//event
 		powerChangedScale.Invoke(powerScale);
+	}
+
+	private void ApplyWindDisplay() {
+		bool isWindActive = mWindIsAccum || mWind > 0f;
+
+		if(windFX) {
+			var windFXDat = windFX.main;			
+
+			if(isWindActive) {
+				if(!windFX.isPlaying)
+					windFX.Play();
+
+				windFXDat.loop = true;
+			}
+			else {
+				windFXDat.loop = false;
+			}
+		}
+	}
+
+	private void ApplyWindEmissionDisplay() {
+		if(windFX) {
+			var windFXEmission = windFX.emission;
+
+			windFXEmission.rateOverTime = windFXEmissionRange.Lerp(windScale);
+		}
 	}
 }

@@ -42,7 +42,11 @@ public class PuzzleGameplayPowerGenerator : MonoBehaviour {
 
     public RotateData[] rotators;
 
-    public float powerScale { get; private set; } = 0f;
+    public ParticleSystem powerFX;    
+    public M8.RangeFloat powerFXEmissionRange;
+	public AnimationCurve powerFXEmissionCurve;
+
+	public float powerScale { get; private set; } = 0f;
 
     //[0, 1]
     public void ApplyPowerScale(float t) {
@@ -73,6 +77,23 @@ public class PuzzleGameplayPowerGenerator : MonoBehaviour {
         for(int i = 0; i < powers.Length; i++) {
             var power = powers[i];
             power.ApplyActive(i <= activeInd);
+        }
+
+        if(powerFX) {
+            var main = powerFX.main;
+            var emission = powerFX.emission;
+
+            emission.rateOverTime = powerFXEmissionRange.Lerp(powerFXEmissionCurve.Evaluate(powerScale));
+
+			if(powerScale > 0f) {
+                main.loop = true;
+
+                if(!powerFX.isPlaying)
+                    powerFX.Play();
+			}
+            else {
+                main.loop = false;
+            }
         }
     }
 }

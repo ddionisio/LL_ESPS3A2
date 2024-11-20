@@ -8,6 +8,9 @@ public class PuzzleEntitySpiritAirBlower : MonoBehaviour {
 	public float actionValue;
 	public float actionDelay = 0.5f;
 
+	[Header("Display")]
+	public ParticleSystem blowFX;
+
 	[Header("Animation")]
 	public M8.AnimatorParamTrigger animEnter;
 	public M8.AnimatorParamTrigger animAction;
@@ -22,6 +25,9 @@ public class PuzzleEntitySpiritAirBlower : MonoBehaviour {
 		if(Time.time - mActionLastTime > actionDelay) {
 			if(mAnim != null)
 				animAction.Set(mAnim);
+
+			if(blowFX)
+				blowFX.Play();
 
 			actionEvent.Invoke(actionValue);
 

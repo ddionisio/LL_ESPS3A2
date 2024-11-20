@@ -22,7 +22,10 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public float actionMoveForceDuration = 0.5f;
 	public bool actionEndEnabled = true;
 	public float actionEndDelay = 2f;
-	public float actionEndSpeedThreshold = 0.5f;	
+	public float actionEndSpeedThreshold = 0.5f;
+
+	[Header("Special")]
+	public GameObject specialActiveGO;
 
 	[Header("Animation")]
 	public M8.AnimatorParamTrigger animSpawn;
@@ -58,6 +61,11 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	private PuzzleEntityState mState;
 
 	private Coroutine mRout;
+
+	public void SetSpecialActive(bool aActive) {
+		if(specialActiveGO)
+			specialActiveGO.SetActive(aActive);
+	}
 
 	public void Action(float t) {
 		if(state == PuzzleEntityState.Idle) {
@@ -110,23 +118,32 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	}
 
 	private void ApplyState() {
-		if(mAnim) {
-			switch(mState) {
-				case PuzzleEntityState.Spawn:
+		switch(mState) {
+			case PuzzleEntityState.Spawn:
+				SetSpecialActive(false);
+
+				if(mAnim)
 					animSpawn.Set(mAnim);
-					break;
+				break;
 
-				case PuzzleEntityState.Despawn:
+			case PuzzleEntityState.Despawn:
+				SetSpecialActive(false);
+
+				if(mAnim)
 					animDespawn.Set(mAnim);
-					break;
+				break;
 
-				case PuzzleEntityState.Action:
+			case PuzzleEntityState.Action:
+				if(mAnim)
 					animAction.Set(mAnim);
-					break;
+				break;
 
-				case PuzzleEntityState.Idle:
-					break;
-			}
+			case PuzzleEntityState.Idle:
+				break;
+
+			case PuzzleEntityState.None:
+				SetSpecialActive(false);
+				break;
 		}
 
 		if(mState == PuzzleEntityState.Action) {

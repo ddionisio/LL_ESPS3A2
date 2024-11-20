@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.U2D;
 
 public class PuzzleGameplaySector : MonoBehaviour {
 	[System.Serializable]
@@ -19,7 +20,6 @@ public class PuzzleGameplaySector : MonoBehaviour {
 
 	[Header("Animations")]
 	public float fillDelay = 0.3f;
-	public M8.AnimatorParamBool fillAnimParam;
 
 	[Header("Events")]
 	public UnityEvent<bool> fillChanged;
@@ -28,8 +28,10 @@ public class PuzzleGameplaySector : MonoBehaviour {
 
 	public bool isFilling { get { return mFillRout != null; } }
 
-	private Animator mAnim;
 	private Coroutine mFillRout;
+
+	private SpriteShapeRenderer[] mShapeRenders;
+	private float[] mShapeRenderAlphas;
 
 	public void ApplyFill(bool fill, int iteration) {
 		int nextIter;
@@ -99,8 +101,7 @@ public class PuzzleGameplaySector : MonoBehaviour {
 		if(fillDisplayGO)
 			fillDisplayGO.SetActive(isFilled);
 
-		if(mAnim)
-			fillAnimParam.Set(mAnim, isFilled);
+		ApplyFill(isFilled ? 1f : 0f);
 	}
 
 	void OnDisable() {
@@ -108,7 +109,18 @@ public class PuzzleGameplaySector : MonoBehaviour {
 	}
 
 	void Awake() {
-		mAnim = GetComponent<Animator>();
+		if(fillDisplayGO)
+			mShapeRenders = fillDisplayGO.GetComponentsInChildren<SpriteShapeRenderer>();
+		else
+			mShapeRenders = new SpriteShapeRenderer[0];
+
+		mShapeRenderAlphas = new float[mShapeRenders.Length];
+
+		for(int i = 0; i < mShapeRenderAlphas.Length; i++) {
+			var render = mShapeRenders[i];
+			if(render)
+				mShapeRenderAlphas[i] = render.color.a;
+		}
 	}
 
 	IEnumerator DoFill(float waitDelay) {
@@ -117,11 +129,18 @@ public class PuzzleGameplaySector : MonoBehaviour {
 				fillDisplayGO.SetActive(true);
 		}
 
-		if(mAnim)
-			fillAnimParam.Set(mAnim, isFilled);
+		if(waitDelay > 0f) {
+			var curTime = 0f;
+			while(curTime < waitDelay) {
+				yield return null;
 
-		if(waitDelay > 0f)
-			yield return new WaitForSeconds(waitDelay);
+				curTime += Time.deltaTime;
+
+				var t = Mathf.Clamp01(curTime / waitDelay);
+
+				ApplyFill(isFilled ? t : 1f - t);
+			}
+		}
 		else
 			yield return null;
 
@@ -139,5 +158,17 @@ public class PuzzleGameplaySector : MonoBehaviour {
 		yield return null;
 
 		mFillRout = null;
+	}
+
+	private void ApplyFill(float t) {
+		for(int i = 0; i < mShapeRenders.Length; i++) {
+			var render = mShapeRenders[i];
+			if(render) {
+				var clr = render.color;
+				clr.a = Mathf.LerpUnclamped(0f, mShapeRenderAlphas[i], t);
+
+				render.color = clr;
+			}
+		}
 	}
 }

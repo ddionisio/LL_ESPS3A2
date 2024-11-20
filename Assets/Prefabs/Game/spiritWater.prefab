@@ -338,8 +338,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sprite: {fileID: 21300000, guid: 2601241e826482f4f9b387040792b3ff, type: 3}
   _material: {fileID: 2100000, guid: f187fb26ceb2ece48a40bc28022bc6fb, type: 2}
-  _columnCount: 6
-  _rowCount: 6
+  _columnCount: 4
+  _rowCount: 4
   _overridePixelPerUnit: 1
   _pixelPerUnit: 34
   _flipX: 0
@@ -10466,8 +10466,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sprite: {fileID: 21300000, guid: 2601241e826482f4f9b387040792b3ff, type: 3}
   _material: {fileID: 2100000, guid: f187fb26ceb2ece48a40bc28022bc6fb, type: 2}
-  _columnCount: 10
-  _rowCount: 10
+  _columnCount: 4
+  _rowCount: 4
   _overridePixelPerUnit: 0
   _pixelPerUnit: 32
   _flipX: 0
