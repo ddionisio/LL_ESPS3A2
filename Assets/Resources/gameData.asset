@@ -23,13 +23,25 @@ MonoBehaviour:
   signalPuzzleComplete: {fileID: 11400000, guid: 3a53ea55d761b8e4fa3c7c47cbc2df57, type: 2}
   levels:
   - scene:
+      name: intro
+      path: Assets/Scenes/intro.unity
+    progressMax: 1
+  - scene:
       name: level1
       path: Assets/Scenes/level1.unity
-    progressMax: 3
+    progressMax: 1
+  - scene:
+      name: level1_victory
+      path: Assets/Scenes/level1_victory.unity
+    progressMax: 1
   - scene:
       name: level2
       path: Assets/Scenes/level2.unity
-    progressMax: 3
+    progressMax: 1
+  - scene:
+      name: level2_victory
+      path: Assets/Scenes/level2_victory.unity
+    progressMax: 1
   - scene:
       name: level3
       path: Assets/Scenes/level3.unity

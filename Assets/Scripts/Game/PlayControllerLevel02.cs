@@ -27,13 +27,6 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	public M8.AnimatorTargetParamTrigger spiritAction;
 	public M8.AnimatorTargetParamTrigger spiritVictory;
 
-	[Header("Complete")]
-	public M8.AnimatorTargetParamTrigger landLightOn;
-
-	public SheepController sheepAries;
-
-	public SheepController[] sheepOthers;
-
 	protected override IEnumerator Intro() {
 		yield return null;
 
@@ -92,38 +85,6 @@ public class PlayControllerLevel02 : PlayControllerBase {
 		yield return new WaitForSeconds(2f);
 
 		//more dialog stuff
-
-		//progress
-		LoLManager.instance.ApplyProgress(LoLManager.instance.curProgress + 1);
-
-		//victory
-
-		var camTrans = GameCameraTransition.instance;
-
-		camTrans.Transition(landRoot);
-
-		while(camTrans.isBusy)
-			yield return null;
-
-		landLightOn.Set();
-
-		yield return new WaitForSeconds(2f);
-
-		sheepAries.MoveOffscreen(SheepController.Side.Right);
-
-		//wait for other sheeps to all be offscreen
-		int offCount = 0;
-		while(offCount < sheepOthers.Length) {
-			yield return null;
-
-			offCount = 0;
-			for(int i = 0; i < sheepOthers.Length; i++) {
-				if(sheepOthers[i].isOffscreen)
-					offCount++;
-			}
-		}
-
-		//finish
 	}
 
 	protected override void OnInstanceDeinit() {

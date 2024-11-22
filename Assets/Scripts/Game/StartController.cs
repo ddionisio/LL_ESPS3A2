@@ -7,8 +7,9 @@ using LoLExt;
 public class StartController : GameModeController<StartController> {
 	[Header("Display")]
 	public GameObject loadingGO;
+	public GameObject readyGO;
 	public GameObject startGO;
-	//public AnimatorEnterExit readyAnim;
+	public float startActiveDelay;
 	public GameObject continueGO;
 
 	[Header("Music")]
@@ -34,8 +35,8 @@ public class StartController : GameModeController<StartController> {
 		base.OnInstanceInit();
 
 		if(loadingGO) loadingGO.SetActive(true);
+		if(readyGO) readyGO.SetActive(false);
 		if(startGO) startGO.SetActive(false);
-		//if(readyAnim) readyAnim.Hide();
 	}
 
 	protected override IEnumerator Start() {
@@ -50,25 +51,21 @@ public class StartController : GameModeController<StartController> {
 		yield return new WaitForSeconds(0.3f);
 
 		if(loadingGO) loadingGO.SetActive(false);
+
+		if(readyGO) readyGO.SetActive(true);
+
+		yield return new WaitForSeconds(startActiveDelay);
+
 		if(startGO) startGO.SetActive(true);
 
 		var lolMgr = LoLManager.instance;
 
 		if(continueGO) continueGO.SetActive(lolMgr.curProgress > 0);
-
-		/*if(readyAnim) {
-			readyAnim.Show();
-			readyAnim.PlayEnter();
-		}*/
 	}
 
 	IEnumerator DoProceed(bool isContinue) {
 		mIsProceed = true;
 
-		/*if(readyAnim) {
-			yield return readyAnim.PlayExitWait();
-			readyAnim.Hide();
-		}*/
 		yield return null;
 
 		if(isContinue)

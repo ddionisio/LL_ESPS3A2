@@ -4,10 +4,6 @@ using UnityEngine;
 using LoLExt;
 
 public class PlayControllerLevel01 : PlayControllerBase {
-	[Header("Scene")]
-	public Transform landRoot;
-	public Transform skyRoot;
-
 	[Header("Puzzle")]
 	public GameObject puzzleGO;
 	public GameObject puzzleInstructionGO;
@@ -21,36 +17,18 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	public M8.AnimatorTargetParamTrigger spiritVictory;
 
 	public GameObject spiritLightBeamGO;
-
-	[Header("Complete")]
-	public SheepController sheepAries;
-
-	public M8.AnimatorTargetParamTrigger sheepAriesTransform;
-
-	public M8.AnimatorTargetParamTrigger landLightOn;
 		
 	[Header("Dialogs")]
-	public ModalDialogFlowIncremental dlgIntro;
 	public ModalDialogFlowIncremental dlgPlayIntro;
 	public ModalDialogFlowIncremental dlgPlayIntroMechanic;
 	public ModalDialogFlowIncremental dlgOuterComplete;
 	public ModalDialogFlowIncremental dlgInnerComplete;
-	public ModalDialogFlowIncremental dlgVictory;
 
 	[Header("Signals")]
 	public M8.Signal signalListenPuzzleOuterComplete;
 	public M8.Signal signalListenPuzzleInnerComplete;
 
 	protected override IEnumerator Intro() {
-		yield return dlgIntro.Play();
-
-		var camTrans = GameCameraTransition.instance;
-
-		camTrans.Transition(skyRoot);
-
-		while(camTrans.isBusy)
-			yield return null;
-
 		puzzleGO.SetActive(true);
 
 		yield return new WaitForSeconds(1f);
@@ -85,36 +63,6 @@ public class PlayControllerLevel01 : PlayControllerBase {
 		spiritLightBeamGO.SetActive(true);
 				
 		yield return new WaitForSeconds(2f);
-
-		LoLManager.instance.ApplyProgress(LoLManager.instance.curProgress + 1);
-
-		//victory
-
-		var camTrans = GameCameraTransition.instance;
-
-		camTrans.Transition(landRoot);
-
-		while(camTrans.isBusy)
-			yield return null;
-
-		landLightOn.Set();
-
-		yield return new WaitForSeconds(2f);
-
-		sheepAries.PerformAction(SheepController.Action.Wake);
-
-		yield return new WaitForSeconds(2f);
-
-		sheepAriesTransform.Set();
-
-		yield return new WaitForSeconds(2f);
-
-		yield return dlgVictory.Play();
-
-		sheepAries.MoveOffscreen(SheepController.Side.Right);
-
-		while(sheepAries.isBusy)
-			yield return null;
 	}
 
 	protected override void OnInstanceDeinit() {
@@ -127,8 +75,6 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	protected override void OnInstanceInit() {
 		base.OnInstanceInit();
 
-		skyRoot.gameObject.SetActive(false);
-
 		puzzleGO.SetActive(false);
 		puzzleInstructionGO.SetActive(false);
 
@@ -137,8 +83,6 @@ public class PlayControllerLevel01 : PlayControllerBase {
 
 		spiritGO.SetActive(false);
 		spiritLightBeamGO.SetActive(false);
-
-		GameCameraTransition.instance.SetCurrentRoot(landRoot);
 
 		signalListenPuzzleOuterComplete.callback += OnPuzzleOuterComplete;
 		signalListenPuzzleInnerComplete.callback += OnPuzzleInnerComplete;
@@ -154,8 +98,6 @@ public class PlayControllerLevel01 : PlayControllerBase {
 		yield return dlgOuterComplete.Play();
 
 		innerInput.locked = false;
-
-		LoLManager.instance.ApplyProgress(LoLManager.instance.curProgress + 1);
 	}
 
 	void OnPuzzleOuterComplete() {
