@@ -14,6 +14,10 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 	public Transform handleRoot;
 	public float handleMoveDelay = 0.3f;
 
+	[Header("SFX")]
+	[M8.SoundPlaylist]
+	public string sliderSFX;
+
 	[Header("Events")]
 	public UnityEvent<float> onHandlePositionValueChanged;
 
@@ -35,6 +39,8 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 	private float mHandleLocalXCur;
 	private float mHandleLocalXVel;
 
+	private M8.AudioSourceProxy mSliderAudio;
+
 	public float GetHandleLocalX() {
 		var hLen = length * 0.5f;
 
@@ -48,6 +54,12 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 
 	protected override void ValueRefresh() {
 		mHandleLocalX = GetHandleLocalX();
+
+		if(Mathf.Abs(mHandleLocalXCur - mHandleLocalX) > 0.001f) {
+			if(!mSliderAudio && !string.IsNullOrEmpty(sliderSFX)) {
+				mSliderAudio = M8.SoundPlaylist.instance.Play(sliderSFX, true);
+			}
+		}
 	}
 
 	protected override void InputDrag(PointerEventData eventData) {
@@ -71,6 +83,19 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 		base.OnEnable();
 	}
 
+	protected override void OnDisable() {
+		if(mSliderAudio) {
+			if(M8.SoundPlaylist.isInstantiated)
+				M8.SoundPlaylist.instance.Stop(mSliderAudio);
+			else
+				mSliderAudio.Stop();
+
+			mSliderAudio = null;
+		}
+
+		base.OnDisable();
+	}
+
 	void Update() {
 		isHandleMoving = mHandleLocalXCur != mHandleLocalX;
 		if(isHandleMoving) {
@@ -79,6 +104,11 @@ public class PuzzleMechanicSlider : PuzzleMechanicValueBase {
 			if(Mathf.Abs(mHandleLocalXCur - mHandleLocalX) <= 0.001f) {
 				mHandleLocalXCur = mHandleLocalX;
 				mHandleLocalXVel = 0f;
+
+				if(mSliderAudio) {
+					M8.SoundPlaylist.instance.Stop(mSliderAudio);
+					mSliderAudio = null;
+				}
 			}
 
 			ApplyHandleTransform();

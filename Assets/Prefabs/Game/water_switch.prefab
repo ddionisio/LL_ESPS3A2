@@ -958,7 +958,7 @@ MonoBehaviour:
   _index: 1
   switchDisplayRoot: {fileID: 1254611234743400245}
   switchRotateDelay: 0.3
-  switchRotateEase: 3
+  switchSFX: leverClick
   signalInvokeSwitch: {fileID: 11400000, guid: b2763226982a11d4a897067265661148, type: 2}
   onSwitchIndex:
     m_PersistentCalls:

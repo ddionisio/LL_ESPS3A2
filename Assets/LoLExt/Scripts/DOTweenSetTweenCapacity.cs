@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if DOTWEEN
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,3 +14,5 @@ namespace LoLExt {
         }
     }
 }
+
+#endif

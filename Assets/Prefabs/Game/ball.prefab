@@ -10496,12 +10496,16 @@ MonoBehaviour:
   actionEndEnabled: 1
   actionEndDelay: 1
   actionEndSpeedThreshold: 2
+  specialActiveGO: {fileID: 0}
   animSpawn:
     _nameID: -1183793042
   animDespawn:
     _nameID: -1811315698
   animAction:
     _nameID: 1204587666
+  sfxAction: rockHit
+  sfxSpawn: rockCrumble
+  sfxDespawn: 
 --- !u!114 &2422783781386720856
 MonoBehaviour:
   m_ObjectHideFlags: 0

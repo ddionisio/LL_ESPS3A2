@@ -12,14 +12,38 @@ public class VictoryControllerLevel02 : GameModeController<VictoryControllerLeve
 
 	public SheepController[] sheepOthers;
 
+	public GameObject instrumentFXGO;
+	public AudioSource[] instrumentAudios;
+
+	protected override void OnInstanceDeinit() {
+		for(int i = 0; i < instrumentAudios.Length; i++) {
+			var sfx = instrumentAudios[i];
+			if(sfx && sfx.clip)
+				sfx.clip.UnloadAudioData();
+		}
+
+		base.OnInstanceDeinit();
+	}
+
 	protected override IEnumerator Start() {
 		yield return base.Start();
 
-		landLightOn.Set();
+		sheepAries.MoveOffscreen(SheepController.Side.Right);
 
 		yield return new WaitForSeconds(2f);
 
-		sheepAries.MoveOffscreen(SheepController.Side.Right);
+		landLightOn.Set();
+
+		if(instrumentFXGO)
+			instrumentFXGO.SetActive(true);
+
+		for(int i = 0; i < instrumentAudios.Length; i++) {
+			var sfx = instrumentAudios[i];
+			if(sfx) {
+				sfx.volume = M8.UserSettingAudio.instance.soundVolume;
+				sfx.Play();
+			}
+		}
 
 		//wait for other sheeps to all be offscreen
 		int offCount = 0;
@@ -32,5 +56,8 @@ public class VictoryControllerLevel02 : GameModeController<VictoryControllerLeve
 					offCount++;
 			}
 		}
+
+		//enter next level
+		GameData.instance.ProgressNext();
 	}
 }

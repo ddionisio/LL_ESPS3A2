@@ -121,8 +121,6 @@ namespace LoLExt {
         }
 
         IEnumerator DoCursorMove() {
-            var moveEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(DG.Tweening.Ease.InOutSine);
-
             while(true) {
                 dragPosition = 0f;
                 cursorImage.sprite = cursorIdleSprite;
@@ -133,7 +131,7 @@ namespace LoLExt {
                 //fade in            
                 do {
                     curTime = Time.realtimeSinceStartup - lastTime;
-                    float t = moveEaseFunc(curTime, cursorFadeDelay, 0f, 0f);
+                    float t = -(Mathf.Cos(Mathf.PI * (curTime / cursorFadeDelay)) - 1f) * 0.5f;
 
                     var clr = cursorImage.color;
                     clr.a = t;
@@ -154,7 +152,7 @@ namespace LoLExt {
                 lastTime = Time.realtimeSinceStartup;
                 do {
                     curTime = Time.realtimeSinceStartup - lastTime;
-                    float t = moveEaseFunc(curTime, cursorMoveDelay, 0f, 0f);
+                    float t = -(Mathf.Cos(Mathf.PI * (curTime / cursorMoveDelay)) - 1f) * 0.5f;
 
                     dragPosition = t;
 
@@ -172,9 +170,9 @@ namespace LoLExt {
                 lastTime = Time.realtimeSinceStartup;
                 do {
                     curTime = Time.realtimeSinceStartup - lastTime;
-                    float t = moveEaseFunc(curTime, cursorFadeDelay, 0f, 0f);
+                    float t = -(Mathf.Cos(Mathf.PI * (curTime / cursorFadeDelay)) - 1f) * 0.5f;
 
-                    var clr = cursorImage.color;
+					var clr = cursorImage.color;
                     clr.a = 1.0f - t;
 
                     cursorImage.color = clr;

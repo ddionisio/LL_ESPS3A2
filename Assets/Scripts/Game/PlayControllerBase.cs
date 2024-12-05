@@ -8,6 +8,7 @@ using LoLExt;
 /// General level game controller, use this as a basis for other levels with dialogs and learning stuff
 /// </summary>
 public abstract class PlayControllerBase : GameModeController<PlayControllerBase> {
+	public bool stopMusicOnEnd = true;
 
 	public bool isPuzzleComplete { get; protected set; }
 
@@ -43,6 +44,8 @@ public abstract class PlayControllerBase : GameModeController<PlayControllerBase
 
 		var gameDat = GameData.instance;
 
+		gameDat.MusicPlay(true);
+
 		//intro stuff
 		yield return Intro();
 
@@ -60,13 +63,16 @@ public abstract class PlayControllerBase : GameModeController<PlayControllerBase
 			yield return null;
 		}
 
+		if(stopMusicOnEnd)
+			gameDat.MusicPlay(false);
+
 		gameDat.signalPuzzleInteractable.Invoke(false);
 
 		gameDat.signalPlayEnd.Invoke();
-
+				
 		//end
 		yield return GameEnd();
-
+				
 		//enter next level
 		gameDat.ProgressNext();
 	}

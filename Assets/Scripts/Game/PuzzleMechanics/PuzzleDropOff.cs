@@ -64,7 +64,8 @@ public class PuzzleDropOff : MonoBehaviour {
 	private void ApplyActive() {
 		if(!coll) coll = GetComponent<Collider2D>();
 
-		coll.enabled = _active;
+		if(coll)
+			coll.enabled = _active;
 
 		if(_inactiveGO) _inactiveGO.SetActive(!_active);
 	}

@@ -50,21 +50,16 @@ public class TransformRotateStaggeredMotionMulti : MonoBehaviour {
 	[Header("Full Rotate")]
 	public Data[] rotates;
 	public M8.RangeInt rotateCountRange;
-	public DG.Tweening.Ease rotateEase;
 	public M8.RangeFloat rotateDelayRange;
 
 	[Header("Stagger Rotate")]
 	public M8.RangeFloat staggerRotateDelayRange;
 	public M8.RangeInt staggerRotateCountRange;
-	public DG.Tweening.Ease staggerRotateEase;
 
 	[Header("Wait")]
 	public M8.RangeFloat waitDelayRange;
 		
 	private Coroutine mRout;
-
-	private DG.Tweening.EaseFunction mFullRotateEaseFunc;
-	private DG.Tweening.EaseFunction mStaggerRotateEaseFunc;
 
 	private M8.WaitForSecondsRandom mWait;
 
@@ -80,9 +75,6 @@ public class TransformRotateStaggeredMotionMulti : MonoBehaviour {
 	}
 
 	void Awake() {
-		mFullRotateEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(rotateEase);
-		mStaggerRotateEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(staggerRotateEase);
-
 		if(waitDelayRange.length > 0f)
 			mWait = new M8.WaitForSecondsRandom(waitDelayRange.min, waitDelayRange.max);
 	}
@@ -111,7 +103,7 @@ public class TransformRotateStaggeredMotionMulti : MonoBehaviour {
 
 					curTime += Time.deltaTime;
 
-					t = mFullRotateEaseFunc(curTime, delay, 0f, 0f);
+					t = -(Mathf.Cos(Mathf.PI * (curTime / delay)) - 1f) * 0.5f;
 
 					for(int j = 0; j < rotates.Length; j++)
 						rotates[j].Lerp(t);
@@ -135,7 +127,7 @@ public class TransformRotateStaggeredMotionMulti : MonoBehaviour {
 
 					curTime += Time.deltaTime;
 
-					t = mStaggerRotateEaseFunc(curTime, delay, 0f, 0f);
+					t = -(Mathf.Cos(Mathf.PI * (curTime / delay)) - 1f) * 0.5f;
 
 					for(int j = 0; j < rotates.Length; j++)
 						rotates[j].Lerp(t);

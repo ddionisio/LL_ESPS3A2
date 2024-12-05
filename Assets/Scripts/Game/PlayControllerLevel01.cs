@@ -19,6 +19,7 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	public GameObject spiritLightBeamGO;
 		
 	[Header("Dialogs")]
+	public ModalDialogFlowIncremental dlgIntro;
 	public ModalDialogFlowIncremental dlgPlayIntro;
 	public ModalDialogFlowIncremental dlgPlayIntroMechanic;
 	public ModalDialogFlowIncremental dlgOuterComplete;
@@ -29,6 +30,8 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	public M8.Signal signalListenPuzzleInnerComplete;
 
 	protected override IEnumerator Intro() {
+		yield return dlgIntro.Play();
+
 		puzzleGO.SetActive(true);
 
 		yield return new WaitForSeconds(1f);
@@ -56,13 +59,13 @@ public class PlayControllerLevel01 : PlayControllerBase {
 
 		yield return new WaitForSeconds(1f);
 
+		spiritLightBeamGO.SetActive(true);
+
 		yield return dlgInnerComplete.Play();
 
 		spiritVictory.Set();
-
-		spiritLightBeamGO.SetActive(true);
-				
-		yield return new WaitForSeconds(2f);
+								
+		yield return new WaitForSeconds(3f);
 	}
 
 	protected override void OnInstanceDeinit() {

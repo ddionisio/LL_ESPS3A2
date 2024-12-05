@@ -19,8 +19,12 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 
 	[Header("Puzzle Mechanic General")]
 	public float mechanicRayCastUpdateDelay = 0.3f;
+	public float goalIntervalDelay = 2f;
 	[M8.TagSelector]
 	public string sheepMainTag;
+
+	[M8.MusicPlaylist]
+	public string musicMain;
 
 	[Header("Signals")]
 	public M8.Signal signalPlayBegin;
@@ -61,6 +65,15 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 
 			return lvlInd;
 		}
+	}
+
+	public void MusicPlay(bool play) {
+		if(play) {
+			if(!M8.MusicPlaylist.instance.isPlaying)
+				M8.MusicPlaylist.instance.Play(musicMain, true, false);
+		}
+		else
+			M8.MusicPlaylist.instance.Stop(false);
 	}
 
 	public int GetProgressMax(int levelIndex) {

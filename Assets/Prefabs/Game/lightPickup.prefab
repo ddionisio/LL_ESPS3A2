@@ -4796,7 +4796,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1400885165
-  m_SortingLayer: 5
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -4883,7 +4883,6 @@ MonoBehaviour:
   fullRotateCountRange:
     min: 2
     max: 3
-  fullRotateEase: 4
   staggerRotateRange:
     min: -60
     max: 60
@@ -4893,7 +4892,6 @@ MonoBehaviour:
   staggerRotateCountRange:
     min: 1
     max: 2
-  staggerRotateEase: 4
   waitDelayRange:
     min: 1
     max: 2
@@ -5229,6 +5227,7 @@ GameObject:
   - component: {fileID: 1697314114900898156}
   - component: {fileID: 8173237449364935001}
   - component: {fileID: 8442444696905658016}
+  - component: {fileID: 5607234231130113207}
   m_Layer: 9
   m_Name: lightPickup
   m_TagString: Untagged
@@ -5337,6 +5336,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 5607234231130113207}
+        m_TargetAssemblyTypeName: M8.SoundPlaylistProxy, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   onDropOff:
     m_PersistentCalls:
       m_Calls:
@@ -5356,6 +5367,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: M8.AnimatorParamProxy, Assembly-CSharp
         m_MethodName: SetBool
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5607234231130113207}
+        m_TargetAssemblyTypeName: M8.SoundPlaylistProxy, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5486,6 +5509,21 @@ MonoBehaviour:
   radius: 1
   solid: 0
   useCollider: 1
+--- !u!114 &5607234231130113207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2936543259447343238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c3208c7ade34784eb92281584183c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: tap
+  mode: 0
+  checkPlaying: 0
 --- !u!1 &3003606470248986300
 GameObject:
   m_ObjectHideFlags: 0
@@ -10518,7 +10556,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1400885165
-  m_SortingLayer: 5
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0

@@ -19,9 +19,6 @@ public class PuzzleMechanicOnValueMotionRotate : MonoBehaviour {
 	public float playDelay = 0.5f;
 	public float endDelay = 0.3f;
 
-	public DG.Tweening.Ease fullmotionStartEase = DG.Tweening.Ease.InSine;
-	public DG.Tweening.Ease fullmotionEndEase = DG.Tweening.Ease.OutSine;
-
 	[Tooltip("Ensure this is a value mechanic.")]
     public SignalMechanic signalListenMechanicValueChanged;
 
@@ -40,9 +37,6 @@ public class PuzzleMechanicOnValueMotionRotate : MonoBehaviour {
     private float mRotateCurTime;
     private float mRotateSign;
 
-    private DG.Tweening.EaseFunction mEaseFuncStart;
-	private DG.Tweening.EaseFunction mEaseFuncEnd;
-
 	void OnDisable() {
 		mState = State.None;
 	}
@@ -55,9 +49,6 @@ public class PuzzleMechanicOnValueMotionRotate : MonoBehaviour {
 	void Awake() {
         if(signalListenMechanicValueChanged)
             signalListenMechanicValueChanged.callback += OnMechanicValueChanged;
-
-        mEaseFuncStart = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(fullmotionStartEase);
-		mEaseFuncEnd = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(fullmotionEndEase);
 	}
 
 	void Update() {
@@ -73,7 +64,7 @@ public class PuzzleMechanicOnValueMotionRotate : MonoBehaviour {
             case State.Enter:
                 mRotateCurTime += Time.deltaTime;
 				if(mRotateCurTime < startDelay) {
-					float t = mEaseFuncStart(mRotateCurTime, startDelay, 0f, 0f);
+					float t = 1f - Mathf.Cos((mRotateCurTime / startDelay) * Mathf.PI * 0.5f);
 
 					rotation += rotateSpeed * Time.deltaTime * t * mRotateSign;
 				}
@@ -86,7 +77,7 @@ public class PuzzleMechanicOnValueMotionRotate : MonoBehaviour {
 			case State.Exit:
 				mRotateCurTime += Time.deltaTime;
 				if(mRotateCurTime < endDelay) {
-					float t = 1.0f - mEaseFuncEnd(mRotateCurTime, endDelay, 0f, 0f);
+					float t = 1.0f - Mathf.Sin((mRotateCurTime / endDelay) * Mathf.PI * 0.5f);
 
 					rotation += rotateSpeed * Time.deltaTime * t * mRotateSign;
 				}

@@ -32,6 +32,14 @@ public class PuzzleEntitySolid : MonoBehaviour {
 	public M8.AnimatorParamTrigger animDespawn;
 	public M8.AnimatorParamTrigger animAction;
 
+	[Header("SFX")]
+	[M8.SoundPlaylist]
+	public string sfxAction;
+	[M8.SoundPlaylist]
+	public string sfxSpawn;
+	[M8.SoundPlaylist]
+	public string sfxDespawn;
+
 	public bool active { get { return gameObject.activeSelf; } set { gameObject.SetActive(value); } }
 
 	public PuzzleEntityState state {
@@ -124,6 +132,9 @@ public class PuzzleEntitySolid : MonoBehaviour {
 
 				if(mAnim)
 					animSpawn.Set(mAnim);
+
+				if(!string.IsNullOrEmpty(sfxSpawn))
+					M8.SoundPlaylist.instance.Play(sfxSpawn, false);
 				break;
 
 			case PuzzleEntityState.Despawn:
@@ -131,11 +142,17 @@ public class PuzzleEntitySolid : MonoBehaviour {
 
 				if(mAnim)
 					animDespawn.Set(mAnim);
+
+				if(!string.IsNullOrEmpty(sfxDespawn))
+					M8.SoundPlaylist.instance.Play(sfxDespawn, false);
 				break;
 
 			case PuzzleEntityState.Action:
 				if(mAnim)
 					animAction.Set(mAnim);
+
+				if(!string.IsNullOrEmpty(sfxAction))
+					M8.SoundPlaylist.instance.Play(sfxAction, false);
 				break;
 
 			case PuzzleEntityState.Idle:

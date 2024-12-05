@@ -38,6 +38,12 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 	public ParticleSystem windFX;
 	public M8.RangeFloat windFXEmissionRange;
 
+	[Header("SFX")]
+	[M8.SoundPlaylist]
+	public string windSFX;
+	[M8.SoundPlaylist]
+	public string fireSFX;
+
 	[Header("Events")]
 	public UnityEvent<float> powerChangedScale;
 
@@ -55,6 +61,9 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 						
 			mWindIsAccum = true;
 
+			if(!(mWindAudio || string.IsNullOrEmpty(windSFX)))
+				mWindAudio = M8.SoundPlaylist.instance.Play(windSFX, true);
+
 			ApplyWindDisplay();
 		}
 	}
@@ -67,6 +76,8 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		get { return mFuel; }
 	}
 
+	public bool consumeEnable { get; set; } = true;
+
 	private const int solidFuelCapacity = 8;
 	private M8.CacheList<PuzzleEntitySolid> mSolidFuels = new M8.CacheList<PuzzleEntitySolid>(solidFuelCapacity);
 
@@ -74,6 +85,7 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 
 	private float mPowerAccum; //power target value
 	private float mPowerVel;
+	private int mPowerLastIndex;
 
 	private bool mWindIsAccum;
 
@@ -82,6 +94,8 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 	private float mWindVel;
 
 	private float mWindLastTime;
+
+	private M8.AudioSourceProxy mWindAudio;
 
 	private float mFuel;
 
@@ -123,6 +137,15 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		}
 
 		mSolidFuels.Clear();
+
+		if(mWindAudio) {
+			if(M8.SoundPlaylist.isInstantiated)
+				M8.SoundPlaylist.instance.Stop(mWindAudio);
+			else
+				mWindAudio.Stop();
+
+			mWindAudio = null;
+		}
 	}
 
 	void Awake() {
@@ -142,7 +165,15 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 				mWindLastTime = Time.time;
 				mWindVel = 0f;
 				mWindIsAccum = false;
+
+				if(mWindAudio) {
+					M8.SoundPlaylist.instance.Stop(mWindAudio);
+					mWindAudio = null;
+				}
 			}
+		}
+		else if(!consumeEnable) {
+			mWindLastTime = Time.time;
 		}
 		else if(Time.time - mWindLastTime >= windDecayWaitDelay) {
 			if(!M8.MathUtil.Approx(mWind, 0f, checkApprox)) {
@@ -159,7 +190,8 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 		}
 
 		if(mFuel > 0f) {
-			mFuel -= fuelBurnRateRange.Lerp(windScale) * Time.deltaTime;
+			if(consumeEnable)
+				mFuel -= fuelBurnRateRange.Lerp(windScale) * Time.deltaTime;
 
 			if(mFuel <= 0f && mSolidFuels.Count > 0) {
 				var solid = mSolidFuels[0];
@@ -201,6 +233,13 @@ public class PuzzleEntitySpiritFire : MonoBehaviour {
 			}
 			else
 				display.SetActive(!display.exclusive && i < ind);
+		}
+
+		if(mPowerLastIndex != ind) {
+			mPowerLastIndex = ind;
+
+			if(!string.IsNullOrEmpty(fireSFX))
+				M8.SoundPlaylist.instance.Play(fireSFX, false);
 		}
 
 		//event

@@ -9975,11 +9975,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachRoot: {fileID: 0}
   actionMoveForceRange:
-    min: 2
-    max: 2
+    min: 3
+    max: 3
   actionMoveImpulseRange:
-    min: 6
-    max: 6
+    min: 7
+    max: 7
   actionMoveForceDuration: 0.5
   actionEndEnabled: 0
   actionEndDelay: 2
@@ -9991,6 +9991,9 @@ MonoBehaviour:
     _nameID: -1811315698
   animAction:
     _nameID: 1204587666
+  sfxAction: rockHit
+  sfxSpawn: rockCrumble
+  sfxDespawn: 
 --- !u!95 &8481985900903729760
 Animator:
   serializedVersion: 5

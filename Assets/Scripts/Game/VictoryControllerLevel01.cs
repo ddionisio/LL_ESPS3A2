@@ -16,27 +16,33 @@ public class VictoryControllerLevel01 : GameModeController<VictoryControllerLeve
 
 	[Header("Dialogs")]
 	public ModalDialogFlowIncremental dlgVictory;
+	public ModalDialogFlowIncremental dlgVictoryAwake;
+	public ModalDialogFlowIncremental dlgVictoryNext;
 
 	protected override IEnumerator Start() {
 		yield return base.Start();
 
+		GameData.instance.MusicPlay(true);
+
 		landLightOn.Set();
 
 		yield return new WaitForSeconds(2f);
-
+				
 		sheepAries.PerformAction(SheepController.Action.Wake);
 
-		yield return new WaitForSeconds(2f);
-
+		yield return dlgVictory.Play();
+								
 		sheepAriesTransform.Set();
 
 		yield return new WaitForSeconds(2f);
-				
-		yield return dlgVictory.Play();
+
+		yield return dlgVictoryAwake.Play();
 
 		landHappy.Set();
 
 		sheepAries.MoveOffscreen(SheepController.Side.Right);
+
+		yield return dlgVictoryNext.Play();
 
 		while(sheepAries.isBusy)
 			yield return null;

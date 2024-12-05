@@ -9,6 +9,9 @@ public class PuzzleGameplayPlunger : MonoBehaviour {
     public float sliderPullMoveDelay;
     public float sliderResetMoveDelay;
 
+	[M8.SoundPlaylist]
+	public string releaseSFX;
+
     public UnityEvent<float> onAction;
 
 	private Coroutine mRout;
@@ -59,6 +62,9 @@ public class PuzzleGameplayPlunger : MonoBehaviour {
 		slider.locked = false;
 
 		mRout = null;
+
+		if(!string.IsNullOrEmpty(releaseSFX))
+			M8.SoundPlaylist.instance.Play(releaseSFX, false);
 
 		//Debug.Log("Plunge value: " + val);
 

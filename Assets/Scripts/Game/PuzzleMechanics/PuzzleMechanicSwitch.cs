@@ -40,7 +40,10 @@ public class PuzzleMechanicSwitch : PuzzleMechanicBase {
     [Header("Switch Display")]
     public Transform switchDisplayRoot;
     public float switchRotateDelay = 0.3f;
-    public DG.Tweening.Ease switchRotateEase = DG.Tweening.Ease.OutSine;
+
+    [Header("Switch SFX")]
+    [M8.SoundPlaylist]
+    public string switchSFX;
 
     [Header("Switch Callbacks")]
     public M8.Signal signalInvokeSwitch;
@@ -58,7 +61,6 @@ public class PuzzleMechanicSwitch : PuzzleMechanicBase {
     public bool isBusy { get { return mRout != null; } }
 
     private Coroutine mRout;
-    private DG.Tweening.EaseFunction mEaseFunc;
 
     public void ApplyCurrentIndex() {
 		StopRout();
@@ -91,6 +93,9 @@ public class PuzzleMechanicSwitch : PuzzleMechanicBase {
             StopCoroutine(mRout);
 
         mRout = StartCoroutine(DoRotate());
+
+        if(!string.IsNullOrEmpty(switchSFX))
+            M8.SoundPlaylist.instance.Play(switchSFX, false);
                 
 		onSwitchIndex.Invoke(_index);
         onSwitchLabel.Invoke(indexLabel);
@@ -110,12 +115,6 @@ public class PuzzleMechanicSwitch : PuzzleMechanicBase {
         StopRout();
 	}
 
-	protected override void Awake() {
-		base.Awake();
-
-        mEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(switchRotateEase);
-	}
-
     IEnumerator DoRotate() {
         var curInf = switches[_index];
         var curUp = curInf.up;
@@ -128,7 +127,7 @@ public class PuzzleMechanicSwitch : PuzzleMechanicBase {
 
             curTime += Time.deltaTime;
 
-            var t = mEaseFunc(curTime, switchRotateDelay, 0f, 0f);
+            var t = Mathf.Sin((curTime / switchRotateDelay) * Mathf.PI * 0.5f);
 
             var rot = Mathf.Lerp(startRot, 0f, t);
 

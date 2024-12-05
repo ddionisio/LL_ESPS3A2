@@ -18,6 +18,10 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 	public bool rotatorAttachToRadius; //set rotate root on radius?
     public float rotatorRotateDelay = 0.3f;
 
+	[Header("SFX")]
+	[M8.SoundPlaylist]
+	public string rotatorSFX;
+
 	public Vector2 dir { get; private set; }
 
 	/// <summary>
@@ -39,6 +43,8 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 
 	private float mRotatorAngle;
 	private float mRotatorAngleVel;
+
+	private M8.AudioSourceProxy mRotatorAudio;
 
 	protected override void ValueRefresh() {
 		UpdateCurDirFromValue();
@@ -72,6 +78,19 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 		base.OnEnable();
 	}
 
+	protected override void OnDisable() {
+		if(mRotatorAudio) {
+			if(M8.SoundPlaylist.isInstantiated)
+				M8.SoundPlaylist.instance.Stop(mRotatorAudio);
+			else
+				mRotatorAudio.Stop();
+
+			mRotatorAudio = null;
+		}
+
+		base.OnDisable();
+	}
+
 	protected override void Awake() {
 		base.Awake();
 
@@ -85,6 +104,11 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 			if(Mathf.Abs(mRotatorAngle) <= 0.001f) {
 				mRotatorAngle = 0f;
 				mRotatorAngleVel = 0f;
+
+				if(mRotatorAudio) {
+					M8.SoundPlaylist.instance.Stop(mRotatorAudio);
+					mRotatorAudio = null;
+				}
 			}
 
 			mRotatorDir = M8.MathUtil.RotateAngle(dir, mRotatorAngle);
@@ -140,6 +164,12 @@ public class PuzzleMechanicRadial : PuzzleMechanicValueBase {
 	private void UpdateRotator() {
 		if(rotatorRotateDelay > 0f) {
 			mRotatorAngle = Vector2.SignedAngle(mRotatorDir, dir);
+
+			if(Mathf.Abs(mRotatorAngle) > 0.001f) {
+				if(!mRotatorAudio && !string.IsNullOrEmpty(rotatorSFX)) {
+					mRotatorAudio = M8.SoundPlaylist.instance.Play(rotatorSFX, true);
+				}
+			}
 		}
 		else {
 			mRotatorDir = dir;

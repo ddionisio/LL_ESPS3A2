@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +9,9 @@ public class GoalController : MonoBehaviour {
 	bool isDecay;
 	public float decayWaitDelay;
 	public float decayRate;
+
+	[Header("Audio")]
+	public AudioSource audioSource;
 
 	public UnityEvent<float> powerChanged;
 	public UnityEvent<float> powerChangedNormal;
@@ -29,8 +30,13 @@ public class GoalController : MonoBehaviour {
 
 				mPower = val;
 
+				var _powerNorm = powerNormal;
+
+				if(audioSource)
+					audioSource.volume = M8.UserSettingAudio.instance.soundVolume * _powerNorm;
+
 				powerChanged?.Invoke(mPower);
-				powerChangedNormal?.Invoke(powerNormal);
+				powerChangedNormal?.Invoke(_powerNorm);
 
 				if(lastPowerFull != isPowerFull)
 					powerFullyCharged?.Invoke(isPowerFull);
@@ -47,18 +53,55 @@ public class GoalController : MonoBehaviour {
 	private bool mIsDecayWait;
 	private float mDecayCurTime;
 
+	private float mAudioLastTime;
+	private bool mAudioIsPlaying;
+	private bool mAudioForcePlay;
+	private bool mAudioForceStop;
+
 	public void DecayReset() {
 		mIsDecayWait = true; 
 		mDecayCurTime = 0f;
+	}
+
+	public void ForceAudioPlay() {
+		mAudioForcePlay = true;
+		
+		if(audioSource) {
+			audioSource.Stop();
+			audioSource.Play();
+		}
+	}
+
+	public void ForceAudioStop() {
+		mAudioForceStop = true;
+
+		if(audioSource)
+			audioSource.Stop();
 	}
 
 	void OnEnable() {
 		mIsDecayWait = mPower > 0f;
 		mDecayCurTime = 0f;
 
+		var _powerNorm = powerNormal;
+
+		if(audioSource)
+			audioSource.volume = M8.UserSettingAudio.instance.soundVolume * _powerNorm;
+
 		powerChanged?.Invoke(mPower);
-		powerChangedNormal?.Invoke(powerNormal);
+		powerChangedNormal?.Invoke(_powerNorm);
 		powerFullyCharged?.Invoke(isPowerFull);
+
+		mAudioLastTime = Time.time;
+		mAudioIsPlaying = false;
+	}
+
+	void OnDisable() {
+		if(audioSource)
+			audioSource.Stop();
+
+		mAudioForcePlay = false;
+		mAudioForceStop = false;
 	}
 
 	void OnDestroy() {
@@ -81,6 +124,17 @@ public class GoalController : MonoBehaviour {
 			}
 			else {
 				power -= decayRate * Time.deltaTime;
+			}
+		}
+
+		if(!(mAudioForcePlay || mAudioForceStop || audioSource.isPlaying)) {
+			if(mAudioIsPlaying) {
+				mAudioLastTime = Time.time;
+				mAudioIsPlaying = false;
+			}
+			else if(Time.time - mAudioLastTime >= GameData.instance.goalIntervalDelay) {
+				audioSource.Play();
+				mAudioIsPlaying = true;
 			}
 		}
 	}

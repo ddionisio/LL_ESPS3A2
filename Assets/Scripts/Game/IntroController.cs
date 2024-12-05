@@ -11,6 +11,8 @@ public class IntroController : GameModeController<IntroController> {
 	protected override IEnumerator Start() {
 		yield return base.Start();
 
+		GameData.instance.MusicPlay(true);
+
 		yield return dlgIntro.Play();
 
 		GameData.instance.ProgressNext();

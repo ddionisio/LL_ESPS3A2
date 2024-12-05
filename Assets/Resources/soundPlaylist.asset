@@ -12,7 +12,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73fba05c719519b4db251fead2709c54, type: 3}
   m_Name: soundPlaylist
   m_EditorClassIdentifier: 
-  sounds: []
-  max: 32
+  sounds:
+  - name: click
+    clip: {fileID: 8300000, guid: 9d18778d72ce9114e9bd29337e518944, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: tap
+    clip: {fileID: 8300000, guid: 28b2df0ab3d233548886ec1e1e4d44ee, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: leverClick
+    clip: {fileID: 8300000, guid: 572e8e9339f30a74da6c7b140e26f056, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: gears
+    clip: {fileID: 8300000, guid: 338b0cf2defb2924fa929375a0b6acf0, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: sunshine
+    clip: {fileID: 8300000, guid: afe8497adefed264391eea40780d169b, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: lightShine
+    clip: {fileID: 8300000, guid: b3e25e7558c0e224ca3d5f1603e17847, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: ding
+    clip: {fileID: 8300000, guid: de703a6d26f6e974d955c241f2f2cda8, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: rockHit
+    clip: {fileID: 8300000, guid: 5771c63a0c7554d4e8679e7f79947d0f, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: rockCrumble
+    clip: {fileID: 8300000, guid: a6afdc8d9b36be94eba4e6a0a3cf0e19, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: waterAppear
+    clip: {fileID: 8300000, guid: ae7abcf207d996747a49fd27ee0bcee3, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: waterFlow
+    clip: {fileID: 8300000, guid: 75c478efbf6e41a419fd378f2a946497, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: windFlow
+    clip: {fileID: 8300000, guid: 48386f4e4a820ef4ebe54c96c61726f5, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  - name: fireWoosh
+    clip: {fileID: 0}
+    clipVariants:
+    - {fileID: 8300000, guid: 6580165130b82f94e957648ef5edd155, type: 3}
+    - {fileID: 8300000, guid: fecda3811db4555409f36e3d885b2557, type: 3}
+    - {fileID: 8300000, guid: 9ba7f40a823b285428bb6c810264fe6f, type: 3}
+    spatialBlend: 0
+  - name: electric
+    clip: {fileID: 8300000, guid: f362f988cfbe48f49af014acc3b43754, type: 3}
+    clipVariants: []
+    spatialBlend: 0
+  max: 16
   audioMixer: {fileID: 0}
   muteOnFocusLost: 1

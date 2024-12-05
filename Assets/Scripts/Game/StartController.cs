@@ -12,10 +12,6 @@ public class StartController : GameModeController<StartController> {
 	public float startActiveDelay;
 	public GameObject continueGO;
 
-	[Header("Music")]
-	[M8.MusicPlaylist]
-	public string music;
-
 	private bool mIsProceed;
 
 	public void Continue() {
@@ -45,8 +41,7 @@ public class StartController : GameModeController<StartController> {
 		while(!LoLManager.instance.isReady)
 			yield return null;
 
-		if(!string.IsNullOrEmpty(music))
-			M8.MusicPlaylist.instance.Play(music, true, true);
+		GameData.instance.MusicPlay(true);
 
 		yield return new WaitForSeconds(0.3f);
 

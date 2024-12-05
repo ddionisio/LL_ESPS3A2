@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define DIALOG_DISABLE
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +31,10 @@ namespace LoLExt {
         }
 
         public IEnumerator Play(string modal, Sprite portrait, string nameTextRef, bool isPause) {
+#if DIALOG_DISABLE
+            if(mIsNext) { }
+            yield return null;
+#else
             if(isPause)
                 M8.SceneManager.instance.Pause();
 
@@ -57,6 +63,7 @@ namespace LoLExt {
 
             if(isPause)
                 M8.SceneManager.instance.Resume();
+#endif
         }
 
         void OnDialogNext() {
@@ -93,6 +100,10 @@ namespace LoLExt {
         }
 
         public IEnumerator Play(string aModal, Sprite portrait, string nameTextRef, bool isPause) {
+#if DIALOG_DISABLE
+			if(mIsNext) { }
+			yield return null;
+#else
             if(mSB == null)
                 mSB = new System.Text.StringBuilder(prefix.Length + 2);
 
@@ -135,6 +146,7 @@ namespace LoLExt {
 
             if(isPause)
                 M8.SceneManager.instance.Resume();
+#endif
         }
 
         void OnDialogNext() {

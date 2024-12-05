@@ -122,7 +122,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2340148113036523317}
   - component: {fileID: 8996112356685976430}
-  - component: {fileID: 923797308051885169}
   - component: {fileID: 7953786331920119366}
   - component: {fileID: 2792356964459898864}
   - component: {fileID: 4219740766555717711}
@@ -171,20 +170,6 @@ MonoBehaviour:
   levelString: level
   stackEnable: 0
   isTimeScaleOverride: 0
---- !u!114 &923797308051885169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4939292013579537137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b73b53817ad9234cae2bdeb7041fe9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tweenCapacity: 1250
-  sequenceCapacity: 312
 --- !u!114 &7953786331920119366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameID: com.renegadeware.ESPS3A2
-  _progressMax: 12
+  _progressMax: 10
   _userData: {fileID: 11400000, guid: d1570a9011293b94a9b3d84278169e34, type: 2}
   _settingsData: {fileID: 11400000, guid: 9d49958e44f75d147a748c1b9fa7ee0e, type: 2}
   _speakQueueStartDelay: 0.3
@@ -220,7 +205,7 @@ MonoBehaviour:
   _userData: {fileID: 11400000, guid: 9d49958e44f75d147a748c1b9fa7ee0e, type: 2}
   _loadOnInstance: 0
   _masterVolumeDefault: 1
-  _soundVolumeDefault: 0.5
+  _soundVolumeDefault: 0.6
   _musicVolumeDefault: 0.4
 --- !u!81 &4219740766555717711
 AudioListener:

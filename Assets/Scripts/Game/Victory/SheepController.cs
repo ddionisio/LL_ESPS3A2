@@ -136,6 +136,12 @@ public class SheepController : MonoBehaviour {
 		mRout = StartCoroutine(DoMoveOffscreen(screenSide));
 	}
 
+	public void MoveTo(float x, Action nextAct) {
+		StopRout();
+
+		mRout = StartCoroutine(DoMoveTo(x, nextAct));
+	}
+
 	void OnDisable() {
 		StopRout();
 	}
@@ -208,6 +214,52 @@ public class SheepController : MonoBehaviour {
 		}
 		
 		mRout = null;
+	}
+
+	IEnumerator DoMoveTo(float x, Action nextAct) {
+		var cam2D = M8.Camera2D.main;
+		var screenExt = cam2D.screenExtent;
+
+		var pos = position;
+
+		if(mAnim)
+			_animatorTriggerMove.Set(mAnim);
+
+		if(pos.x < x) {
+			side = Side.Right;
+
+			//yield return M8.AnimatorUtil.WaitNextState(mAnim);
+
+			//assume grounded, so just update x
+			while(pos.x < x) {
+				yield return null;
+
+				pos.x += _moveSpeed * Time.deltaTime;
+
+				position = pos;
+			}
+		}
+		else {
+			side = Side.Left;
+
+			//yield return M8.AnimatorUtil.WaitNextState(mAnim);
+
+			//assume grounded, so just update x
+			while(pos.x > x) {
+				yield return null;
+
+				pos.x -= _moveSpeed * Time.deltaTime;
+
+				position = pos;
+			}
+		}
+
+		pos.x = x;
+		position = pos;
+
+		mRout = null;
+
+		PerformAction(nextAct);
 	}
 
 	private void StopRout() {

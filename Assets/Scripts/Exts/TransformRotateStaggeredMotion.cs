@@ -8,13 +8,11 @@ public class TransformRotateStaggeredMotion : MonoBehaviour {
 	[Header("Full Rotate")]
 	public M8.RangeFloat rotateRange;
 	public M8.RangeInt rotateCountRange;
-	public DG.Tweening.Ease rotateEase;
 	public M8.RangeFloat rotateDelayRange;
 
 	[Header("Stagger Rotate")]
 	public M8.RangeFloat staggerRotateDelayRange;
 	public M8.RangeInt staggerRotateCountRange;
-	public DG.Tweening.Ease staggerRotateEase;
 
 	[Header("Wait")]
 	public M8.RangeFloat waitDelayRange;
@@ -32,9 +30,6 @@ public class TransformRotateStaggeredMotion : MonoBehaviour {
 
 	private Coroutine mRout;
 
-	private DG.Tweening.EaseFunction mFullRotateEaseFunc;
-	private DG.Tweening.EaseFunction mStaggerRotateEaseFunc;
-
 	private M8.WaitForSecondsRandom mWait;
 
 	void OnDisable() {
@@ -50,9 +45,6 @@ public class TransformRotateStaggeredMotion : MonoBehaviour {
 
 	void Awake() {
 		if(!target) target = transform;
-
-		mFullRotateEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(rotateEase);
-		mStaggerRotateEaseFunc = DG.Tweening.Core.Easing.EaseManager.ToEaseFunction(staggerRotateEase);
 
 		if(waitDelayRange.length > 0f)
 			mWait = new M8.WaitForSecondsRandom(waitDelayRange.min, waitDelayRange.max);
@@ -84,7 +76,7 @@ public class TransformRotateStaggeredMotion : MonoBehaviour {
 
 					curTime += Time.deltaTime;
 
-					rotate = Mathf.Lerp(startRotate, endRotate, mFullRotateEaseFunc(curTime, delay, 0f, 0f));
+					rotate = Mathf.Lerp(startRotate, endRotate, 1f - Mathf.Cos((curTime / delay) * Mathf.PI * 0.5f));
 				}
 
 				isEnd = !isEnd;
@@ -103,7 +95,7 @@ public class TransformRotateStaggeredMotion : MonoBehaviour {
 
 					curTime += Time.deltaTime;
 
-					rotate = Mathf.Lerp(startRotate, endRotate, mStaggerRotateEaseFunc(curTime, delay, 0f, 0f));
+					rotate = Mathf.Lerp(startRotate, endRotate, Mathf.Sin((curTime / delay) * Mathf.PI * 0.5f));
 				}
 
 				isEnd = !isEnd;

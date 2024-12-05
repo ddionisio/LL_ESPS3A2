@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayControllerLevel02 : PlayControllerBase {
-	[Header("Scene")]
-	public Transform landRoot;
-	public Transform skyRoot;
-
 	[Header("Puzzle")]
-	public GameObject puzzleGO;
+	public GameObject puzzleGO;	
 	public GameObject puzzleDragInstructGO;
 	public GameObject puzzleDragInstructSecondGO;
 	public GameObject puzzleHandleInstructGO;
@@ -27,11 +23,25 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	public M8.AnimatorTargetParamTrigger spiritAction;
 	public M8.AnimatorTargetParamTrigger spiritVictory;
 
+	[Header("Pointers")]
+	public GameObject pointerGoalGO;
+	public GameObject pointerGemFirstGO;
+	public GameObject pointerGoalNextGO;
+
+	[Header("Dialogs")]
+	public ModalDialogFlowIncremental dlgIntro;
+	public ModalDialogFlowIncremental dlgGoalPointer;
+	public ModalDialogFlowIncremental dlgGemIntro;
+	public ModalDialogFlowIncremental dlgGemInstruct;
+	public ModalDialogFlowIncremental dlgGemPlaced;
+	public ModalDialogFlowIncremental dlgGemNextIntro;
+	public ModalDialogFlowIncremental dlgGemNextPlaced;
+	public ModalDialogFlowIncremental dlgSlotOrientInstruct;
+	public ModalDialogFlowIncremental dlgGoalFirstReached;
+	public ModalDialogFlowIncremental dlgNextTask;
+
 	protected override IEnumerator Intro() {
 		yield return null;
-
-		//dialog
-		yield return new WaitForSeconds(1f);
 
 		//show puzzle
 		puzzleGO.SetActive(true);
@@ -43,9 +53,18 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 		spiritEnter.Set();
 
-		//some more dialog
-
 		yield return new WaitForSeconds(1f);
+
+		//dialog
+		yield return dlgIntro.Play();
+
+		//goal
+		pointerGoalGO.SetActive(true);
+
+		//dialog
+		yield return dlgGoalPointer.Play();
+
+		pointerGoalGO.SetActive(false);
 
 		//show lights
 
@@ -69,20 +88,26 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 		yield return new WaitForSeconds(0.5f);
 
+		pointerGemFirstGO.SetActive(true);
+
+		//dialog
+		yield return dlgGemIntro.Play();
+
+		pointerGemFirstGO.SetActive(false);
+
 		puzzleDragInstructGO.SetActive(true);
 
 		//dialog
+		yield return dlgGemInstruct.Play();
 	}
 
 	protected override void GameUpdate() {
 	}
 
 	protected override IEnumerator GameEnd() {
-		yield return null;
-
 		spiritVictory.Set();
 
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(5f);
 
 		//more dialog stuff
 	}
@@ -112,13 +137,14 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 		puzzleDropOffs[0].onDropOffPickupChanged.AddListener(OnFirstSlotDropOff);
 		puzzleDropOffs[1].onDropOffPickupChanged.AddListener(OnSecondSlotDropOff);
-
-		puzzleGoals[0].powerFullyCharged.AddListener(OnGoalOneFullyCharged);
-
+				
 		//spirit		
 		spiritGO.SetActive(false);
 
-		//land
+		//pointers
+		pointerGoalGO.SetActive(false);
+		pointerGemFirstGO.SetActive(false);
+		pointerGoalNextGO.SetActive(false);
 	}
 
 	void OnFirstSlotDropOff(PuzzleMechanicPickUp pickup) {
@@ -129,12 +155,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 		puzzleDragInstructGO.SetActive(false);
 
-		//show second pickup, enable second drop-off
-		puzzleDropOffs[1].active = true;
-
-		puzzlePickupRootGOs[1].SetActive(true);
-
-		puzzleDragInstructSecondGO.SetActive(true);
+		StartCoroutine(DoFirstSlotDropOff());
 	}
 
 	void OnSecondSlotDropOff(PuzzleMechanicPickUp pickup) {
@@ -144,7 +165,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 		puzzleDragInstructSecondGO.SetActive(false);
 
 		//show handle instruction
-		StartCoroutine(DoHandleInstruction());
+		StartCoroutine(DoSecondSlotDropOff());
 	}
 
 	void OnGoalOneFullyCharged(bool charged) {
@@ -153,37 +174,58 @@ public class PlayControllerLevel02 : PlayControllerBase {
 
 			spiritAction.Set();
 
-			//progress
-			LoLManager.instance.ApplyProgress(LoLManager.instance.curProgress + 1);
-
 			//show final pick ups and some dialog
 			StartCoroutine(DoGoalOneFullyCharged());
 		}
 	}
 
-	IEnumerator DoHandleInstruction() {
-		yield return null;
+	IEnumerator DoFirstSlotDropOff() {
+		yield return dlgGemPlaced.Play();
+
+		//show second pickup, enable second drop-off
+		puzzleDropOffs[1].active = true;
+
+		puzzlePickupRootGOs[1].SetActive(true);
+
+		puzzleDragInstructSecondGO.SetActive(true);
+
+		yield return dlgGemNextIntro.Play();
+	}
+
+	IEnumerator DoSecondSlotDropOff() {
+		yield return dlgGemNextPlaced.Play();
 				
 		puzzleHandleInstructGO.SetActive(true);
 
 		//dialog
-		yield return new WaitForSeconds(1f);
+		yield return dlgSlotOrientInstruct.Play();
 
 		puzzleHandleInstructGO.SetActive(false);
+
+		if(puzzleGoals[0].isPowerFull)
+			OnGoalOneFullyCharged(true);
+		else
+			puzzleGoals[0].powerFullyCharged.AddListener(OnGoalOneFullyCharged);
 	}
 
 	IEnumerator DoGoalOneFullyCharged() {
-		yield return null;
-
 		//dialog
+		yield return dlgGoalFirstReached.Play();
 
-		puzzleDropOffs[2].active = true;
+		puzzleDropOffs[2].active = true;				
 		puzzleDropOffs[3].active = true;
 
 		puzzlePickupRootGOs[2].SetActive(true);
 
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.5f);
 
 		puzzlePickupRootGOs[3].SetActive(true);
+
+		pointerGoalNextGO.SetActive(true);
+
+		//dialog
+		yield return dlgNextTask.Play();
+
+		pointerGoalNextGO.SetActive(false);
 	}
 }
