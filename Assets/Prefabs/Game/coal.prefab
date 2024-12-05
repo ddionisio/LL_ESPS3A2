@@ -9978,8 +9978,8 @@ MonoBehaviour:
     min: 3
     max: 3
   actionMoveImpulseRange:
-    min: 7
-    max: 7
+    min: 8
+    max: 8
   actionMoveForceDuration: 0.5
   actionEndEnabled: 0
   actionEndDelay: 2

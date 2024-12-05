@@ -86,9 +86,11 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 	}
 
 	public void ProgressReset() {
-		LoLManager.instance.userData.Delete();
+		if(LoLManager.instance.curProgress > 0) {
+			LoLManager.instance.userData.Delete();
 
-		LoLManager.instance.ApplyProgress(0, 0);
+			LoLManager.instance.ApplyProgress(0, 0);
+		}
 
 		isProceed = false;
 	}
