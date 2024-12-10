@@ -9,7 +9,7 @@ public class PlayControllerLevel03 : PlayControllerBase {
 	public GameObject puzzleGO;
 	public GameObject[] puzzleRockGOs;
 	public PuzzleMechanicBase puzzlePlunger;
-	public PuzzleMechanicBase puzzleRotator;
+	public PuzzleMechanicRadial puzzleRotator;
 	public PuzzleMechanicBase puzzleSlider;
 	public M8.TriggerEnterExitDelayEvent2D puzzlePlatformSpring;
 
@@ -96,7 +96,9 @@ public class PlayControllerLevel03 : PlayControllerBase {
 		instructSliderGO.SetActive(false);
 	}
 
-	IEnumerator DoPlatformPushed() {		
+	IEnumerator DoPlatformPushed() {
+		puzzlePlunger.locked = true;
+
 		yield return new WaitForSeconds(0.5f);
 
 		//goals stuff
@@ -111,7 +113,7 @@ public class PlayControllerLevel03 : PlayControllerBase {
 		var wait = new WaitForSeconds(0.3f);
 
 		//rotator thing
-		puzzleRotator.locked = false;
+		//puzzleRotator.locked = false;
 		yield return wait;
 
 		instructRotateGO.SetActive(true);
@@ -119,6 +121,10 @@ public class PlayControllerLevel03 : PlayControllerBase {
 		yield return dlgRotatePointer.Play();
 
 		instructRotateGO.SetActive(false);
+
+		puzzleRotator.value = 7.5f;
+
+		yield return wait;
 
 		//slider thing
 		puzzleSlider.locked = false;
@@ -129,6 +135,8 @@ public class PlayControllerLevel03 : PlayControllerBase {
 		yield return dlgSliderPointer.Play();
 
 		instructSliderGO.SetActive(false);
+
+		puzzlePlunger.locked = false;
 
 		yield return dlgGameStart.Play();
 	}

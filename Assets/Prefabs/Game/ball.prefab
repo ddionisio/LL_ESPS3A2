@@ -10491,8 +10491,8 @@ MonoBehaviour:
     max: 4
   actionMoveImpulseRange:
     min: 1
-    max: 10
-  actionMoveForceDuration: 1
+    max: 14
+  actionMoveForceDuration: 0
   actionEndEnabled: 1
   actionEndDelay: 1
   actionEndSpeedThreshold: 2

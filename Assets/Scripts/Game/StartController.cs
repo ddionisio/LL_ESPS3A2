@@ -38,9 +38,6 @@ public class StartController : GameModeController<StartController> {
 	protected override IEnumerator Start() {
 		yield return base.Start();
 
-		while(!LoLManager.instance.isReady)
-			yield return null;
-
 		GameData.instance.MusicPlay(true);
 
 		yield return new WaitForSeconds(0.3f);
@@ -55,7 +52,7 @@ public class StartController : GameModeController<StartController> {
 
 		var lolMgr = LoLManager.instance;
 
-		if(continueGO) continueGO.SetActive(lolMgr.curProgress > 0);
+		if(continueGO) continueGO.SetActive(lolMgr.curProgress > 0 || GameData.instance.savedLevelIndex > 0);
 	}
 
 	IEnumerator DoProceed(bool isContinue) {

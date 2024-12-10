@@ -7579,6 +7579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sound: click
   mode: 0
+  checkPlaying: 0
 --- !u!1 &6095376467947570690
 GameObject:
   m_ObjectHideFlags: 0
@@ -10436,6 +10437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sound: click
   mode: 0
+  checkPlaying: 0
 --- !u!1 &8709229057861894105
 GameObject:
   m_ObjectHideFlags: 0
@@ -10949,6 +10951,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8291111795095408584}
   - component: {fileID: 5485949916021263779}
+  - component: {fileID: 7196447893879473498}
   - component: {fileID: 908207150352670467}
   - component: {fileID: 4598368823785412440}
   m_Layer: 5
@@ -10992,6 +10995,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _exclusive: 0
+--- !u!114 &7196447893879473498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9037983148664903861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a188f0ad3f8f10428be87ce486bcc82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &908207150352670467
 Animator:
   serializedVersion: 5
@@ -11004,7 +11019,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 600c98f2b2167ea47a8998c43653ecd7, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

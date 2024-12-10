@@ -67,6 +67,10 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 		}
 	}
 
+	public int savedLevelIndex {
+		get { return LoLManager.instance.userData.GetInt(levelIndKey); }
+	}
+
 	public void MusicPlay(bool play) {
 		if(play) {
 			if(!M8.MusicPlaylist.instance.isPlaying)
@@ -98,9 +102,7 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 	public void ProgressContinue() {
 		isProceed = true;
 
-		int lvlInd = LoLManager.instance.userData.GetInt(levelIndKey);
-
-		levels[lvlInd].scene.Load();
+		levels[savedLevelIndex].scene.Load();
 	}
 
 	public void ProgressNext() {
@@ -124,7 +126,7 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 			isProceed = true;
 		}
 		else
-			lvlInd = LoLManager.instance.userData.GetInt(levelIndKey);
+			lvlInd = savedLevelIndex;
 
 		var lvlIndNext = lvlInd + 1;
 
