@@ -32,7 +32,10 @@ namespace LoLExt {
         public bool isCloseOnNext;
         public bool isTextSpeechAuto = true;
 
-        [Header("Signals")]
+        [Header("Input")]
+        public M8.InputAction inputProceed;
+
+		[Header("Signals")]
         public M8.Signal signalNext; //when the next button is pressed.
 
         private static M8.GenericParams mParms = new M8.GenericParams();
@@ -168,6 +171,13 @@ namespace LoLExt {
         public void PlayDialogSpeech() {
             if(LoLManager.isInstantiated && !string.IsNullOrEmpty(mDialogTextRef))
                 LoLManager.instance.SpeakText(mDialogTextRef);
+        }
+
+        void Update() {
+            if(mIsActive && inputProceed) {
+                if(inputProceed.IsPressed())
+                    Next();
+			}
         }
 
         void M8.IModalActive.SetActive(bool aActive) {
