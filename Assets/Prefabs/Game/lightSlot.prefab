@@ -360,7 +360,7 @@ MonoBehaviour:
         m_CallState: 2
   _minValue: 0
   _maxValue: 10
-  _stepCount: 4
+  _stepCount: 0
   _value: 0
   onValueChanged:
     m_PersistentCalls:

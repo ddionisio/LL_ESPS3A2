@@ -9,8 +9,15 @@ using UnityEngine.Events;
 public class PuzzleRayCastTarget : MonoBehaviour {
 	public CastData castData;
 
+	[Header("Reflect")]
+	public float reflectCheckAngleLimit = 90f;
+	public Transform reflectUpDirRoot;
+
+	[Header("Events")]
 	public UnityEvent<bool> onCastHitActive;
     public UnityEvent<PuzzleRayCast> onCastHit;
+
+	public UnityEvent<bool> onCastValid;
 
     public UnityEvent onCastActiveUpdate;
 	public UnityEvent<PuzzleRayCast> onCastUpdate;
@@ -23,15 +30,40 @@ public class PuzzleRayCastTarget : MonoBehaviour {
 		}
 	}
 
+	public bool collisionEnabled {
+		get {
+			var _coll = coll;
+			return _coll ? _coll.enabled : false; }
+		set {
+			var _coll = coll;
+			if(_coll) {
+				_coll.enabled = value;
+
+				if(!value) {
+					onCastHitActive?.Invoke(false);
+					onCastHit?.Invoke(null);
+					onCastValid?.Invoke(false);
+				}
+			}
+		}
+	}
+
 	private Collider2D mColl;
 
 	/// <summary>
 	/// Call when cast to new target
 	/// </summary>
 	public void ApplyCast(PuzzleRayCast puzzleRayCast) {
-		onCastHitActive?.Invoke(puzzleRayCast != null);
+		var isActive = puzzleRayCast != null;
+
+		onCastHitActive?.Invoke(isActive);
 
 		onCastHit?.Invoke(puzzleRayCast);
+
+		if(isActive)
+			ApplyValid(puzzleRayCast.castDir);
+		else
+			onCastValid?.Invoke(false);
 	}
 
 	/// <summary>
@@ -41,5 +73,23 @@ public class PuzzleRayCastTarget : MonoBehaviour {
 		onCastActiveUpdate?.Invoke();
 
 		onCastUpdate?.Invoke(puzzleRayCast);
-    }
+
+		ApplyValid(puzzleRayCast.castDir);
+	}
+
+	private void ApplyValid(Vector2 castDir) {
+		var isValid = false;
+
+		if(reflectUpDirRoot) {
+			Vector2 upDir = transform.up;
+
+			var angle = Mathf.Abs(Vector2.SignedAngle(-castDir, upDir));
+			if(angle <= reflectCheckAngleLimit) {
+				reflectUpDirRoot.up = Vector2.Reflect(castDir, upDir);
+				isValid = true;
+			}
+		}
+
+		onCastValid?.Invoke(isValid);
+	}
 }

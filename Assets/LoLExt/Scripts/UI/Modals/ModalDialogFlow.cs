@@ -1,4 +1,4 @@
-﻿//#define DIALOG_DISABLE
+﻿#define DIALOG_DISABLE
 
 using System.Collections;
 using System.Collections.Generic;

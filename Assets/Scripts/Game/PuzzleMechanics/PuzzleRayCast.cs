@@ -15,7 +15,6 @@ public class PuzzleRayCast : MonoBehaviour {
     public float castLength;
     public float castEndOfs; //slight offset from collision point for display
     public LayerMask castTargetLayerMask;
-    public LayerMask castEndLayerMask;
 
     public bool castActive {
         get { return mCastActive; }
@@ -69,8 +68,6 @@ public class PuzzleRayCast : MonoBehaviour {
 
 	public Vector2 position { get { return transform.position; } }
 
-    public M8.CacheList<PuzzleRayCastTarget> targets { get { return mTargets; } }
-
 	public RaycastHit2D[] castHits { get { return mCastHits; } }
     public int castHitCount { get; private set; }
 
@@ -81,19 +78,15 @@ public class PuzzleRayCast : MonoBehaviour {
 
     private const int castCapacity = 6;
 
-    private M8.CacheList<PuzzleRayCastTarget> mTargets = new M8.CacheList<PuzzleRayCastTarget>(castCapacity);
-	private M8.CacheList<PuzzleRayCastTarget> mPrevTargets = new M8.CacheList<PuzzleRayCastTarget>(castCapacity);
+    private PuzzleRayCastTarget mTarget;
 
 	private RaycastHit2D[] mCastHits = new RaycastHit2D[castCapacity];
 
-    public void ClearTargets() {
-        for(int i = 0; i < mTargets.Count; i++) {
-            var tgt = mTargets[i];
-            if(tgt)
-				tgt.ApplyCast(null);
+    public void ClearTarget() {
+        if(mTarget) {
+            mTarget.ApplyCast(null);
+			mTarget = null;
 		}
-
-        mTargets.Clear();
 	}
 
 	void OnEnable() {
@@ -121,43 +114,24 @@ public class PuzzleRayCast : MonoBehaviour {
     private void UpdateCast() {
 		Cast();
 
-		for(int i = 0; i < mTargets.Count; i++) {
-			var tgt = mTargets[i];
-			if(tgt)
-				tgt.UpdateCast(this);
-		}
+        if(mTarget)
+            mTarget.UpdateCast(this);
 	}
 
 	private void Cast() {
-		//set distance
-		RaycastHit2D endHit;
-        if(castRadius > 0f)
-            endHit = Physics2D.CircleCast(position, castRadius, castDir, castLength, castEndLayerMask);
-        else
-			endHit = Physics2D.Raycast(position, castDir, castLength, castEndLayerMask);
-
-        if(endHit.collider)
-            castDistance = endHit.distance;
-        else
-            castDistance = castLength;
-
         //grab targets
 		var contactTargetFilter = new ContactFilter2D() { useLayerMask = true, layerMask = castTargetLayerMask };
 
 		if(castRadius > 0f)
-			castHitCount = Physics2D.CircleCast(position, castRadius, castDir, contactTargetFilter, mCastHits, castDistance);
+			castHitCount = Physics2D.CircleCast(position, castRadius, castDir, contactTargetFilter, mCastHits, castLength);
 		else
-			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castDistance);
+			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castLength);
 
-        if(castHitCount > 0) {
-            //copy targets to previous
-			mPrevTargets.Clear();
-            for(int i = 0; i < mTargets.Count; i++)
-                mPrevTargets.Add(mTargets[i]);
+        var nearestDist = castLength;
 
-			//grab new targets
-			mTargets.Clear();
-			
+		if(castHitCount > 0) {
+            PuzzleRayCastTarget newTarget = null;
+
 			for(int i = 0; i < castHitCount; i++) {
                 var hit = mCastHits[i];
 
@@ -168,43 +142,36 @@ public class PuzzleRayCast : MonoBehaviour {
 				//ensure hit is not in our hierarchy
 				if(hitColl.gameObject == gameObject || M8.Util.IsParentOf(transform, hitColl.transform) || M8.Util.IsParentOf(hitColl.transform, transform))
 					continue;
+                				
+				newTarget = hitColl.GetComponent<PuzzleRayCastTarget>();
+                if(newTarget && newTarget.castData != castData)
+                    continue;
 
-				var newTarget = hitColl.GetComponent<PuzzleRayCastTarget>();
-				if(!newTarget || newTarget.castData != castData)
-					continue;
+				nearestDist = hit.distance;
 
-				mTargets.Add(newTarget);
+				break;
 			}
 
-            //check each new target if they are already from previous
-            for(int i = 0; i < mTargets.Count; i++) {
-                var tgt = mTargets[i];
+            if(mTarget != newTarget) {
+                if(mTarget)
+                    mTarget.ApplyCast(null);
 
-                int prevInd = mPrevTargets.IndexOf(tgt);
-                if(prevInd == -1)
-                    tgt.ApplyCast(this); //new target
-                else
-                    mPrevTargets.RemoveAt(prevInd);
-            }
-
-            //update previous targets that are no longer in contact
-            for(int i = 0; i < mPrevTargets.Count; i++) {
-                var tgt = mPrevTargets[i];
-                if(tgt)
-                    tgt.ApplyCast(null);
-            }
-
-            mPrevTargets.Clear();
+                mTarget = newTarget;
+                if(mTarget)
+                    mTarget.ApplyCast(this);
+			}
 		}
         else
-            ClearTargets();
-    }
+            ClearTarget();
+
+		castDistance = nearestDist;
+	}
 
     private void ApplyActive() {
         if(castActiveGO) castActiveGO.SetActive(mCastActive);
 
         if(!mCastActive)
-            ClearTargets();
+            ClearTarget();
 	}
 
 	void OnDrawGizmos() {
