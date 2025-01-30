@@ -19,7 +19,7 @@ public class GameData : M8.SingletonScriptableObject<GameData> {
 
 	[Header("Puzzle Mechanic General")]
 	public float mechanicRayCastUpdateDelay = 0.3f;
-	public float goalIntervalDelay = 2f;
+	public float goalIntervalDelay = 1.5f;
 	[M8.TagSelector]
 	public string sheepMainTag;
 

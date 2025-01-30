@@ -53,30 +53,16 @@ public class GoalController : MonoBehaviour {
 	private bool mIsDecayWait;
 	private float mDecayCurTime;
 
-	private float mAudioLastTime;
-	private bool mAudioIsPlaying;
-	private bool mAudioForcePlay;
-	private bool mAudioForceStop;
-
 	public void DecayReset() {
 		mIsDecayWait = true; 
 		mDecayCurTime = 0f;
 	}
 
 	public void ForceAudioPlay() {
-		mAudioForcePlay = true;
-		
 		if(audioSource) {
 			audioSource.Stop();
 			audioSource.Play();
 		}
-	}
-
-	public void ForceAudioStop() {
-		mAudioForceStop = true;
-
-		if(audioSource)
-			audioSource.Stop();
 	}
 
 	void OnEnable() {
@@ -85,23 +71,19 @@ public class GoalController : MonoBehaviour {
 
 		var _powerNorm = powerNormal;
 
-		if(audioSource)
+		if(audioSource) {
 			audioSource.volume = M8.UserSettingAudio.instance.soundVolume * _powerNorm;
+			audioSource.Play();
+		}
 
 		powerChanged?.Invoke(mPower);
 		powerChangedNormal?.Invoke(_powerNorm);
 		powerFullyCharged?.Invoke(isPowerFull);
-
-		mAudioLastTime = Time.time;
-		mAudioIsPlaying = false;
 	}
 
 	void OnDisable() {
 		if(audioSource)
 			audioSource.Stop();
-
-		mAudioForcePlay = false;
-		mAudioForceStop = false;
 	}
 
 	void OnDestroy() {
@@ -124,17 +106,6 @@ public class GoalController : MonoBehaviour {
 			}
 			else {
 				power -= decayRate * Time.deltaTime;
-			}
-		}
-
-		if(!(mAudioForcePlay || mAudioForceStop || audioSource.isPlaying)) {
-			if(mAudioIsPlaying) {
-				mAudioLastTime = Time.time;
-				mAudioIsPlaying = false;
-			}
-			else if(Time.time - mAudioLastTime >= GameData.instance.goalIntervalDelay) {
-				audioSource.Play();
-				mAudioIsPlaying = true;
 			}
 		}
 	}

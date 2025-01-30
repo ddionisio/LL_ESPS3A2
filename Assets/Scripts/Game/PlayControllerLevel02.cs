@@ -107,7 +107,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	protected override IEnumerator GameEnd() {
 		spiritVictory.Set();
 
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(3f);
 
 		//more dialog stuff
 	}
