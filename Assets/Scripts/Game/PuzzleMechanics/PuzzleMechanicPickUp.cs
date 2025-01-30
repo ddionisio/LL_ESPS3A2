@@ -16,6 +16,7 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 	[Header("Events")]
 	public UnityEvent onPickUp;
 	public UnityEvent onDropOff;
+	public M8.SignalBoolean signalInvokePickUp;
 
 	public Vector2 position { 
 		get { return transform.position; } 
@@ -75,6 +76,7 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 
 		if(isPicked) {
 			onDropOff?.Invoke();
+			signalInvokePickUp?.Invoke(false);
 		}
 	}
 
@@ -226,6 +228,7 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 				currentDropOff.pickUpAttached = null;
 
 			onPickUp?.Invoke();
+			signalInvokePickUp?.Invoke(true);
 		}
 		else
 			colliderEnabled = true;

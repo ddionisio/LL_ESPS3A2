@@ -125,8 +125,8 @@ public class PlayControllerLevel05 : PlayControllerBase {
 	}
 
 	protected override IEnumerator GameEnd() {
-		for(int i = 0; i < puzzleGoals.Length; i++)
-			puzzleGoals[i].ForceAudioStop();
+		//for(int i = 0; i < puzzleGoals.Length; i++)
+			//puzzleGoals[i].ForceAudioStop();
 
 		if(!string.IsNullOrEmpty(musicEnd))
 			M8.MusicPlaylist.instance.Play(musicEnd, false, true);

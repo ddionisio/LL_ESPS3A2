@@ -7,8 +7,12 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	[Header("Puzzle")]
 	public GameObject puzzleGO;
 	public GameObject puzzleInstructionGO;
-	public PuzzleMechanicBase outerInput;
-	public PuzzleMechanicBase innerInput;	
+	public PuzzleMechanicValueBase outerInput;
+	public PuzzleMechanicValueBase innerInput;
+
+	[Header("Light")]
+	public PuzzleRayCast lightCast;
+	public GameObject lightBlockInnerGO;
 
 	[Header("Spirit")]
 	public GameObject spiritGO;
@@ -22,12 +26,11 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	public ModalDialogFlowIncremental dlgIntro;
 	public ModalDialogFlowIncremental dlgPlayIntro;
 	public ModalDialogFlowIncremental dlgPlayIntroMechanic;
-	public ModalDialogFlowIncremental dlgOuterComplete;
 	public ModalDialogFlowIncremental dlgInnerComplete;
+	public ModalDialogFlowIncremental dlgOuterComplete;	
 
-	[Header("Signals")]
-	public M8.Signal signalListenPuzzleOuterComplete;
-	public M8.Signal signalListenPuzzleInnerComplete;
+	public bool mCheckInnerBlocker;
+	public bool mCheckNoBlocker;
 
 	protected override IEnumerator Intro() {
 		yield return dlgIntro.Play();
@@ -39,6 +42,10 @@ public class PlayControllerLevel01 : PlayControllerBase {
 		spiritGO.SetActive(true);
 
 		spiritEnter.Set();
+
+		yield return new WaitForSeconds(0.5f);
+
+		lightCast.gameObject.SetActive(true);
 	}
 
 	protected override IEnumerator GameBegin() {
@@ -48,20 +55,27 @@ public class PlayControllerLevel01 : PlayControllerBase {
 
 		yield return dlgPlayIntroMechanic.Play();
 
-		outerInput.locked = false;
+		innerInput.locked = false;
+		mCheckInnerBlocker = true;
 	}
 
 	protected override void GameUpdate() {
+		if(mCheckInnerBlocker) {
+			if(lightCast.castHitGO != lightBlockInnerGO) {
+				StartCoroutine(DoPuzzleInnerComplete());
+				mCheckInnerBlocker = false;
+			}
+		}
+		else if(mCheckNoBlocker) {
+			if(lightCast.castHitGO == null) {
+				StartCoroutine(DoPuzzleOuterComplete());
+				mCheckNoBlocker = false;
+			}
+		}
 	}
 
 	protected override IEnumerator GameEnd() {
-		spiritAction.Set();
-
-		yield return new WaitForSeconds(1f);
-
 		spiritLightBeamGO.SetActive(true);
-
-		yield return dlgInnerComplete.Play();
 
 		spiritVictory.Set();
 								
@@ -69,8 +83,6 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	}
 
 	protected override void OnInstanceDeinit() {
-		signalListenPuzzleOuterComplete.callback -= OnPuzzleOuterComplete;
-		signalListenPuzzleInnerComplete.callback -= OnPuzzleInnerComplete;
 
 		base.OnInstanceDeinit();
 	}
@@ -82,32 +94,41 @@ public class PlayControllerLevel01 : PlayControllerBase {
 		puzzleInstructionGO.SetActive(false);
 
 		outerInput.locked = true;
-		innerInput.locked = true;		
+		innerInput.locked = true;
+
+		lightCast.gameObject.SetActive(false);
 
 		spiritGO.SetActive(false);
 		spiritLightBeamGO.SetActive(false);
-
-		signalListenPuzzleOuterComplete.callback += OnPuzzleOuterComplete;
-		signalListenPuzzleInnerComplete.callback += OnPuzzleInnerComplete;
 	}
 
-	IEnumerator DoPuzzleOuterComplete() {
+	IEnumerator DoPuzzleInnerComplete() {
+		innerInput.locked = true;
+		innerInput.value = 0.5f;
+
 		puzzleInstructionGO.SetActive(false);
 
 		spiritAction.Set();
 
 		yield return new WaitForSeconds(1f);
 
+		yield return dlgInnerComplete.Play();
+				
+		outerInput.locked = false;
+		mCheckNoBlocker = true;
+	}
+
+
+	IEnumerator DoPuzzleOuterComplete() {
+		outerInput.locked = true;
+		outerInput.value = 0.5f;
+
+		spiritAction.Set();
+
+		yield return new WaitForSeconds(1f);
+
 		yield return dlgOuterComplete.Play();
-
-		innerInput.locked = false;
-	}
-
-	void OnPuzzleOuterComplete() {
-		StartCoroutine(DoPuzzleOuterComplete());
-	}
-
-	void OnPuzzleInnerComplete() {
+				
 		isPuzzleComplete = true;
 	}
 }

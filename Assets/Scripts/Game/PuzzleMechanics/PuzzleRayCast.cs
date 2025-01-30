@@ -66,6 +66,8 @@ public class PuzzleRayCast : MonoBehaviour {
         }
     }
 
+    public GameObject castHitGO { get; private set; }
+
 	public Vector2 position { get { return transform.position; } }
 
 	public RaycastHit2D[] castHits { get { return mCastHits; } }
@@ -128,6 +130,7 @@ public class PuzzleRayCast : MonoBehaviour {
 			castHitCount = Physics2D.Raycast(position, castDir, contactTargetFilter, mCastHits, castLength);
 
         var nearestDist = castLength;
+        GameObject nearestHitGO = null;
 
 		if(castHitCount > 0) {
             PuzzleRayCastTarget newTarget = null;
@@ -147,6 +150,7 @@ public class PuzzleRayCast : MonoBehaviour {
                 if(newTarget && newTarget.castData != castData)
                     continue;
 
+				nearestHitGO = hit.collider.gameObject;
 				nearestDist = hit.distance;
 
 				break;
@@ -165,6 +169,7 @@ public class PuzzleRayCast : MonoBehaviour {
             ClearTarget();
 
 		castDistance = nearestDist;
+        castHitGO = nearestHitGO;
 	}
 
     private void ApplyActive() {

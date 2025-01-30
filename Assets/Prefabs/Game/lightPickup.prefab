@@ -5313,6 +5313,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  signalInvokePickUp: {fileID: 11400000, guid: 0585f33006fdcb3489eac01bd9848361, type: 2}
 --- !u!58 &1697314114900898156
 CircleCollider2D:
   m_ObjectHideFlags: 0

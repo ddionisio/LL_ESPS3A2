@@ -12,6 +12,8 @@ public class PuzzleDropOff : MonoBehaviour {
 	[SerializeField]
 	bool _active = true;
 	[SerializeField]
+	GameObject _activeGO;
+	[SerializeField]
 	GameObject _inactiveGO;
 
 	[Header("Events")]
@@ -67,6 +69,7 @@ public class PuzzleDropOff : MonoBehaviour {
 		if(coll)
 			coll.enabled = _active;
 
+		if(_activeGO) _activeGO.SetActive(_active);
 		if(_inactiveGO) _inactiveGO.SetActive(!_active);
 	}
 }

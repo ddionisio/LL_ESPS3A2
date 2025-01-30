@@ -278,7 +278,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: base/handle/interact_highlight
+    path: base/handle/highlightActive
     classID: 1
     script: {fileID: 0}
     flags: 0
@@ -345,7 +345,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1442173271
+      path: 1516187080
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -896,7 +896,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: base/handle/interact_highlight
+    path: base/handle/highlightActive
     classID: 1
     script: {fileID: 0}
     flags: 0
