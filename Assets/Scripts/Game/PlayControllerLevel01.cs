@@ -27,10 +27,11 @@ public class PlayControllerLevel01 : PlayControllerBase {
 	public ModalDialogFlowIncremental dlgPlayIntro;
 	public ModalDialogFlowIncremental dlgPlayIntroMechanic;
 	public ModalDialogFlowIncremental dlgInnerComplete;
+	public ModalDialogFlowIncremental dlgOuter;
 	public ModalDialogFlowIncremental dlgOuterComplete;	
 
-	public bool mCheckInnerBlocker;
-	public bool mCheckNoBlocker;
+	private bool mCheckInnerBlocker;
+	private bool mCheckNoBlocker;
 
 	protected override IEnumerator Intro() {
 		yield return dlgIntro.Play();
@@ -116,6 +117,8 @@ public class PlayControllerLevel01 : PlayControllerBase {
 				
 		outerInput.locked = false;
 		mCheckNoBlocker = true;
+
+		yield return dlgOuter.Play();
 	}
 
 

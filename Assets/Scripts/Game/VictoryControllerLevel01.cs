@@ -15,11 +15,42 @@ public class VictoryControllerLevel01 : GameModeController<VictoryControllerLeve
 	public M8.AnimatorTargetParamTrigger landHappy;
 
 	[Header("Dialogs")]
-	public ModalDialogFlowIncremental dlgVictory;
+	//public ModalDialogFlowIncremental dlgVictory;
 	public ModalDialogFlowIncremental dlgVictoryAwake;
 	public ModalDialogFlowIncremental dlgVictoryNext;
 
 	protected override IEnumerator Start() {
+		yield return base.Start();
+
+		GameData.instance.MusicPlay(true);
+
+		landLightOn.Set();
+
+		yield return new WaitForSeconds(1.5f);
+
+		sheepAries.PerformAction(SheepController.Action.Wake);
+
+		yield return new WaitForSeconds(2f);
+
+		landHappy.Set();
+				
+		yield return dlgVictoryAwake.Play();
+
+		sheepAriesTransform.Set();
+
+		yield return new WaitForSeconds(2f);
+
+		yield return dlgVictoryNext.Play();
+				
+		sheepAries.MoveOffscreen(SheepController.Side.Right);
+
+		while(sheepAries.isBusy)
+			yield return null;
+
+		GameData.instance.ProgressNext();
+	}
+
+	/*protected override IEnumerator Start() {
 		yield return base.Start();
 
 		GameData.instance.MusicPlay(true);
@@ -48,5 +79,5 @@ public class VictoryControllerLevel01 : GameModeController<VictoryControllerLeve
 			yield return null;
 
 		GameData.instance.ProgressNext();
-	}
+	}*/
 }

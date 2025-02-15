@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 624626071897990399, guid: 6dd56844d523f934097d11301ce7472b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 70f9c496540d6264590134f48b53f7b7, type: 3}
+      objectReference: {fileID: 21300000, guid: b6b811baff5772e4792301a41007ac31, type: 3}
     - target: {fileID: 1768874231440641820, guid: 6dd56844d523f934097d11301ce7472b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.41
@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 22100000, guid: eefa9f75ce19b8d40943b6a2f639c152, type: 2}
     - target: {fileID: 5403766739446552691, guid: 6dd56844d523f934097d11301ce7472b, type: 3}
       propertyPath: m_Name
-      value: sheep_sheep Variant
+      value: sheep_sheep
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

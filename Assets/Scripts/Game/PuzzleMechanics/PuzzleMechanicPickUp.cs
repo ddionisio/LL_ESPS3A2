@@ -63,11 +63,14 @@ public class PuzzleMechanicPickUp : PuzzleMechanicBase {
 					ApplyDropOff(mPointerDropOff);
 			}
 
-			mPointerDropOff.pickUpAttached = this;
+			//in the event during ApplyDropOff or SwapDropOff callbacks clears out mPointerDropOff, e.g. locked = true
+			if(mPointerDropOff) {
+				mPointerDropOff.pickUpAttached = this;
 
-			mPointerDropOff.onDropOffHighlight?.Invoke(false);
+				mPointerDropOff.onDropOffHighlight?.Invoke(false);
 
-			mPointerDropOff = null;
+				mPointerDropOff = null;
+			}
 		}
 		else if(currentDropOff)
 			currentDropOff.pickUpAttached = this;

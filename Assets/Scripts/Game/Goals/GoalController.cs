@@ -65,6 +65,12 @@ public class GoalController : MonoBehaviour {
 		}
 	}
 
+	public void ForceAudioStop() {
+		if(audioSource) {
+			audioSource.Stop();
+		}
+	}
+
 	void OnEnable() {
 		mIsDecayWait = mPower > 0f;
 		mDecayCurTime = 0f;

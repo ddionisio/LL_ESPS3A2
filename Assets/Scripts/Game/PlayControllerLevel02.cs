@@ -16,6 +16,8 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	public PuzzleDropOff[] puzzleDropOffs;
 
 	public GoalController[] puzzleGoals;
+
+	public PuzzleMechanicRadial puzzleSlotRadialCheck;
 		
 	[Header("Spirit")]
 	public GameObject spiritGO;
@@ -36,7 +38,6 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	public ModalDialogFlowIncremental dlgGemPlaced;
 	public ModalDialogFlowIncremental dlgGemNextIntro;
 	public ModalDialogFlowIncremental dlgGemNextPlaced;
-	public ModalDialogFlowIncremental dlgSlotOrientInstruct;
 	public ModalDialogFlowIncremental dlgGoalFirstReached;
 	public ModalDialogFlowIncremental dlgNextTask;
 
@@ -107,7 +108,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	protected override IEnumerator GameEnd() {
 		spiritVictory.Set();
 
-		yield return new WaitForSeconds(3f);
+		yield return new WaitForSeconds(2f);
 
 		//more dialog stuff
 	}
@@ -148,17 +149,18 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	}
 
 	void OnFirstSlotDropOff(PuzzleMechanicPickUp pickup) {
-		//pickup.locked = true;
+		pickup.locked = true;
 
 		puzzleDropOffs[0].onDropOffPickupChanged.RemoveListener(OnFirstSlotDropOff);
-		//puzzleDropOffs[0].active = false;
+		puzzleDropOffs[0].active = false;
 
 		puzzleDragInstructGO.SetActive(false);
-
+				
 		StartCoroutine(DoFirstSlotDropOff());
 	}
 
 	void OnSecondSlotDropOff(PuzzleMechanicPickUp pickup) {
+		pickup.locked = true;
 
 		puzzleDropOffs[1].onDropOffPickupChanged.RemoveListener(OnSecondSlotDropOff);
 
@@ -180,6 +182,7 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	}
 
 	IEnumerator DoFirstSlotDropOff() {
+
 		yield return dlgGemPlaced.Play();
 
 		//show second pickup, enable second drop-off
@@ -190,15 +193,14 @@ public class PlayControllerLevel02 : PlayControllerBase {
 		puzzleDragInstructSecondGO.SetActive(true);
 
 		yield return dlgGemNextIntro.Play();
+
+		//pickup.locked = false;
 	}
 
 	IEnumerator DoSecondSlotDropOff() {
-		yield return dlgGemNextPlaced.Play();
-				
 		puzzleHandleInstructGO.SetActive(true);
 
-		//dialog
-		yield return dlgSlotOrientInstruct.Play();
+		yield return dlgGemNextPlaced.Play();
 
 		puzzleHandleInstructGO.SetActive(false);
 
@@ -209,6 +211,11 @@ public class PlayControllerLevel02 : PlayControllerBase {
 	}
 
 	IEnumerator DoGoalOneFullyCharged() {
+		//re-align slot and lock it
+		puzzleSlotRadialCheck.locked = true;
+		puzzleSlotRadialCheck.value = 1.803404f;
+		puzzleDropOffs[1].active = false;
+
 		//dialog
 		yield return dlgGoalFirstReached.Play();
 

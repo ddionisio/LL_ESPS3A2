@@ -26,7 +26,7 @@ public class PlayControllerLevel03 : PlayControllerBase {
 	public ModalDialogFlowIncremental dlgPushInstruct;
 	public ModalDialogFlowIncremental dlgTaskComplete;
 	public ModalDialogFlowIncremental dlgGoalPointer;
-	public ModalDialogFlowIncremental dlgRotatePointer;
+	//public ModalDialogFlowIncremental dlgRotatePointer;
 	public ModalDialogFlowIncremental dlgSliderPointer;
 	public ModalDialogFlowIncremental dlgGameStart;
 
@@ -66,7 +66,7 @@ public class PlayControllerLevel03 : PlayControllerBase {
 	//protected override void GameUpdate() { }
 
 	protected override IEnumerator GameEnd() {
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(2f);
 
 		//more dialog?
 	}
@@ -114,13 +114,13 @@ public class PlayControllerLevel03 : PlayControllerBase {
 
 		//rotator thing
 		//puzzleRotator.locked = false;
-		yield return wait;
+		//yield return wait;
 
-		instructRotateGO.SetActive(true);
+		//instructRotateGO.SetActive(true);
 
-		yield return dlgRotatePointer.Play();
+		//yield return dlgRotatePointer.Play();
 
-		instructRotateGO.SetActive(false);
+		//instructRotateGO.SetActive(false);
 
 		puzzleRotator.value = 7.5f;
 

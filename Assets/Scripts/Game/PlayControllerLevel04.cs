@@ -64,7 +64,7 @@ public class PlayControllerLevel04 : PlayControllerBase {
 	//protected override void GameUpdate() { }
 
 	protected override IEnumerator GameEnd() {
-		yield return new WaitForSeconds(6f);
+		yield return new WaitForSeconds(2f);
 
 		//yield return dlgVictory.Play();
 	}

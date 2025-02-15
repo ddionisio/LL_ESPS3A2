@@ -50,8 +50,8 @@ public class PuzzleController : MonoBehaviour {
 		}
 
 		if(goalActiveCount == goals.Length) {
-			for(int i = 0; i < goals.Length; i++)
-				goals[i].ForceAudioPlay();
+			//for(int i = 0; i < goals.Length; i++)
+				//goals[i].ForceAudioPlay();
 
 			GameData.instance.signalPuzzleComplete.Invoke();
 		}

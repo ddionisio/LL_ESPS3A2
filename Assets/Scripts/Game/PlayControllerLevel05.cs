@@ -16,12 +16,13 @@ public class PlayControllerLevel05 : PlayControllerBase {
 	public GameObject puzzleBrainGO;
 
 	public GoalController[] puzzleGoals;
+	public PuzzleDropOff[] puzzleOtherSlots;
 
 	[Header("Mechanics")]
 	public PuzzleEntitySpiritFire spiritFire;
 	public PuzzleMechanicBase coalTosserInteract;
 	public PuzzleGameplayPowerConnect[] powerConnectors;
-
+	
 	[Header("Animations")]
 	public M8.AnimatorTargetParamTrigger animSpiritWaterEnter;
 	public M8.AnimatorTargetParamTrigger animSpiritWaterAction;
@@ -41,7 +42,7 @@ public class PlayControllerLevel05 : PlayControllerBase {
 	public ModalDialogFlowIncremental dlgWaterIntro;
 	public ModalDialogFlowIncremental dlgFireIntro;
 	public ModalDialogFlowIncremental dlgCoalIntro;
-	public ModalDialogFlowIncremental dlgElectricExplain;
+	//public ModalDialogFlowIncremental dlgElectricExplain;
 	public ModalDialogFlowIncremental dlgCoalInteract;
 	public ModalDialogFlowIncremental dlgPowerFirstActive;
 	public ModalDialogFlowIncremental dlgPowerConnectInstruct;
@@ -95,7 +96,7 @@ public class PlayControllerLevel05 : PlayControllerBase {
 
 		yield return dlgCoalIntro.Play();
 
-		yield return dlgElectricExplain.Play();
+		//yield return dlgElectricExplain.Play();
 	}
 
 	protected override IEnumerator GameBegin() {
@@ -125,8 +126,8 @@ public class PlayControllerLevel05 : PlayControllerBase {
 	}
 
 	protected override IEnumerator GameEnd() {
-		//for(int i = 0; i < puzzleGoals.Length; i++)
-			//puzzleGoals[i].ForceAudioStop();
+		for(int i = 0; i < puzzleGoals.Length; i++)
+			puzzleGoals[i].ForceAudioStop();
 
 		if(!string.IsNullOrEmpty(musicEnd))
 			M8.MusicPlaylist.instance.Play(musicEnd, false, true);
@@ -188,6 +189,10 @@ public class PlayControllerLevel05 : PlayControllerBase {
 
 		yield return dlgPowerConnectInstruct.Play();
 
+		//temporarily deactivate other slots to ensure proper tutorial proceedure
+		for(int i = 0; i < puzzleOtherSlots.Length; i++)
+			puzzleOtherSlots[i].active = false;
+
 		mPowerConnectorMechanics[0].locked = false;
 	}
 
@@ -220,6 +225,10 @@ public class PlayControllerLevel05 : PlayControllerBase {
 
 		for(int i = 0; i < mPowerConnectorMechanics.Length; i++)
 			mPowerConnectorMechanics[i].locked = false;
+
+		//restore other slots
+		for(int i = 0; i < puzzleOtherSlots.Length; i++)
+			puzzleOtherSlots[i].active = true;
 
 		spiritFire.consumeEnable = true;
 	}
